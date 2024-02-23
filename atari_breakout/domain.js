@@ -1,9 +1,52 @@
 'use strict';
 
 
-export class Ball {
-    constructor(containerWidth, containerHeight, element) {
+class BaseGameElement {
+    constructor(element) {
         this.element = element;
+    }
+    
+    get x() {
+        return this._x;
+    }
+    
+    set x(x) {
+        this._x = x;
+        this.element.style.left = x + 'px';
+    }
+    
+    get y() {
+        return this._y;
+    }
+    
+    set y(y) {
+        this._y = y;
+        this.element.style.top = y + 'px';
+    }
+    
+    get width() {
+        return this._width;
+    }
+    
+    set width(width) {
+        this._width = width;
+        this.element.style.width = width + 'px';
+    }
+    
+    get height() {
+        return this._height;
+    }
+    
+    set height(height) {
+        this._height = height;
+        this.element.style.height = height + 'px';
+    }
+}
+
+
+export class Ball extends BaseGameElement {
+    constructor(containerWidth, containerHeight, element) {
+        super(element);
         this.speed = containerWidth / 442 * 1.4;  // ~3 @ 1440p 100%  ||  ~2.13 @ 1080p 100%
         this.diameter = containerWidth / 66;  // ~20 @ 1440p 100%  ||  ~14.3 @ 1080p 100%
         this.x = (containerWidth - this.diameter) / 2;
@@ -12,31 +55,12 @@ export class Ball {
         this.dy = this.speed;
     }
 
-    get x() {
-        return this._x;
-    }
-
-    set x(x) {
-        this._x = x;
-        this.element.style.left = x + 'px';
-    }
-
-    get y() {
-        return this._y;
-    }
-
-    set y(y) {
-        this._y = y;
-        this.element.style.top = y + 'px';
-    }
-
     get diameter() {
-        return this._diameter;
+        return this.height;
     }
 
     set diameter(diameter) {
-        this._diameter = diameter;
-        this.element.style.width = this.element.style.height = diameter + 'px';
+        this.height = this.width = diameter;
     }
 
     clone() {
@@ -124,52 +148,16 @@ export class Ball {
 }
 
 
-export class Paddle {
+export class Paddle extends BaseGameElement {
     constructor(containerWidth, containerHeight, element) {
-        this.element = element;
+        super(element);
         this.speed = containerWidth / 133;  // ~10 @ 1440p 100%  ||  ~7.1 @ 1080p 100%
         this.width = containerWidth / 8;
         this.height = containerWidth / 133;
         this.x = (containerWidth - this.width) / 2;
         this.y = containerHeight - this.height * 2;
     }
-
-    get x() {
-        return this._x;
-    }
-
-    set x(x) {
-        this._x = x;
-        this.element.style.left = x + 'px';
-    }
-
-    get y() {
-        return this._y;
-    }
-
-    set y(y) {
-        this._y = y;
-        this.element.style.top = y + 'px';
-    }
-
-    get width() {
-        return this._width;
-    }
-
-    set width(width) {
-        this._width = width;
-        this.element.style.width = width + 'px';
-    }
-
-    get height() {
-        return this._height;
-    }
-
-    set height(height) {
-        this._height = height;
-        this.element.style.height = height + 'px';
-    }
-
+    
     update(zoomMultiplier) {
         ['speed', 'width', 'height', 'x', 'y'].forEach(property => {
             this[property] *= zoomMultiplier;
@@ -192,50 +180,14 @@ export class Paddle {
 }
 
 
-export class Brick {
+export class Brick extends BaseGameElement {
     constructor(x, y, width, height, element, type = 'normal') {
-        this.element = element;
+        super(element);
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.type = type;
-    }
-
-    get x() {
-        return this._x;
-    }
-
-    set x(x) {
-        this._x = x;
-        this.element.style.left = x + 'px';
-    }
-
-    get y() {
-        return this._y;
-    }
-
-    set y(y) {
-        this._y = y;
-        this.element.style.top = y + 'px';
-    }
-
-    get width() {
-        return this._width;
-    }
-
-    set width(width) {
-        this._width = width;
-        this.element.style.width = width + 'px';
-    }
-
-    get height() {
-        return this._height;
-    }
-
-    set height(height) {
-        this._height = height;
-        this.element.style.height = height + 'px';
     }
 
     update(zoomMultiplier) {
