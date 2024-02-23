@@ -10,26 +10,101 @@ let brickWidth;
 let brickHeight;
 let brickGap;
 
-const gameContainer = document.getElementById('game-container');
-// const trajectory = document.getElementById('trajectory-line');
-const brickContainer = document.getElementById('brick-container');
-const pauseIcon = document.getElementById('pause-icon');
-const startButtonElement = document.getElementById('start-button');
-const startMenuElement = document.getElementById('start-menu');
-
-let containerWidth, containerHeight;
-
-let score;
-const scoreElement = document.getElementById('score');
+const startMenuElement = document.createElement('div');
+const startButtonElement = document.createElement('button');
+const pauseIcon = document.createElement('div');
+const gameContainer = document.createElement('div');
+const brickContainer = document.createElement('div');
+const paddleElement = document.createElement('div');
+const ballElement = document.createElement('div');
 
 let lives;
-const livesElement = document.getElementById('lives');
+const livesElement = document.createElement('h1');
+
+let score;
+const scoreElement = document.createElement('h2');
 
 let timerId;
 let timerDelayId;
 let lastExecution;
 let msToWait;
 
+let containerWidth, containerHeight, previousContainerWidth, previousContainerHeight;
+let paused = false;
+let softPaused = true;
+
+
+function initializeDOM() {
+    startMenuElement.classList.add('menu-overlay');
+    startMenuElement.id = 'start-menu';
+
+    const title = document.createElement('h1');
+    title.textContent = 'ATARI BREAKOUT';
+    startMenuElement.appendChild(title);
+
+    const topResults = document.createElement('div');
+    topResults.classList.add('top-results');
+    const topResultsTitle = document.createElement('h2');
+    topResultsTitle.textContent = 'Top 10 Results';
+    const ol = document.createElement('ol');
+    topResults.appendChild(topResultsTitle);
+    topResults.appendChild(ol);
+    startMenuElement.appendChild(topResults);
+    
+    startButtonElement.id = 'start-button';
+    startButtonElement.textContent = 'START';
+    startMenuElement.appendChild(startButtonElement);
+
+    const keyBindings = document.createElement('div');
+    keyBindings.classList.add('keybindings');
+    const keys = ['←', '→', 'Esc'];
+    keys.forEach(key => {
+        const p = document.createElement('p');
+        const span = document.createElement('span');
+        span.classList.add('backtick');
+        span.textContent = key;
+        p.appendChild(span);
+        if (key === 'Esc') {
+            p.innerHTML += ' to pause/resume the game';
+        } else {
+            p.innerHTML += ' to move paddle ';
+            p.innerHTML += key === '←' ? 'left' : 'right';
+        }
+        keyBindings.appendChild(p);
+    });
+    
+    startMenuElement.appendChild(keyBindings);
+    document.body.appendChild(startMenuElement);
+    
+    gameContainer.id = 'game-container';
+    
+    pauseIcon.id = 'pause-icon';
+    pauseIcon.style.display = 'none';
+
+    for (let i = 0; i < 2; i++) {
+        const bar = document.createElement('div');
+        bar.classList.add('bar');
+        pauseIcon.appendChild(bar);
+    }
+    
+    brickContainer.id = 'brick-container';
+    paddleElement.id = 'paddle'
+    ballElement.classList.add('ball');
+
+    livesElement.id = 'lives';
+    livesElement.textContent = 'Lives: 3';
+
+    scoreElement.id = 'score';
+    scoreElement.textContent = 'Score: 10';
+    
+    gameContainer.appendChild(pauseIcon);
+    gameContainer.appendChild(brickContainer);
+    gameContainer.appendChild(paddleElement);
+    gameContainer.appendChild(ballElement);
+    document.body.appendChild(gameContainer);
+    document.body.appendChild(livesElement);
+    document.body.appendChild(scoreElement);
+}
 
 function setupGame() {
     resetPositions();
@@ -87,18 +162,14 @@ function setScores(scores) {
     localStorage.setItem("scores", JSON.stringify(scores));
 }
 
-const ballElement = document.getElementsByClassName('ball')[0];
 
-let previousContainerWidth, previousContainerHeight;
-let paused = false;
-let softPaused = true;
+initializeDOM();
 
 // Call the function initially and on window resize
 setContainerDimensions();
 
 let border = containerWidth / 1326;  // ~1 @ 1440p 100%  ||  ~0.7 @ 1080p 100%
 
-const paddleElement = document.getElementById('paddle');
 const paddle = new Paddle(containerWidth, containerHeight, paddleElement);
 
 const ball = new Ball(containerWidth, containerHeight, ballElement);

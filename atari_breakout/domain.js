@@ -1,42 +1,48 @@
 'use strict';
 
+const BALL_SPEED_FACTOR = 315.7;
+const BALL_DIAMETER_FACTOR = 66;
+
+const PADDLE_SPEED_FACTOR = 133;
+const PADDLE_WIDTH_FACTOR = 8;
+const PADDLE_HEIGHT_FACTOR = 133;
 
 class BaseGameElement {
     constructor(element) {
         this.element = element;
     }
-    
+
     get x() {
         return this._x;
     }
-    
+
     set x(x) {
         this._x = x;
         this.element.style.left = x + 'px';
     }
-    
+
     get y() {
         return this._y;
     }
-    
+
     set y(y) {
         this._y = y;
         this.element.style.top = y + 'px';
     }
-    
+
     get width() {
         return this._width;
     }
-    
+
     set width(width) {
         this._width = width;
         this.element.style.width = width + 'px';
     }
-    
+
     get height() {
         return this._height;
     }
-    
+
     set height(height) {
         this._height = height;
         this.element.style.height = height + 'px';
@@ -47,8 +53,8 @@ class BaseGameElement {
 export class Ball extends BaseGameElement {
     constructor(containerWidth, containerHeight, element) {
         super(element);
-        this.speed = containerWidth / 442 * 1.4;  // ~3 @ 1440p 100%  ||  ~2.13 @ 1080p 100%
-        this.diameter = containerWidth / 66;  // ~20 @ 1440p 100%  ||  ~14.3 @ 1080p 100%
+        this.speed = containerWidth / BALL_SPEED_FACTOR;  // ~3 @ 1440p 100%  ||  ~2.13 @ 1080p 100%
+        this.diameter = containerWidth / BALL_DIAMETER_FACTOR;  // ~20 @ 1440p 100%  ||  ~14.3 @ 1080p 100%
         this.x = (containerWidth - this.diameter) / 2;
         this.y = containerHeight * 0.8;
         this.dx = 0;
@@ -66,14 +72,14 @@ export class Ball extends BaseGameElement {
     clone() {
         let newBall = new Ball(0, 0, this.element.cloneNode());
         this.element.parentElement.appendChild(newBall.element);
-        
+
         newBall.speed = this.speed;
         newBall.diameter = this.diameter;
         newBall.x = this.x;
         newBall.y = this.y;
         newBall.dx = this.dx;
         newBall.dy = this.dy;
-        
+
         return newBall;
     }
 
@@ -147,17 +153,16 @@ export class Ball extends BaseGameElement {
     }
 }
 
-
 export class Paddle extends BaseGameElement {
     constructor(containerWidth, containerHeight, element) {
         super(element);
-        this.speed = containerWidth / 133;  // ~10 @ 1440p 100%  ||  ~7.1 @ 1080p 100%
-        this.width = containerWidth / 8;
-        this.height = containerWidth / 133;
+        this.speed = containerWidth / PADDLE_SPEED_FACTOR;  // ~10 @ 1440p 100%  ||  ~7.1 @ 1080p 100%
+        this.width = containerWidth / PADDLE_WIDTH_FACTOR;
+        this.height = containerWidth / PADDLE_HEIGHT_FACTOR;
         this.x = (containerWidth - this.width) / 2;
         this.y = containerHeight - this.height * 2;
     }
-    
+
     update(zoomMultiplier) {
         ['speed', 'width', 'height', 'x', 'y'].forEach(property => {
             this[property] *= zoomMultiplier;

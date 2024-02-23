@@ -7,6 +7,7 @@
 **/.idea/**/usage.statistics.xml
 **/.idea/**/dictionaries
 **/.idea/**/shelf
+**/.idea
 
 # AWS User-specific
 **/.idea/**/aws.xml
@@ -77,3 +78,4 @@ fabric.properties
 **/.idea/caches/build_file_checksums.ser
 
 atari_breakout/package-lock.json
+atari_breakout/node_modules/
