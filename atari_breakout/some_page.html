@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atari Breakout</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="menu-overlay" id="start-menu">
+    <h1>ATARI BREAKOUT</h1>
+    <div class="top-results">
+        <h2>Top 10 Results</h2>
+        <ol></ol>
+    </div>
+    <button id="start-button">START</button>
+    <div class="keybindings">
+        <p><span class="backtick">←</span> to move paddle left</p>
+        <p><span class="backtick">→</span> to move paddle right</p>
+        <p><span class="backtick">Esc</span> to pause/resume the game</p>
+        <!-- Add more keybindings as needed -->
+    </div>
+</div>
+<div id="game-container">
+    <div id="pause-icon" style="display: none;">
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+    <div id="brick-container"></div>
+    <div id="paddle"></div>
+<!--    <svg id="svg-container" width="100%" height="100%">-->
+<!--        <line id="trajectory-line" x1="0" y1="0" x2="0" y2="0" style="stroke: white; stroke-width: 2;" />-->
+<!--    </svg>-->
+    <div class="ball"></div>
+</div>
+<h1 id="lives">Lives: 3</h1>
+<h2 id="score">Score: 10</h2>
+
+<script src="atari.js" type="module"></script>
+</body>
+</html>
