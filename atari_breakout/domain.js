@@ -87,6 +87,8 @@ export class Ball extends BaseGameElement {
         ['speed', 'diameter', 'x', 'y', 'dx', 'dy'].forEach(property => {
             this[property] *= zoomMultiplier;
         });
+        
+        this.element.style.borderWidth = parseFloat(this.element.style.borderWidth) * zoomMultiplier + 'px';
     }
 
     move(containerWidth, containerHeight, paddle, bricks, scoreElement, score) {

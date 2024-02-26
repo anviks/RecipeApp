@@ -17,9 +17,11 @@ const gameContainer = document.createElement('div');
 const brickContainer = document.createElement('div');
 const paddleElement = document.createElement('div');
 const ballElement = document.createElement('div');
+const countersElement = document.createElement('div');
+const baseBrick = document.createElement('div');
 
 let lives;
-const livesElement = document.createElement('h1');
+const livesElement = document.createElement('h2');
 
 let score;
 const scoreElement = document.createElement('h2');
@@ -30,38 +32,98 @@ let lastExecution;
 let msToWait;
 
 let containerWidth, containerHeight, previousContainerWidth, previousContainerHeight;
+let proportionalPixel;
 let paused = false;
 let softPaused = true;
 
 
+// Function to set the dimensions of the game container
+function setContainerDimensions() {
+    if (containerWidth !== undefined) {
+        previousContainerWidth = containerWidth;
+        previousContainerHeight = containerHeight;
+    }
+
+    const aspectRatio = 4 / 3;
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+
+    // Calculate width and height based on aspect ratio
+    if (screenWidth / screenHeight > aspectRatio) {
+        containerWidth = screenHeight * aspectRatio;
+        containerHeight = screenHeight;
+    } else {
+        containerWidth = screenWidth;
+        containerHeight = screenWidth / aspectRatio;
+    }
+
+    proportionalPixel = containerWidth / 1327;
+}
+
+
 function initializeDOM() {
+    gameContainer.id = 'game-container';
+    gameContainer.style.width = containerWidth + 'px';
+    gameContainer.style.height = containerHeight + 'px';
+    gameContainer.style.borderWidth = proportionalPixel + 'px';
+
     startMenuElement.classList.add('menu-overlay');
     startMenuElement.id = 'start-menu';
+    startMenuElement.style.display = 'block';
+    startMenuElement.style.padding = 20 * proportionalPixel + 'px';
+    startMenuElement.style.borderRadius = 10 * proportionalPixel + 'px';
 
     const title = document.createElement('h1');
     title.textContent = 'ATARI BREAKOUT';
+    title.style.fontSize = 40 * proportionalPixel + 'px';
+    title.style.marginBottom = 20 * proportionalPixel + 'px';
     startMenuElement.appendChild(title);
 
     const topResults = document.createElement('div');
     topResults.classList.add('top-results');
+    topResults.style.marginTop = topResults.style.marginBottom = 30 * proportionalPixel + 'px';
+    startMenuElement.appendChild(topResults);
+
     const topResultsTitle = document.createElement('h2');
     topResultsTitle.textContent = 'Top 10 Results';
-    const ol = document.createElement('ol');
+    topResultsTitle.style.fontSize = 30 * proportionalPixel + 'px';
+    topResultsTitle.style.marginBottom = 10 * proportionalPixel + 'px';
     topResults.appendChild(topResultsTitle);
-    topResults.appendChild(ol);
-    startMenuElement.appendChild(topResults);
-    
+
+    const results = document.createElement('ol');
+    results.style.fontSize = 14 * proportionalPixel + 'px';
+    topResults.appendChild(results);
+
+    getScores().forEach(score => {
+        let li = document.createElement('li');
+        li.style.fontSize = 18 * proportionalPixel + 'px';
+        li.style.marginBottom = li.style.marginTop = 5 * proportionalPixel + 'px';
+        li.innerText = score[1] + ' - ' + score[0];
+        results.appendChild(li);
+    });
+
     startButtonElement.id = 'start-button';
     startButtonElement.textContent = 'START';
+    startButtonElement.style.fontSize = 20 * proportionalPixel + 'px';
+    startButtonElement.style.paddingTop = startButtonElement.style.paddingBottom = 10 * proportionalPixel + 'px';
+    startButtonElement.style.paddingLeft = startButtonElement.style.paddingRight = 20 * proportionalPixel + 'px';
+    startButtonElement.style.marginLeft = startButtonElement.style.marginRight = 10 * proportionalPixel + 'px';
+    startButtonElement.style.borderRadius = 5 * proportionalPixel + 'px';
     startMenuElement.appendChild(startButtonElement);
 
     const keyBindings = document.createElement('div');
     keyBindings.classList.add('keybindings');
+    keyBindings.style.marginTop = 20 * proportionalPixel + 'px';
     const keys = ['←', '→', 'Esc'];
     keys.forEach(key => {
         const p = document.createElement('p');
         const span = document.createElement('span');
-        span.classList.add('backtick');
+        span.style.paddingTop = span.style.paddingBottom = 2 * proportionalPixel + 'px';
+        span.style.paddingLeft = span.style.paddingRight = 5 * proportionalPixel + 'px';
+        span.style.borderWidth = proportionalPixel + 'px';
+        span.style.borderRadius = 3 * proportionalPixel + 'px';
+
+        span.classList.add('code-block');
         span.textContent = key;
         p.appendChild(span);
         if (key === 'Esc') {
@@ -70,61 +132,56 @@ function initializeDOM() {
             p.innerHTML += ' to move paddle ';
             p.innerHTML += key === '←' ? 'left' : 'right';
         }
+
+        p.style.marginTop = p.style.marginBottom = 5 * proportionalPixel + 'px';
+        p.style.fontSize = 16 * proportionalPixel + 'px';
+
         keyBindings.appendChild(p);
     });
-    
+
     startMenuElement.appendChild(keyBindings);
     document.body.appendChild(startMenuElement);
-    
-    gameContainer.id = 'game-container';
-    
+
     pauseIcon.id = 'pause-icon';
     pauseIcon.style.display = 'none';
 
     for (let i = 0; i < 2; i++) {
         const bar = document.createElement('div');
         bar.classList.add('bar');
+        bar.style.borderRadius = 10 * proportionalPixel + 'px';
         pauseIcon.appendChild(bar);
     }
-    
+
+    baseBrick.classList.add('brick');
+    baseBrick.style.borderWidth = proportionalPixel + 'px';
+    baseBrick.style.fontSize = 50 * proportionalPixel + 'px';
+    baseBrick.style.textShadow = `${2 * proportionalPixel}px ${2 * proportionalPixel}px ${4 * proportionalPixel}px #000`;
+
     brickContainer.id = 'brick-container';
     paddleElement.id = 'paddle'
     ballElement.classList.add('ball');
+    ballElement.style.borderWidth = proportionalPixel + 'px';
 
+    lives = 3;
     livesElement.id = 'lives';
-    livesElement.textContent = 'Lives: 3';
+    livesElement.textContent = 'Lives: ' + lives;
 
+    score = 10;
     scoreElement.id = 'score';
-    scoreElement.textContent = 'Score: 10';
-    
+    scoreElement.textContent = 'Score: ' + score;
+
+    countersElement.id = 'counters';
+    countersElement.style.padding = 10 * proportionalPixel + 'px';
+    countersElement.style.fontSize = 20 * proportionalPixel + 'px';
+    countersElement.appendChild(livesElement);
+    countersElement.appendChild(scoreElement);
+
     gameContainer.appendChild(pauseIcon);
     gameContainer.appendChild(brickContainer);
     gameContainer.appendChild(paddleElement);
     gameContainer.appendChild(ballElement);
     document.body.appendChild(gameContainer);
-    document.body.appendChild(livesElement);
-    document.body.appendChild(scoreElement);
-}
-
-function setupGame() {
-    resetPositions();
-    initializeBricks();
-
-    score = 10;
-    scoreElement.innerText = 'Score: ' + score;
-    lives = 3;
-    livesElement.innerText = 'Lives: ' + lives;
-    startMenuElement.style.display = 'block';
-
-    let results = document.querySelector('#start-menu > div > ol');
-    // setScores([]);
-    Array.from(results.children).forEach(li => li.remove());
-
-    getScores().forEach(score => {
-        let li = document.createElement('li');
-        li.innerText = score[1] + ' - ' + score[0];
-        results.appendChild(li);
-    });
+    gameContainer.appendChild(countersElement);
 }
 
 function decrementScore() {
@@ -163,32 +220,22 @@ function setScores(scores) {
 }
 
 
+setContainerDimensions();
 initializeDOM();
 
-// Call the function initially and on window resize
-setContainerDimensions();
-
-let border = containerWidth / 1326;  // ~1 @ 1440p 100%  ||  ~0.7 @ 1080p 100%
+let border = proportionalPixel;  // ~1 @ 1440p 100%  ||  ~0.7 @ 1080p 100%
 
 const paddle = new Paddle(containerWidth, containerHeight, paddleElement);
 
 const ball = new Ball(containerWidth, containerHeight, ballElement);
 let balls = [ball];
 
-brickGap = containerWidth / 133;  // ~10 @ 1440p 100%  ||  ~7.1 @ 1080p 100%
+brickGap = 10 * proportionalPixel;  // ~10 @ 1440p 100%  ||  ~7.1 @ 1080p 100%
 let remainingSpace = containerWidth / 100;
 brickWidth = (containerWidth - remainingSpace * 2 - brickGap * (gridColumns - 1)) / gridColumns;  // ~40 @ 1440p 100%  ||  ~28.5 @ 1080p 100%
 brickHeight = containerWidth / 4 / gridRows;  // ~20 @ 1440p 100%  ||  ~14.3 @ 1080p 100%
-const baseBrick = document.createElement('div');
-baseBrick.classList.add('brick');
-baseBrick.style.borderWidth = border + 'px';
 
 function initializeBricks() {
-    if (bricks.size > 0) {
-        bricks.forEach(brick => brick.element.remove());
-        bricks.clear();
-    }
-
     for (let i = 0; i < gridRows; i++) {
         for (let j = 0; j < gridColumns; j++) {
             let brickElement = baseBrick.cloneNode();
@@ -198,7 +245,7 @@ function initializeBricks() {
 
             bricks.push(new Brick(
                 remainingSpace + j * (brickWidth + brickGap),
-                border * 60 + i * (brickHeight + brickGap),
+                60 * proportionalPixel + i * (brickHeight + brickGap),
                 brickWidth,
                 brickHeight,
                 brickElement,
@@ -227,39 +274,15 @@ function initializeBricks() {
 window.addEventListener('resize', setContainerDimensions);
 window.addEventListener('resize', updateItemSizes);
 
-// Function to set the dimensions of the game container
-function setContainerDimensions() {
-    // paused = false;
-    // pauseIcon.style.display = 'none';
-    if (containerWidth !== undefined) {
-        previousContainerWidth = containerWidth;
-        previousContainerHeight = containerHeight;
-    }
-
-    const container = document.getElementById('game-container');
-    const aspectRatio = 4 / 3; // Change this to match your desired aspect ratio
-    const screenWidth = window.innerWidth;
-    const screenHeight = window.innerHeight;
-
-    // Calculate width and height based on aspect ratio
-    if (screenWidth / screenHeight > aspectRatio) {
-        containerWidth = screenHeight * aspectRatio;
-        containerHeight = screenHeight;
-    } else {
-        containerWidth = screenWidth;
-        containerHeight = screenWidth / aspectRatio;
-    }
-
-    container.style.width = containerWidth + 'px';
-    container.style.height = containerHeight + 'px';
-}
-
 
 function updateItemSizes() {
-    pauseIcon.style.width = containerWidth / 6.63 + 'px';
-    pauseIcon.style.height = containerWidth / 5.304 + 'px';
+    gameContainer.style.width = containerWidth + 'px';
+    gameContainer.style.height = containerHeight + 'px';
+
+    pauseIcon.style.width = 200 * proportionalPixel + 'px';
+    pauseIcon.style.height = 250 * proportionalPixel + 'px';
     Array.from(pauseIcon.children).forEach(bar => {
-        bar.style.borderRadius = containerWidth / 133 + 'px';
+        bar.style.borderRadius = 10 * proportionalPixel + 'px';
     });
 
     const zoomMultiplier = containerWidth / previousContainerWidth;
@@ -269,34 +292,26 @@ function updateItemSizes() {
     bricks.forEach(brick => brick.update(zoomMultiplier));
     border *= zoomMultiplier;
 
-    // 942.6666666666666 707
-    // 1326.6666666666665 995
-
-
-    // trajectory.style.strokeWidth = border * 2 + 'px';
     gameContainer.style.borderWidth = border + 'px';
+    countersElement.style.fontSize = parseFloat(countersElement.style.fontSize) * zoomMultiplier + 'px';
 
-    livesElement.style.fontSize = parseFloat(getComputedStyle(livesElement).getPropertyValue('font-size')) * zoomMultiplier + 'px';
-    scoreElement.style.fontSize = parseFloat(getComputedStyle(scoreElement).getPropertyValue('font-size')) * zoomMultiplier + 'px';
-    
-    startMenuElement.style.fontSize = parseFloat(getComputedStyle(startMenuElement).getPropertyValue('font-size')) * zoomMultiplier + 'px';
     document.querySelectorAll("#start-menu, #start-menu *").forEach(child => {
-        const computedStyle = getComputedStyle(child);
-        
-        child.style.fontSize = parseFloat(computedStyle.getPropertyValue('font-size')) * zoomMultiplier + 'px';
+        child.style.fontSize = parseFloat(child.style.fontSize) * zoomMultiplier + 'px';
         child.style.borderWidth = border + 'px';
-        child.style.borderRadius = parseFloat(computedStyle.getPropertyValue('border-radius')) * zoomMultiplier + 'px';
-        
-        child.style.paddingTop = parseFloat(computedStyle.getPropertyValue('padding-top')) * zoomMultiplier + 'px';
-        child.style.paddingBottom = parseFloat(computedStyle.getPropertyValue('padding-bottom')) * zoomMultiplier + 'px';
-        child.style.paddingLeft = parseFloat(computedStyle.getPropertyValue('padding-left')) * zoomMultiplier + 'px';
-        child.style.paddingRight = parseFloat(computedStyle.getPropertyValue('padding-right')) * zoomMultiplier + 'px';
-        
-        child.style.marginTop = parseFloat(computedStyle.getPropertyValue('margin-top')) * zoomMultiplier + 'px';
-        child.style.marginBottom = parseFloat(computedStyle.getPropertyValue('margin-bottom')) * zoomMultiplier + 'px';
-        child.style.marginLeft = parseFloat(computedStyle.getPropertyValue('margin-left')) * zoomMultiplier + 'px';
-        child.style.marginRight = parseFloat(computedStyle.getPropertyValue('margin-right')) * zoomMultiplier + 'px';
+        child.style.borderRadius = parseFloat(child.style.borderRadius) * zoomMultiplier + 'px';
+
+        child.style.paddingTop = parseFloat(child.style.paddingTop) * zoomMultiplier + 'px';
+        child.style.paddingBottom = parseFloat(child.style.paddingBottom) * zoomMultiplier + 'px';
+        child.style.paddingLeft = parseFloat(child.style.paddingLeft) * zoomMultiplier + 'px';
+        child.style.paddingRight = parseFloat(child.style.paddingRight) * zoomMultiplier + 'px';
+
+        child.style.marginTop = parseFloat(child.style.marginTop) * zoomMultiplier + 'px';
+        child.style.marginBottom = parseFloat(child.style.marginBottom) * zoomMultiplier + 'px';
+        child.style.marginLeft = parseFloat(child.style.marginLeft) * zoomMultiplier + 'px';
+        child.style.marginRight = parseFloat(child.style.marginRight) * zoomMultiplier + 'px';
     });
+
+    countersElement.style.padding = parseFloat(countersElement.style.padding) * zoomMultiplier + 'px';
 }
 
 
@@ -338,52 +353,6 @@ document.addEventListener('keyup', function (event) {
     }
 });
 
-// function movePaddle() {
-//     if (leftPressed && paddleX > 0) {
-//         paddleX -= paddleSpeed;
-//     }
-//     if (rightPressed && paddleX < containerWidth - paddleWidth) {
-//         paddleX += paddleSpeed;
-//     }
-//     paddleElement.style.left = paddleX + 'px';
-// }
-
-
-const trajectoryLine = document.getElementById('trajectory-line');
-const svgContainer = document.getElementById('svg-container');
-
-function updateTrajectoryLine() {
-    const ballCenterX = ball.x + ball.diameter / 2;
-    const ballCenterY = ball.y + ball.diameter / 2;
-    const slope = ball.dy / (ball.dx + 0.00001); // Calculate slope of the ball's movement
-
-    // Calculate the end position of the trajectory line
-    let endX, endY;
-    if (ball.dx >= 0) {
-        endX = containerWidth;
-        endY = ballCenterY + (containerWidth - ballCenterX) * slope;
-    } else {
-        endX = 0;
-        endY = ballCenterY - ballCenterX * slope;
-    }
-
-    // Update SVG line attributes
-    trajectoryLine.setAttribute('x1', ballCenterX);
-    trajectoryLine.setAttribute('y1', ballCenterY);
-    trajectoryLine.setAttribute('x2', endX);
-    trajectoryLine.setAttribute('y2', endY);
-}
-
-// function setSvgDimensions() {
-//     svgContainer.setAttribute('width', containerWidth);
-//     svgContainer.setAttribute('height', containerHeight);
-// }
-
-// // Call setSvgDimensions initially and on window resize
-// setSvgDimensions();
-// window.addEventListener('resize', setSvgDimensions);
-
-
 async function restartGame() {
     await new Promise(r => setTimeout(r, 100));
     let scores = getScores();
@@ -392,7 +361,8 @@ async function restartGame() {
         scores.push([score, playerName]);
         setScores(scores);
     }
-    setupGame();
+
+    window.location.reload();
 }
 
 function resetPositions() {
@@ -412,8 +382,6 @@ async function gameLoop() {
 
                 if (balls.length === 0) {
                     livesElement.innerText = 'Lives: ' + --lives;
-                    console.log(lives);
-
                     balls.push(new Ball(containerWidth, containerHeight, ball.element));
 
                     if (lives === 0) {
@@ -435,13 +403,21 @@ async function gameLoop() {
 
                 if (result > 1) {
                     for (let i = 0; i < result - 1; i++) {
-                        balls.push(ball.clone());
+                        const newBall = ball.clone();
+                        
+                        const offsetX = Math.random() * (ball.diameter * 2) - (ball.diameter);
+                        const offsetY = Math.random() * (ball.diameter * 2) - (ball.diameter);
+                        
+                        newBall.x += offsetX;
+                        newBall.y += offsetY;
+                        
+                        gameContainer.appendChild(newBall.element);
+                        balls.push(newBall);
                     }
                 }
             }
 
             if (bricks.length === 0) {
-                // await new Audio('sounds/win.wav').play();
                 for (let i = 0; i < balls.length - 1; i++) {
                     balls[i].element.remove();
                 }
@@ -453,13 +429,12 @@ async function gameLoop() {
         }
 
         paddle.move(rightPressed - leftPressed, containerWidth);
-        // updateTrajectoryLine(); // Call the function to update trajectory line
     }
 
     requestAnimationFrame(gameLoop);
 }
 
-setupGame();
+initializeBricks();
 
 startButtonElement.addEventListener('click', async function () {
     startMenuElement.style.display = 'none';

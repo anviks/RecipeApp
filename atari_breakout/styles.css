@@ -6,33 +6,22 @@ body, html {
 }
 
 #game-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid #f0f0f0;
-    /* Define a maximum width and height to maintain aspect ratio */
+    border-style: solid;
+    border-color: #f0f0f0;
     max-width: 100%;
     max-height: 100%;
-    /* Set a background color for visibility */
     background-color: #272626;
-    /* Center the container */
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     margin: auto;
-    flex-wrap: wrap;
-    gap: 5px;
 }
 
 #brick-container {
-    align-self: flex-start;
-    justify-content: center;
-    gap: 10px;
     height: max-content!important;
     width: max-content!important;
-    margin-top: 10px;
 }
 
 svg {
@@ -41,61 +30,47 @@ svg {
 
 #paddle {
     position: absolute;
-    bottom: 10px;
-    left: 200px;
-    width: 80px;
-    height: 10px;
     background-color: darkgreen;
 }
 
 .brick {
-    width: 40px;
-    height: 20px;
     background-color: #00f;
-    border: 1px solid white;
+    border-style: solid;
+    border-color: white;
     position: absolute;
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 40px;
     font-weight: bold;
-    text-shadow: 2px 2px 4px #000000;
     font-family: 'Courier New', Courier, monospace;
 }
 
 .ball {
     position: absolute;
-    width: 20px;
-    height: 20px;
     background-color: #f00;
     border-radius: 50%;
+    border-style: solid;
+    border-color: wheat;
 }
 
 #pause-icon {
-    width: 200px;
-    height: 250px;
+    width: 15%;
+    height: 25%;
     display: flex;
     justify-content: space-between;
     z-index: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 #pause-icon .bar {
     width: 30%;
     height: 100%;
     background-color: #fff;
-    border-radius: 10px;
 }
-
-#score, #lives {
-    text-align: right;
-    color: white;
-    padding-right: 2%;
-    padding-top: .5%;
-    margin-top: 0;
-}
-
-
 
 .menu-overlay {
     position: fixed;
@@ -103,52 +78,33 @@ svg {
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: rgba(0, 0, 0, 0.8);
-    padding: 20px;
-    border-radius: 10px;
     text-align: center;
     color: white;
     z-index: 2;
 }
 
-.menu-overlay h1 {
-    margin-bottom: 20px;
-}
 
 .menu-overlay button {
     background-color: #4CAF50;
     color: white;
-    padding: 10px 20px;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
-    margin: 0 10px;
 }
 
 .menu-overlay button:hover {
     background-color: #45a049;
 }
 
-.menu-overlay p {
-    margin-top: 20px;
-    font-size: 12px;
-}
-
-.menu-overlay .top-results {
-    margin-top: 30px;
-}
-
 .menu-overlay .top-results h2 {
-    margin-bottom: 10px;
+    margin-block: 0;
 }
 
 .menu-overlay .top-results ol {
     list-style: none;
     padding: 0;
-}
-
-.menu-overlay .top-results li {
-    margin: 5px 0;
-    font-size: 14px;
+    margin: 0;
+    padding-inline-start: 0;
+    margin-block: 0;
 }
 
 
@@ -156,20 +112,34 @@ svg {
 
 .keybindings {
     text-align: center;
-    margin-top: 20px;
 }
 
 .keybindings p {
-    margin: 5px 0;
-    font-size: 14px;
-    color: #ffffff; /* Adjust color as needed */
+    color: #ffffff;
 }
 
-.backtick {
+.code-block {
     display: inline-block;
-    padding: 2px 5px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
+    border-style: solid;
+    border-color: #ccc;
     font-family: 'Courier New', Courier, monospace;
 }
 
+
+
+#counters {
+    display: flex;
+    justify-content: space-between;
+    color: white;
+    font-weight: bold;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+#counters * {
+    text-align: right;
+    color: white;
+    margin: 0;
+}
