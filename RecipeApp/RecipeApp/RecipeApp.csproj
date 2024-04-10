@@ -1,0 +1,104 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>aspnet-RecipeApp-41CE53E2-ABEC-495C-B6D0-6AE922FA7F03</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.3" />
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.3"/>
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.3"/>
+        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.3"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.3"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.3"/>
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\App.DAL.EF\App.DAL.EF.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Areas\Admin\Controllers\" />
+      <Folder Include="Areas\Admin\Models\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Areas\Admin\Views\Category\Create.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Category\Delete.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Category\Details.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Category\Edit.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Category\Index.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Home\Index.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Home\Privacy.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypeAssociation\Create.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypeAssociation\Delete.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypeAssociation\Details.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypeAssociation\Edit.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypeAssociation\Index.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientType\Create.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientType\Delete.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientType\Details.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientType\Edit.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientType\Index.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Ingredient\Create.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Ingredient\Delete.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Ingredient\Details.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Ingredient\Edit.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Ingredient\Index.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Views\IngredientType\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\IngredientType\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\IngredientType\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\IngredientType\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\IngredientType\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\RecipeIngredient\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\RecipeIngredient\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\RecipeIngredient\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\RecipeIngredient\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\RecipeIngredient\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\RecipeCategory\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\RecipeCategory\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\RecipeCategory\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\RecipeCategory\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\RecipeCategory\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\IngredientTypeAssociation\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\IngredientTypeAssociation\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\IngredientTypeAssociation\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\IngredientTypeAssociation\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\IngredientTypeAssociation\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Category\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Category\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Category\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Category\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Category\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Review\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Review\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Review\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Review\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Review\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Recipe\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Recipe\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Recipe\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Recipe\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Recipe\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Unit\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Unit\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Unit\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Unit\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Unit\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Ingredient\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Ingredient\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Ingredient\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Ingredient\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Ingredient\Index.cshtml" />
+    </ItemGroup>
+
+</Project>
