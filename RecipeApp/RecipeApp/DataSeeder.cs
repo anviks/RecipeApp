@@ -8,7 +8,7 @@ namespace RecipeApp;
 
 public static class DataSeeder
 {
-    public static async Task SeedAdminUser(IApplicationBuilder applicationBuilder)
+    public static async Task SeedAdminUser(this IApplicationBuilder applicationBuilder)
     {
         using IServiceScope serviceScope = applicationBuilder.ApplicationServices
             .GetRequiredService<IServiceScopeFactory>()

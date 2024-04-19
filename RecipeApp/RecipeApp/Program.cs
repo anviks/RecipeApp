@@ -56,7 +56,7 @@ builder.Services.AddControllersWithViews();
 WebApplication app = builder.Build();
 // ===================================================
 
-await DataSeeder.SeedAdminUser(app);
+await app.SeedAdminUser();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
