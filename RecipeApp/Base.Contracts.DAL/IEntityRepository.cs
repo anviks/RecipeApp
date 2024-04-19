@@ -12,23 +12,27 @@ public interface IEntityRepository<TEntity, in TKey>
     where TKey : IEquatable<TKey>
 {
     TEntity Add(TEntity entity);
-    Task<TEntity> AddAsync(TEntity entity);
     void AddRange(IEnumerable<TEntity> entities);
-    Task AddRangeAsync(IEnumerable<TEntity> entities);
     
     TEntity Update(TEntity entity);
     void UpdateRange(IEnumerable<TEntity> entities);
     
-    TEntity Remove(TEntity entity);
-    Task<TEntity> RemoveAsync(TEntity entity);
-    void RemoveRange(IEnumerable<TEntity> entities);
-    Task RemoveRangeAsync(IEnumerable<TEntity> entities);
+    int Remove(TEntity entity);
+    int Remove(TKey id);
+    Task<int> RemoveAsync(TEntity entity);
+    Task<int> RemoveAsync(TKey id);
+    int RemoveRange(IEnumerable<TEntity> entities);
+    int RemoveRange(IEnumerable<TKey> ids);
+    Task<int> RemoveRangeAsync(IEnumerable<TEntity> entities);
+    Task<int> RemoveRangeAsync(IEnumerable<TKey> ids);
     
-    TEntity? Find(TKey id);
-    Task<TEntity?> FindAsync(TKey id);
-    IEnumerable<TEntity> FindAll();
-    Task<IEnumerable<TEntity>> FindAllAsync();
+    TEntity? Find(TKey id, bool tracking = false);
+    Task<TEntity?> FindAsync(TKey id, bool tracking = false);
+    IEnumerable<TEntity> FindAll(IEnumerable<TKey> ids, bool tracking = false);
+    IEnumerable<TEntity> FindAll(bool tracking = false);
+    Task<IEnumerable<TEntity>> FindAllAsync(IEnumerable<TKey> ids, bool tracking = false);
+    Task<IEnumerable<TEntity>> FindAllAsync(bool tracking = false);
     
-    bool Exists(TKey id);
-    Task<bool> ExistsAsync(TKey id);
+    bool Exists(TKey id, bool tracking = false);
+    Task<bool> ExistsAsync(TKey id, bool tracking = false);
 }

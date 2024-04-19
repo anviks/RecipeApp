@@ -1,24 +1,27 @@
+using App.Contracts.DAL;
 using App.DAL.EF;
 using App.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace RecipeApp.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(Roles = "Admin")]
 public class IngredientController : Controller
 {
-    private readonly AppDbContext _context;
+    private readonly IAppUnitOfWork _unitOfWork;
 
-    public IngredientController(AppDbContext context)
+    public IngredientController(IAppUnitOfWork unitOfWork)
     {
-        _context = context;
+        _unitOfWork = unitOfWork;
     }
 
     // GET: Ingredient
     public async Task<IActionResult> Index()
     {
-        return View(await _context.Ingredients.ToListAsync());
+        return View(await _unitOfWork.Ingredients.FindAllAsync());
     }
 
     // GET: Ingredient/Details/5
@@ -29,8 +32,7 @@ public class IngredientController : Controller
             return NotFound();
         }
 
-        var ingredient = await _context.Ingredients
-            .FirstOrDefaultAsync(m => m.Id == id);
+        Ingredient? ingredient = await _unitOfWork.Ingredients.FindAsync(id.Value);
         if (ingredient == null)
         {
             return NotFound();
@@ -52,14 +54,12 @@ public class IngredientController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("Name,Id")] Ingredient ingredient)
     {
-        if (ModelState.IsValid)
-        {
-            ingredient.Id = Guid.NewGuid();
-            _context.Add(ingredient);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-        return View(ingredient);
+        if (!ModelState.IsValid) return View(ingredient);
+        
+        ingredient.Id = Guid.NewGuid();
+        _unitOfWork.Ingredients.Add(ingredient);
+        await _unitOfWork.SaveChangesAsync();
+        return RedirectToAction(nameof(Index));
     }
 
     // GET: Ingredient/Edit/5
@@ -70,7 +70,7 @@ public class IngredientController : Controller
             return NotFound();
         }
 
-        var ingredient = await _context.Ingredients.FindAsync(id);
+        Ingredient? ingredient = await _unitOfWork.Ingredients.FindAsync(id.Value);
         if (ingredient == null)
         {
             return NotFound();
@@ -90,27 +90,22 @@ public class IngredientController : Controller
             return NotFound();
         }
 
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid) return View(ingredient);
+        try
         {
-            try
-            {
-                _context.Update(ingredient);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!IngredientExists(ingredient.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-            return RedirectToAction(nameof(Index));
+            _unitOfWork.Ingredients.Update(ingredient);
+            await _unitOfWork.SaveChangesAsync();
         }
-        return View(ingredient);
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!await _unitOfWork.Ingredients.ExistsAsync(id))
+            {
+                return NotFound();
+            }
+
+            throw;
+        }
+        return RedirectToAction(nameof(Index));
     }
 
     // GET: Ingredient/Delete/5
@@ -121,8 +116,7 @@ public class IngredientController : Controller
             return NotFound();
         }
 
-        var ingredient = await _context.Ingredients
-            .FirstOrDefaultAsync(m => m.Id == id);
+        Ingredient? ingredient = await _unitOfWork.Ingredients.FindAsync(id.Value);
         if (ingredient == null)
         {
             return NotFound();
@@ -136,18 +130,13 @@ public class IngredientController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        var ingredient = await _context.Ingredients.FindAsync(id);
+        Ingredient? ingredient = await _unitOfWork.Ingredients.FindAsync(id);
         if (ingredient != null)
         {
-            _context.Ingredients.Remove(ingredient);
+            await _unitOfWork.Ingredients.RemoveAsync(ingredient);
         }
 
-        await _context.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
-    }
-
-    private bool IngredientExists(Guid id)
-    {
-        return _context.Ingredients.Any(e => e.Id == id);
     }
 }

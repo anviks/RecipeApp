@@ -1,7 +1,7 @@
 ﻿using Base.Contracts.DAL;
 using Base.Contracts.Domain;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace Base.DAL.EF;
 
@@ -11,7 +11,7 @@ public class BaseEntityRepository<TDomainEntity, TDalEntity, TDbContext> :
     where TDalEntity : class, IDomainEntityId
     where TDbContext : DbContext
 {
-    public BaseEntityRepository(TDbContext dbContext, IDalMapper<TDomainEntity, TDalEntity> mapper) : base(dbContext)
+    public BaseEntityRepository(TDbContext dbContext, IDalMapper<TDomainEntity, TDalEntity> mapper) : base(dbContext, mapper)
     {
     }
 }
@@ -22,105 +22,122 @@ public class BaseEntityRepository<TKey, TDomainEntity, TDalEntity, TDbContext> :
     where TDalEntity : class, IDomainEntityId<TKey>
     where TDbContext : DbContext
 {
-    private readonly TDbContext _dbContext;
+    protected readonly TDbContext DbContext;
+    protected readonly DbSet<TDalEntity> DbSet;
+    protected readonly IDalMapper<TDomainEntity, TDalEntity> Mapper;
 
-    public BaseEntityRepository(TDbContext dbContext)
+    public BaseEntityRepository(TDbContext dbContext, IDalMapper<TDomainEntity, TDalEntity> mapper)
     {
-        _dbContext = dbContext;
+        DbContext = dbContext;
+        DbSet = DbContext.Set<TDalEntity>();
+        Mapper = mapper;
+    }
+
+    protected virtual IQueryable<TDalEntity> GetQuery(bool tracking = false)
+    {
+        var queryable = DbSet.AsQueryable();
+        return tracking ? queryable : queryable.AsNoTracking();
     }
 
     public TDalEntity Add(TDalEntity entity)
     {
-        var entry = _dbContext.Add(entity);
-        _dbContext.SaveChanges();
-        return entry.Entity;
-    }
-
-    public async Task<TDalEntity> AddAsync(TDalEntity entity)
-    {
-        var entry = await _dbContext.AddAsync(entity);
-        await _dbContext.SaveChangesAsync();
+        var entry = DbContext.Add(entity);
         return entry.Entity;
     }
 
     public void AddRange(IEnumerable<TDalEntity> entities)
     {
-        _dbContext.AddRange(entities);
-        _dbContext.SaveChanges();
-    }
-
-    public async Task AddRangeAsync(IEnumerable<TDalEntity> entities)
-    {
-        await _dbContext.AddRangeAsync(entities);
-        await _dbContext.SaveChangesAsync();
+        DbContext.AddRange(entities);
     }
 
     public TDalEntity Update(TDalEntity entity)
     {
-        var entry = _dbContext.Update(entity);
-        _dbContext.SaveChanges();
+        var entry = DbContext.Update(entity);
         return entry.Entity;
     }
 
     public void UpdateRange(IEnumerable<TDalEntity> entities)
     {
-        _dbContext.UpdateRange(entities);
-        _dbContext.SaveChanges();
+        DbContext.UpdateRange(entities);
     }
 
-    public TDalEntity Remove(TDalEntity entity)
+    public int Remove(TDalEntity entity)
     {
-        var entry = _dbContext.Remove(entity);
-        _dbContext.SaveChanges();
-        return entry.Entity;
+        return Remove(entity.Id);
     }
 
-    public async Task<TDalEntity> RemoveAsync(TDalEntity entity)
+    public int Remove(TKey id)
     {
-        var entry = _dbContext.Remove(entity);
-        await _dbContext.SaveChangesAsync();
-        return entry.Entity;
+        return GetQuery().Where(e => e.Id.Equals(id)).ExecuteDelete();
     }
 
-    public void RemoveRange(IEnumerable<TDalEntity> entities)
+    public async Task<int> RemoveAsync(TDalEntity entity)
     {
-        _dbContext.RemoveRange(entities);
-        _dbContext.SaveChanges();
+        return await RemoveAsync(entity.Id);
     }
 
-    public async Task RemoveRangeAsync(IEnumerable<TDalEntity> entities)
+    public async Task<int> RemoveAsync(TKey id)
     {
-        _dbContext.RemoveRange(entities);
-        await _dbContext.SaveChangesAsync();
+        return await GetQuery().Where(e => e.Id.Equals(id)).ExecuteDeleteAsync();
     }
 
-    public TDalEntity? Find(TKey id)
+    public int RemoveRange(IEnumerable<TDalEntity> entities)
     {
-        return _dbContext.Find<TDalEntity>(id);
+        return RemoveRange(entities.Select(e => e.Id));
     }
 
-    public async Task<TDalEntity?> FindAsync(TKey id)
+    public int RemoveRange(IEnumerable<TKey> ids)
     {
-        return await _dbContext.FindAsync<TDalEntity>(id);
+        return GetQuery().Where(e => ids.Contains(e.Id)).ExecuteDelete();
     }
 
-    public IEnumerable<TDalEntity> FindAll()
+    public async Task<int> RemoveRangeAsync(IEnumerable<TDalEntity> entities)
     {
-        return _dbContext.Set<TDalEntity>();
+        return await RemoveRangeAsync(entities.Select(e => e.Id));
     }
 
-    public async Task<IEnumerable<TDalEntity>> FindAllAsync()
+    public async Task<int> RemoveRangeAsync(IEnumerable<TKey> ids)
     {
-        return await _dbContext.Set<TDalEntity>().ToListAsync();
+        return await GetQuery().Where(e => ids.Contains(e.Id)).ExecuteDeleteAsync();
     }
 
-    public bool Exists(TKey id)
+    public TDalEntity? Find(TKey id, bool tracking = false)
     {
-        return _dbContext.Find<TDalEntity>(id) != null;
+        return GetQuery(tracking).FirstOrDefault(e => e.Id.Equals(id));
     }
 
-    public async Task<bool> ExistsAsync(TKey id)
+    public async Task<TDalEntity?> FindAsync(TKey id, bool tracking = false)
     {
-        return await _dbContext.FindAsync<TDalEntity>(id) != null;
+        return await GetQuery(tracking).FirstOrDefaultAsync(e => e.Id.Equals(id));
+    }
+
+    public IEnumerable<TDalEntity> FindAll(IEnumerable<TKey> ids, bool tracking = false)
+    {
+        return GetQuery(tracking).Where(e => ids.Contains(e.Id)).ToList();
+    }
+
+    public IEnumerable<TDalEntity> FindAll(bool tracking = false)
+    {
+        return GetQuery(tracking).ToList();
+    }
+
+    public async Task<IEnumerable<TDalEntity>> FindAllAsync(IEnumerable<TKey> ids, bool tracking = false)
+    {
+        return await GetQuery(tracking).Where(e => ids.Contains(e.Id)).ToListAsync();
+    }
+
+    public async Task<IEnumerable<TDalEntity>> FindAllAsync(bool tracking = false)
+    {
+        return await GetQuery(tracking).ToListAsync();
+    }
+
+    public bool Exists(TKey id, bool tracking = false)
+    {
+        return Find(id, tracking) != null;
+    }
+
+    public async Task<bool> ExistsAsync(TKey id, bool tracking = false)
+    {
+        return await FindAsync(id, tracking) != null;
     }
 }

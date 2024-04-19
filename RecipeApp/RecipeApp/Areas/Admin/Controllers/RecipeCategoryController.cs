@@ -1,5 +1,7 @@
+using App.Contracts.DAL;
 using App.DAL.EF;
 using App.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -7,20 +9,20 @@ using Microsoft.EntityFrameworkCore;
 namespace RecipeApp.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(Roles = "Admin")]
 public class RecipeCategoryController : Controller
 {
-    private readonly AppDbContext _context;
+    private readonly IAppUnitOfWork _unitOfWork;
 
-    public RecipeCategoryController(AppDbContext context)
+    public RecipeCategoryController(IAppUnitOfWork unitOfWork)
     {
-        _context = context;
+        _unitOfWork = unitOfWork;
     }
 
     // GET: RecipeCategory
     public async Task<IActionResult> Index()
     {
-        var appDbContext = _context.RecipeCategories.Include(r => r.Category).Include(r => r.Recipe);
-        return View(await appDbContext.ToListAsync());
+        return View(await _unitOfWork.RecipeCategories.FindAllAsync());
     }
 
     // GET: RecipeCategory/Details/5
@@ -31,10 +33,7 @@ public class RecipeCategoryController : Controller
             return NotFound();
         }
 
-        var recipeCategory = await _context.RecipeCategories
-            .Include(r => r.Category)
-            .Include(r => r.Recipe)
-            .FirstOrDefaultAsync(m => m.Id == id);
+        RecipeCategory? recipeCategory = await _unitOfWork.RecipeCategories.FindAsync(id.Value);
         if (recipeCategory == null)
         {
             return NotFound();
@@ -46,8 +45,8 @@ public class RecipeCategoryController : Controller
     // GET: RecipeCategory/Create
     public IActionResult Create()
     {
-        ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
-        ViewData["RecipeId"] = new SelectList(_context.Recipes, "Id", "Description");
+        ViewData["CategoryId"] = new SelectList(_unitOfWork.Categories.FindAll(), "Id", "Name");
+        ViewData["RecipeId"] = new SelectList(_unitOfWork.Recipes.FindAll(), "Id", "Description");
         return View();
     }
 
@@ -61,12 +60,12 @@ public class RecipeCategoryController : Controller
         if (ModelState.IsValid)
         {
             recipeCategory.Id = Guid.NewGuid();
-            _context.Add(recipeCategory);
-            await _context.SaveChangesAsync();
+            _unitOfWork.RecipeCategories.Add(recipeCategory);
+            await _unitOfWork.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", recipeCategory.CategoryId);
-        ViewData["RecipeId"] = new SelectList(_context.Recipes, "Id", "Description", recipeCategory.RecipeId);
+        ViewData["CategoryId"] = new SelectList(await _unitOfWork.Categories.FindAllAsync(), "Id", "Name", recipeCategory.CategoryId);
+        ViewData["RecipeId"] = new SelectList(await _unitOfWork.Recipes.FindAllAsync(), "Id", "Description", recipeCategory.RecipeId);
         return View(recipeCategory);
     }
 
@@ -78,13 +77,13 @@ public class RecipeCategoryController : Controller
             return NotFound();
         }
 
-        var recipeCategory = await _context.RecipeCategories.FindAsync(id);
+        RecipeCategory? recipeCategory = await _unitOfWork.RecipeCategories.FindAsync(id.Value);
         if (recipeCategory == null)
         {
             return NotFound();
         }
-        ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", recipeCategory.CategoryId);
-        ViewData["RecipeId"] = new SelectList(_context.Recipes, "Id", "Description", recipeCategory.RecipeId);
+        ViewData["CategoryId"] = new SelectList(await _unitOfWork.Categories.FindAllAsync(), "Id", "Name", recipeCategory.CategoryId);
+        ViewData["RecipeId"] = new SelectList(await _unitOfWork.Recipes.FindAllAsync(), "Id", "Description", recipeCategory.RecipeId);
         return View(recipeCategory);
     }
 
@@ -104,24 +103,22 @@ public class RecipeCategoryController : Controller
         {
             try
             {
-                _context.Update(recipeCategory);
-                await _context.SaveChangesAsync();
+                _unitOfWork.RecipeCategories.Update(recipeCategory);
+                await _unitOfWork.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!RecipeCategoryExists(recipeCategory.Id))
+                if (!await _unitOfWork.RecipeCategories.ExistsAsync(recipeCategory.Id))
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+
+                throw;
             }
             return RedirectToAction(nameof(Index));
         }
-        ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", recipeCategory.CategoryId);
-        ViewData["RecipeId"] = new SelectList(_context.Recipes, "Id", "Description", recipeCategory.RecipeId);
+        ViewData["CategoryId"] = new SelectList(await _unitOfWork.Categories.FindAllAsync(), "Id", "Name", recipeCategory.CategoryId);
+        ViewData["RecipeId"] = new SelectList(await _unitOfWork.Recipes.FindAllAsync(), "Id", "Description", recipeCategory.RecipeId);
         return View(recipeCategory);
     }
 
@@ -133,10 +130,7 @@ public class RecipeCategoryController : Controller
             return NotFound();
         }
 
-        var recipeCategory = await _context.RecipeCategories
-            .Include(r => r.Category)
-            .Include(r => r.Recipe)
-            .FirstOrDefaultAsync(m => m.Id == id);
+        RecipeCategory? recipeCategory = await _unitOfWork.RecipeCategories.FindAsync(id.Value);
         if (recipeCategory == null)
         {
             return NotFound();
@@ -150,18 +144,13 @@ public class RecipeCategoryController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        var recipeCategory = await _context.RecipeCategories.FindAsync(id);
+        RecipeCategory? recipeCategory = await _unitOfWork.RecipeCategories.FindAsync(id);
         if (recipeCategory != null)
         {
-            _context.RecipeCategories.Remove(recipeCategory);
+            await _unitOfWork.RecipeCategories.RemoveAsync(recipeCategory);
         }
 
-        await _context.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
-    }
-
-    private bool RecipeCategoryExists(Guid id)
-    {
-        return _context.RecipeCategories.Any(e => e.Id == id);
     }
 }

@@ -10,21 +10,7 @@
 <div>
     <h4>IngredientTypeAssociation</h4>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Ingredient)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Ingredient!.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IngredientType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IngredientType!.Description)
-        </dd>
-    </dl>
-    
+    <partial name="_DetailsDelete" model="Model"/>
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |

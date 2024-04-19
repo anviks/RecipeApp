@@ -1,4 +1,4 @@
-@model App.Domain.Recipe
+@model RecipeApp.Areas.Admin.ViewModels.RecipeCreateEditViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -7,81 +7,21 @@
 <h1>Create</h1>
 
 <h4>Recipe</h4>
-<hr />
+<hr/>
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-action="Create" enctype="multipart/form-data">
+            <partial name="_CreateEdit" model="Model"/>
             <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
+                <label asp-for="Recipe.AuthorUserId" class="control-label"></label>
+                <select asp-for="Recipe.AuthorUserId" class="form-control" asp-items="Model.AuthorUserSelectList"></select>
             </div>
             <div class="form-group">
-                <label asp-for="Image" class="control-label"></label>
-                <input asp-for="Image" class="form-control" />
-                <span asp-validation-for="Image" class="text-danger"></span>
+                <label asp-for="Recipe.UpdatingUserId" class="control-label"></label>
+                <select asp-for="Recipe.UpdatingUserId" class="form-control" asp-items="Model.UpdatingUserSelectList"></select>
             </div>
             <div class="form-group">
-                <label asp-for="Instructions" class="control-label"></label>
-                <input asp-for="Instructions" class="form-control" />
-                <span asp-validation-for="Instructions" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PrepationTime" class="control-label"></label>
-                <input asp-for="PrepationTime" class="form-control" />
-                <span asp-validation-for="PrepationTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CookingTime" class="control-label"></label>
-                <input asp-for="CookingTime" class="form-control" />
-                <span asp-validation-for="CookingTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Servings" class="control-label"></label>
-                <input asp-for="Servings" class="form-control" />
-                <span asp-validation-for="Servings" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsVegetarian" /> @Html.DisplayNameFor(model => model.IsVegetarian)
-                </label>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsVegan" /> @Html.DisplayNameFor(model => model.IsVegan)
-                </label>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsGlutenFree" /> @Html.DisplayNameFor(model => model.IsGlutenFree)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedAt" class="control-label"></label>
-                <input asp-for="CreatedAt" class="form-control" />
-                <span asp-validation-for="CreatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AuthorUserId" class="control-label"></label>
-                <select asp-for="AuthorUserId" class ="form-control" asp-items="ViewBag.AuthorUserId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="UpdatedAt" class="control-label"></label>
-                <input asp-for="UpdatedAt" class="form-control" />
-                <span asp-validation-for="UpdatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UpdatingUserId" class="control-label"></label>
-                <select asp-for="UpdatingUserId" class ="form-control" asp-items="ViewBag.UpdatingUserId"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary"/>
             </div>
         </form>
     </div>
@@ -92,5 +32,5 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

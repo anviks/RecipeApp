@@ -5,6 +5,6 @@ public interface IDalMapper<TLeftObject, TRightObject>
     where TRightObject : class
 
 {
-    TLeftObject? MapRL(TRightObject? inObject);
+    TLeftObject? Map(TRightObject? inObject);
     TRightObject? MapLR(TLeftObject? inObject);
 }

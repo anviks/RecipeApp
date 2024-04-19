@@ -1,26 +1,29 @@
+using App.Contracts.DAL;
 using App.DAL.EF;
 using App.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using RecipeApp.Areas.Admin.ViewModels;
 
 namespace RecipeApp.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(Roles = "Admin")]
 public class IngredientTypeAssociationController : Controller
 {
-    private readonly AppDbContext _context;
+    private readonly IAppUnitOfWork _unitOfWork;
 
-    public IngredientTypeAssociationController(AppDbContext context)
+    public IngredientTypeAssociationController(IAppUnitOfWork unitOfWork)
     {
-        _context = context;
+        _unitOfWork = unitOfWork;
     }
 
     // GET: IngredientTypeAssociation
     public async Task<IActionResult> Index()
     {
-        var appDbContext = _context.IngredientTypeAssociations.Include(i => i.Ingredient).Include(i => i.IngredientType);
-        return View(await appDbContext.ToListAsync());
+        return View(await _unitOfWork.IngredientTypeAssociations.FindAllAsync());
     }
 
     // GET: IngredientTypeAssociation/Details/5
@@ -31,10 +34,8 @@ public class IngredientTypeAssociationController : Controller
             return NotFound();
         }
 
-        var ingredientTypeAssociation = await _context.IngredientTypeAssociations
-            .Include(i => i.Ingredient)
-            .Include(i => i.IngredientType)
-            .FirstOrDefaultAsync(m => m.Id == id);
+        IngredientTypeAssociation? ingredientTypeAssociation =
+            await _unitOfWork.IngredientTypeAssociations.FindAsync(id.Value);
         if (ingredientTypeAssociation == null)
         {
             return NotFound();
@@ -46,9 +47,14 @@ public class IngredientTypeAssociationController : Controller
     // GET: IngredientTypeAssociation/Create
     public IActionResult Create()
     {
-        ViewData["IngredientId"] = new SelectList(_context.Ingredients, "Id", "Name");
-        ViewData["IngredientTypeId"] = new SelectList(_context.IngredientTypes, "Id", "Description");
-        return View();
+        var viewModel = new IngredientTypeAssociationCreateEditViewModel
+        {
+            IngredientSelectList = new SelectList(_unitOfWork.Ingredients.FindAll(), nameof(Ingredient.Id),
+                nameof(Ingredient.Name)),
+            IngredientTypeSelectList = new SelectList(_unitOfWork.IngredientTypes.FindAll(), nameof(IngredientType.Id),
+                nameof(IngredientType.Description))
+        };
+        return View(viewModel);
     }
 
     // POST: IngredientTypeAssociation/Create
@@ -56,18 +62,21 @@ public class IngredientTypeAssociationController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("IngredientId,IngredientTypeId,Id")] IngredientTypeAssociation ingredientTypeAssociation)
+    public async Task<IActionResult> Create(IngredientTypeAssociationCreateEditViewModel viewModel)
     {
         if (ModelState.IsValid)
         {
-            ingredientTypeAssociation.Id = Guid.NewGuid();
-            _context.Add(ingredientTypeAssociation);
-            await _context.SaveChangesAsync();
+            _unitOfWork.IngredientTypeAssociations.Add(viewModel.IngredientTypeAssociation);
+            await _unitOfWork.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        ViewData["IngredientId"] = new SelectList(_context.Ingredients, "Id", "Name", ingredientTypeAssociation.IngredientId);
-        ViewData["IngredientTypeId"] = new SelectList(_context.IngredientTypes, "Id", "Description", ingredientTypeAssociation.IngredientTypeId);
-        return View(ingredientTypeAssociation);
+
+        viewModel.IngredientSelectList = new SelectList(await _unitOfWork.Ingredients.FindAllAsync(),
+            nameof(Ingredient.Id), nameof(Ingredient.Name), viewModel.IngredientTypeAssociation.IngredientId);
+        viewModel.IngredientTypeSelectList = new SelectList(await _unitOfWork.IngredientTypes.FindAllAsync(),
+            nameof(IngredientType.Id), nameof(IngredientType.Description),
+            viewModel.IngredientTypeAssociation.IngredientTypeId);
+        return View(viewModel);
     }
 
     // GET: IngredientTypeAssociation/Edit/5
@@ -78,14 +87,24 @@ public class IngredientTypeAssociationController : Controller
             return NotFound();
         }
 
-        var ingredientTypeAssociation = await _context.IngredientTypeAssociations.FindAsync(id);
+        IngredientTypeAssociation? ingredientTypeAssociation =
+            await _unitOfWork.IngredientTypeAssociations.FindAsync(id.Value);
         if (ingredientTypeAssociation == null)
         {
             return NotFound();
         }
-        ViewData["IngredientId"] = new SelectList(_context.Ingredients, "Id", "Name", ingredientTypeAssociation.IngredientId);
-        ViewData["IngredientTypeId"] = new SelectList(_context.IngredientTypes, "Id", "Description", ingredientTypeAssociation.IngredientTypeId);
-        return View(ingredientTypeAssociation);
+
+        var viewModel = new IngredientTypeAssociationCreateEditViewModel
+        {
+            IngredientTypeAssociation = ingredientTypeAssociation,
+            IngredientSelectList = new SelectList(await _unitOfWork.Ingredients.FindAllAsync(), nameof(Ingredient.Id),
+                nameof(Ingredient.Name), ingredientTypeAssociation.IngredientId),
+            IngredientTypeSelectList = new SelectList(await _unitOfWork.IngredientTypes.FindAllAsync(),
+                nameof(IngredientType.Id), nameof(IngredientType.Description),
+                ingredientTypeAssociation.IngredientTypeId)
+        };
+
+        return View(viewModel);
     }
 
     // POST: IngredientTypeAssociation/Edit/5
@@ -93,9 +112,9 @@ public class IngredientTypeAssociationController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(Guid id, [Bind("IngredientId,IngredientTypeId,Id")] IngredientTypeAssociation ingredientTypeAssociation)
+    public async Task<IActionResult> Edit(Guid id, IngredientTypeAssociationCreateEditViewModel viewModel)
     {
-        if (id != ingredientTypeAssociation.Id)
+        if (id != viewModel.IngredientTypeAssociation.Id)
         {
             return NotFound();
         }
@@ -104,25 +123,32 @@ public class IngredientTypeAssociationController : Controller
         {
             try
             {
-                _context.Update(ingredientTypeAssociation);
-                await _context.SaveChangesAsync();
+                _unitOfWork.IngredientTypeAssociations.Update(viewModel.IngredientTypeAssociation);
+                await _unitOfWork.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!IngredientTypeAssociationExists(ingredientTypeAssociation.Id))
+                if (!await _unitOfWork.IngredientTypeAssociations.ExistsAsync(id))
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+
+                throw;
             }
+
             return RedirectToAction(nameof(Index));
         }
-        ViewData["IngredientId"] = new SelectList(_context.Ingredients, "Id", "Name", ingredientTypeAssociation.IngredientId);
-        ViewData["IngredientTypeId"] = new SelectList(_context.IngredientTypes, "Id", "Description", ingredientTypeAssociation.IngredientTypeId);
-        return View(ingredientTypeAssociation);
+
+        viewModel.IngredientSelectList = new SelectList(await _unitOfWork.Ingredients.FindAllAsync(), 
+            nameof(Ingredient.Id), 
+            nameof(Ingredient.Name), 
+            viewModel.IngredientTypeAssociation.IngredientId);
+        viewModel.IngredientTypeSelectList = new SelectList(await _unitOfWork.IngredientTypes.FindAllAsync(), 
+            nameof(IngredientType.Id), 
+            nameof(IngredientType.Description), 
+            viewModel.IngredientTypeAssociation.IngredientTypeId);
+        
+        return View(viewModel);
     }
 
     // GET: IngredientTypeAssociation/Delete/5
@@ -133,10 +159,8 @@ public class IngredientTypeAssociationController : Controller
             return NotFound();
         }
 
-        var ingredientTypeAssociation = await _context.IngredientTypeAssociations
-            .Include(i => i.Ingredient)
-            .Include(i => i.IngredientType)
-            .FirstOrDefaultAsync(m => m.Id == id);
+        IngredientTypeAssociation? ingredientTypeAssociation =
+            await _unitOfWork.IngredientTypeAssociations.FindAsync(id.Value);
         if (ingredientTypeAssociation == null)
         {
             return NotFound();
@@ -150,18 +174,14 @@ public class IngredientTypeAssociationController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        var ingredientTypeAssociation = await _context.IngredientTypeAssociations.FindAsync(id);
+        IngredientTypeAssociation? ingredientTypeAssociation =
+            await _unitOfWork.IngredientTypeAssociations.FindAsync(id);
         if (ingredientTypeAssociation != null)
         {
-            _context.IngredientTypeAssociations.Remove(ingredientTypeAssociation);
+            await _unitOfWork.IngredientTypeAssociations.RemoveAsync(ingredientTypeAssociation);
         }
 
-        await _context.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
-    }
-
-    private bool IngredientTypeAssociationExists(Guid id)
-    {
-        return _context.IngredientTypeAssociations.Any(e => e.Id == id);
     }
 }

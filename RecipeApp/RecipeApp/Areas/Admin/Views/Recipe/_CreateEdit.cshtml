@@ -1,0 +1,63 @@
+@model RecipeApp.Areas.Admin.ViewModels.RecipeCreateEditViewModel
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="form-group">
+    <label asp-for="Recipe.Title" class="control-label"></label>
+    <input asp-for="Recipe.Title" class="form-control"/>
+    <span asp-validation-for="Recipe.Title" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="Recipe.Description" class="control-label"></label>
+    <input asp-for="Recipe.Description" class="form-control"/>
+    <span asp-validation-for="Recipe.Description" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="RecipeImage" class="control-label"></label>
+    <input asp-for="RecipeImage" class="form-control"/>
+    <span asp-validation-for="RecipeImage" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="Recipe.Instructions" class="control-label"></label>
+    <input asp-for="Recipe.Instructions" class="form-control"/>
+    <span asp-validation-for="Recipe.Instructions" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="Recipe.PrepationTime" class="control-label"></label>
+    <input asp-for="Recipe.PrepationTime" class="form-control"/>
+    <span asp-validation-for="Recipe.PrepationTime" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="Recipe.CookingTime" class="control-label"></label>
+    <input asp-for="Recipe.CookingTime" class="form-control"/>
+    <span asp-validation-for="Recipe.CookingTime" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="Recipe.Servings" class="control-label"></label>
+    <input asp-for="Recipe.Servings" class="form-control"/>
+    <span asp-validation-for="Recipe.Servings" class="text-danger"></span>
+</div>
+<div class="form-group form-check">
+    <label class="form-check-label">
+        <input class="form-check-input" asp-for="Recipe.IsVegetarian"/> @Html.DisplayNameFor(model => model.Recipe.IsVegetarian)
+    </label>
+</div>
+<div class="form-group form-check">
+    <label class="form-check-label">
+        <input class="form-check-input" asp-for="Recipe.IsVegan"/> @Html.DisplayNameFor(model => model.Recipe.IsVegan)
+    </label>
+</div>
+<div class="form-group form-check">
+    <label class="form-check-label">
+        <input class="form-check-input" asp-for="Recipe.IsGlutenFree"/> @Html.DisplayNameFor(model => model.Recipe.IsGlutenFree)
+    </label>
+</div>
+<div class="form-group">
+    <label asp-for="Recipe.CreatedAt" class="control-label"></label>
+    <input asp-for="Recipe.CreatedAt" class="form-control"/>
+    <span asp-validation-for="Recipe.CreatedAt" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="Recipe.UpdatedAt" class="control-label"></label>
+    <input asp-for="Recipe.UpdatedAt" class="form-control"/>
+    <span asp-validation-for="Recipe.UpdatedAt" class="text-danger"></span>
+</div>

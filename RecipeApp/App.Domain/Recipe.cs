@@ -4,6 +4,7 @@ using App.Domain.Identity;
 using Base.Contracts.Domain;
 using Base.Domain;
 
+
 namespace App.Domain;
 
 public class Recipe : BaseEntityId
@@ -14,7 +15,9 @@ public class Recipe : BaseEntityId
     [MaxLength(512)]
     public string Description { get; set; } = default!;
     
-    public byte[] Image { get; set; } = default!;
+    // TODO: update in ERD
+    // TODO: remove hacky solution if possible
+    public string ImageFileName { get; set; } = default!;
     
     [Column(TypeName = "json")]
     public string Instructions { get; set; } = default!;

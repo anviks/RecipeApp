@@ -1,5 +1,6 @@
-using App.DAL.EF;
+using App.Contracts.DAL;
 using App.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -7,20 +8,20 @@ using Microsoft.EntityFrameworkCore;
 namespace RecipeApp.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(Roles = "Admin")]
 public class ReviewController : Controller
 {
-    private readonly AppDbContext _context;
+    private readonly IAppUnitOfWork _unitOfWork;
 
-    public ReviewController(AppDbContext context)
+    public ReviewController(IAppUnitOfWork unitOfWork)
     {
-        _context = context;
+        _unitOfWork = unitOfWork;
     }
 
     // GET: Review
     public async Task<IActionResult> Index()
     {
-        var appDbContext = _context.Reviews.Include(r => r.Recipe).Include(r => r.User);
-        return View(await appDbContext.ToListAsync());
+        return View(await _unitOfWork.Reviews.FindAllAsync());
     }
 
     // GET: Review/Details/5
@@ -31,10 +32,7 @@ public class ReviewController : Controller
             return NotFound();
         }
 
-        var review = await _context.Reviews
-            .Include(r => r.Recipe)
-            .Include(r => r.User)
-            .FirstOrDefaultAsync(m => m.Id == id);
+        Review? review = await _unitOfWork.Reviews.FindAsync(id.Value);
         if (review == null)
         {
             return NotFound();
@@ -46,8 +44,8 @@ public class ReviewController : Controller
     // GET: Review/Create
     public IActionResult Create()
     {
-        ViewData["RecipeId"] = new SelectList(_context.Recipes, "Id", "Description");
-        ViewData["UserId"] = new SelectList(_context.Users, "Id", "FirstName");
+        ViewData["RecipeId"] = new SelectList(_unitOfWork.Recipes.FindAll(), "Id", "Description");
+        ViewData["UserId"] = new SelectList(_unitOfWork.Users.FindAll(), "Id", "FirstName");
         return View();
     }
 
@@ -61,12 +59,12 @@ public class ReviewController : Controller
         if (ModelState.IsValid)
         {
             review.Id = Guid.NewGuid();
-            _context.Add(review);
-            await _context.SaveChangesAsync();
+            _unitOfWork.Reviews.Add(review);
+            await _unitOfWork.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        ViewData["RecipeId"] = new SelectList(_context.Recipes, "Id", "Description", review.RecipeId);
-        ViewData["UserId"] = new SelectList(_context.Users, "Id", "FirstName", review.UserId);
+        ViewData["RecipeId"] = new SelectList(await _unitOfWork.Recipes.FindAllAsync(), "Id", "Description", review.RecipeId);
+        ViewData["UserId"] = new SelectList(await _unitOfWork.Users.FindAllAsync(), "Id", "FirstName", review.UserId);
         return View(review);
     }
 
@@ -78,13 +76,13 @@ public class ReviewController : Controller
             return NotFound();
         }
 
-        var review = await _context.Reviews.FindAsync(id);
+        Review? review = await _unitOfWork.Reviews.FindAsync(id.Value);
         if (review == null)
         {
             return NotFound();
         }
-        ViewData["RecipeId"] = new SelectList(_context.Recipes, "Id", "Description", review.RecipeId);
-        ViewData["UserId"] = new SelectList(_context.Users, "Id", "FirstName", review.UserId);
+        ViewData["RecipeId"] = new SelectList(await _unitOfWork.Recipes.FindAllAsync(), "Id", "Description", review.RecipeId);
+        ViewData["UserId"] = new SelectList(await _unitOfWork.Users.FindAllAsync(), "Id", "FirstName", review.UserId);
         return View(review);
     }
 
@@ -104,24 +102,22 @@ public class ReviewController : Controller
         {
             try
             {
-                _context.Update(review);
-                await _context.SaveChangesAsync();
+                _unitOfWork.Reviews.Update(review);
+                await _unitOfWork.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ReviewExists(review.Id))
+                if (!await _unitOfWork.Reviews.ExistsAsync(review.Id))
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+
+                throw;
             }
             return RedirectToAction(nameof(Index));
         }
-        ViewData["RecipeId"] = new SelectList(_context.Recipes, "Id", "Description", review.RecipeId);
-        ViewData["UserId"] = new SelectList(_context.Users, "Id", "FirstName", review.UserId);
+        ViewData["RecipeId"] = new SelectList(await _unitOfWork.Recipes.FindAllAsync(), "Id", "Description", review.RecipeId);
+        ViewData["UserId"] = new SelectList(await _unitOfWork.Users.FindAllAsync(), "Id", "FirstName", review.UserId);
         return View(review);
     }
 
@@ -133,10 +129,7 @@ public class ReviewController : Controller
             return NotFound();
         }
 
-        var review = await _context.Reviews
-            .Include(r => r.Recipe)
-            .Include(r => r.User)
-            .FirstOrDefaultAsync(m => m.Id == id);
+        Review? review = await _unitOfWork.Reviews.FindAsync(id.Value);
         if (review == null)
         {
             return NotFound();
@@ -150,18 +143,13 @@ public class ReviewController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        var review = await _context.Reviews.FindAsync(id);
+        Review? review = await _unitOfWork.Reviews.FindAsync(id);
         if (review != null)
         {
-            _context.Reviews.Remove(review);
+            await _unitOfWork.Reviews.RemoveAsync(review);
         }
 
-        await _context.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
-    }
-
-    private bool ReviewExists(Guid id)
-    {
-        return _context.Reviews.Any(e => e.Id == id);
     }
 }

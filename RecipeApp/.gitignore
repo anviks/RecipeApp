@@ -3,6 +3,9 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
+
+/RecipeApp/RecipeApp/wwwroot/uploads
+
 # dotenv files
 .env
 

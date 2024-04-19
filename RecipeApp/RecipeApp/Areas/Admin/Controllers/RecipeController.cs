@@ -1,26 +1,33 @@
+using App.Contracts.DAL;
 using App.DAL.EF;
 using App.Domain;
+using App.Domain.Identity;
+using Base.Contracts.DAL;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using RecipeApp.Areas.Admin.ViewModels;
 
 namespace RecipeApp.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(Roles = "Admin")]
 public class RecipeController : Controller
 {
-    private readonly AppDbContext _context;
+    private readonly IAppUnitOfWork _unitOfWork;
+    private readonly IWebHostEnvironment _environment;
 
-    public RecipeController(AppDbContext context)
+    public RecipeController(IAppUnitOfWork unitOfWork, IWebHostEnvironment environment)
     {
-        _context = context;
+        _unitOfWork = unitOfWork;
+        _environment = environment;
     }
 
     // GET: Recipe
     public async Task<IActionResult> Index()
     {
-        var appDbContext = _context.Recipes.Include(r => r.AuthorUser).Include(r => r.UpdatingUser);
-        return View(await appDbContext.ToListAsync());
+        return View(await _unitOfWork.Recipes.FindAllAsync());
     }
 
     // GET: Recipe/Details/5
@@ -31,10 +38,8 @@ public class RecipeController : Controller
             return NotFound();
         }
 
-        var recipe = await _context.Recipes
-            .Include(r => r.AuthorUser)
-            .Include(r => r.UpdatingUser)
-            .FirstOrDefaultAsync(m => m.Id == id);
+        Recipe? recipe = await _unitOfWork.Recipes.FindAsync(id.Value);
+
         if (recipe == null)
         {
             return NotFound();
@@ -46,9 +51,14 @@ public class RecipeController : Controller
     // GET: Recipe/Create
     public IActionResult Create()
     {
-        ViewData["AuthorUserId"] = new SelectList(_context.Users, "Id", "FirstName");
-        ViewData["UpdatingUserId"] = new SelectList(_context.Users, "Id", "FirstName");
-        return View();
+        var viewModel = new RecipeCreateEditViewModel
+        {
+            AuthorUserSelectList =
+                new SelectList(_unitOfWork.Users.FindAll(), nameof(AppUser.Id), nameof(AppUser.FirstName)),
+            UpdatingUserSelectList =
+                new SelectList(_unitOfWork.Users.FindAll(), nameof(AppUser.Id), nameof(AppUser.FirstName))
+        };
+        return View(viewModel);
     }
 
     // POST: Recipe/Create
@@ -56,18 +66,35 @@ public class RecipeController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Title,Description,Image,Instructions,PrepationTime,CookingTime,Servings,IsVegetarian,IsVegan,IsGlutenFree,CreatedAt,AuthorUserId,UpdatedAt,UpdatingUserId,Id")] Recipe recipe)
+    // [Bind("Title,Description,Image,Instructions,PrepationTime,CookingTime,Servings,IsVegetarian,IsVegan,IsGlutenFree,CreatedAt,AuthorUserId,UpdatedAt,UpdatingUserId,Id")]
+    public async Task<IActionResult> Create(
+        // [Bind("Recipe.Title,Recipe.Description,Recipe.Instructions,Recipe.PrepationTime,Recipe.CookingTime,Recipe.Servings" +
+        //       ",Recipe.IsVegetarian,Recipe.IsVegan,Recipe.IsGlutenFree,Recipe.CreatedAt,Recipe.AuthorUserId,Recipe.UpdatedAt,Recipe.UpdatingUserId,Recipe.Id" +
+        //       ",RecipeImage")] 
+        RecipeCreateEditViewModel viewModel)
     {
         if (ModelState.IsValid)
         {
-            recipe.Id = Guid.NewGuid();
-            _context.Add(recipe);
-            await _context.SaveChangesAsync();
+            var newFileName = Guid.NewGuid() + Path.GetExtension(viewModel.RecipeImage.FileName);
+            var uploadPath = Path.Combine(_environment.WebRootPath, "uploads", "recipe-images", newFileName);
+            
+            await using (var stream = new FileStream(uploadPath, FileMode.Create))
+            {
+                await viewModel.RecipeImage.CopyToAsync(stream);
+            }
+
+            viewModel.Recipe.ImageFileName = newFileName;
+            _unitOfWork.Recipes.Add(viewModel.Recipe);
+            await _unitOfWork.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        ViewData["AuthorUserId"] = new SelectList(_context.Users, "Id", "FirstName", recipe.AuthorUserId);
-        ViewData["UpdatingUserId"] = new SelectList(_context.Users, "Id", "FirstName", recipe.UpdatingUserId);
-        return View(recipe);
+
+        viewModel.AuthorUserSelectList = new SelectList(await _unitOfWork.Users.FindAllAsync(), nameof(AppUser.Id),
+            nameof(AppUser.FirstName), viewModel.Recipe.AuthorUserId);
+        viewModel.UpdatingUserSelectList = new SelectList(await _unitOfWork.Users.FindAllAsync(), nameof(AppUser.Id),
+            nameof(AppUser.FirstName), viewModel.Recipe.UpdatingUserId);
+
+        return View(viewModel);
     }
 
     // GET: Recipe/Edit/5
@@ -78,14 +105,21 @@ public class RecipeController : Controller
             return NotFound();
         }
 
-        var recipe = await _context.Recipes.FindAsync(id);
+        Recipe? recipe = await _unitOfWork.Recipes.FindAsync(id.Value);
         if (recipe == null)
         {
             return NotFound();
         }
-        ViewData["AuthorUserId"] = new SelectList(_context.Users, "Id", "FirstName", recipe.AuthorUserId);
-        ViewData["UpdatingUserId"] = new SelectList(_context.Users, "Id", "FirstName", recipe.UpdatingUserId);
-        return View(recipe);
+
+        var viewModel = new RecipeCreateEditViewModel
+        {
+            AuthorUserSelectList = new SelectList(await _unitOfWork.Users.FindAllAsync(), nameof(AppUser.Id),
+                nameof(AppUser.FirstName), recipe.AuthorUserId),
+            UpdatingUserSelectList = new SelectList(await _unitOfWork.Users.FindAllAsync(), nameof(AppUser.Id),
+                nameof(AppUser.FirstName), recipe.UpdatingUserId)
+        };
+
+        return View(viewModel);
     }
 
     // POST: Recipe/Edit/5
@@ -93,9 +127,10 @@ public class RecipeController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(Guid id, [Bind("Title,Description,Image,Instructions,PrepationTime,CookingTime,Servings,IsVegetarian,IsVegan,IsGlutenFree,CreatedAt,AuthorUserId,UpdatedAt,UpdatingUserId,Id")] Recipe recipe)
+    // [Bind("Title,Description,Image,Instructions,PrepationTime,CookingTime,Servings,IsVegetarian,IsVegan,IsGlutenFree,CreatedAt,AuthorUserId,UpdatedAt,UpdatingUserId,Id")]
+    public async Task<IActionResult> Edit(Guid id, RecipeCreateEditViewModel viewModel)
     {
-        if (id != recipe.Id)
+        if (id != viewModel.Recipe.Id)
         {
             return NotFound();
         }
@@ -104,25 +139,28 @@ public class RecipeController : Controller
         {
             try
             {
-                _context.Update(recipe);
-                await _context.SaveChangesAsync();
+                _unitOfWork.Recipes.Update(viewModel.Recipe);
+                await _unitOfWork.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!RecipeExists(recipe.Id))
+                if (!await _unitOfWork.Recipes.ExistsAsync(id))
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+
+                throw;
             }
+
             return RedirectToAction(nameof(Index));
         }
-        ViewData["AuthorUserId"] = new SelectList(_context.Users, "Id", "FirstName", recipe.AuthorUserId);
-        ViewData["UpdatingUserId"] = new SelectList(_context.Users, "Id", "FirstName", recipe.UpdatingUserId);
-        return View(recipe);
+
+        viewModel.AuthorUserSelectList = new SelectList(await _unitOfWork.Users.FindAllAsync(), nameof(AppUser.Id),
+            nameof(AppUser.FirstName), viewModel.Recipe.AuthorUserId);
+        viewModel.UpdatingUserSelectList = new SelectList(await _unitOfWork.Users.FindAllAsync(), nameof(AppUser.Id),
+            nameof(AppUser.FirstName), viewModel.Recipe.UpdatingUserId);
+        
+        return View(viewModel);
     }
 
     // GET: Recipe/Delete/5
@@ -133,10 +171,7 @@ public class RecipeController : Controller
             return NotFound();
         }
 
-        var recipe = await _context.Recipes
-            .Include(r => r.AuthorUser)
-            .Include(r => r.UpdatingUser)
-            .FirstOrDefaultAsync(m => m.Id == id);
+        Recipe? recipe = await _unitOfWork.Recipes.FindAsync(id.Value);
         if (recipe == null)
         {
             return NotFound();
@@ -150,18 +185,13 @@ public class RecipeController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        var recipe = await _context.Recipes.FindAsync(id);
+        Recipe? recipe = await _unitOfWork.Recipes.FindAsync(id);
         if (recipe != null)
         {
-            _context.Recipes.Remove(recipe);
+            await _unitOfWork.Recipes.RemoveAsync(recipe);
         }
 
-        await _context.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
-    }
-
-    private bool RecipeExists(Guid id)
-    {
-        return _context.Recipes.Any(e => e.Id == id);
     }
 }

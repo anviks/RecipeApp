@@ -1,3 +1,4 @@
+@using App.Domain
 @model IEnumerable<App.Domain.Recipe>
 
 @{
@@ -19,7 +20,10 @@
                 @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Image)
+                @Html.DisplayNameFor(model => model.ImageFileName)
+            </th>
+            <th>
+                Image
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Instructions)
@@ -58,7 +62,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (Recipe item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
@@ -67,7 +71,10 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Image)
+                @Html.DisplayFor(modelItem => item.ImageFileName)
+            </td>
+            <td>
+                <img src="@Url.Content("~/uploads/recipe-images/" + item.ImageFileName)" alt="@item.Title">
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Instructions)

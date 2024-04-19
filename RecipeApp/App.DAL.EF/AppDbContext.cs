@@ -3,6 +3,7 @@ using App.Domain.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace App.DAL.EF;
 
@@ -71,5 +72,21 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid, IdentityUs
             );
 
         base.OnModelCreating(builder);
+    }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
+    {
+        foreach (EntityEntry entity in ChangeTracker.Entries().Where(e => e.State != EntityState.Deleted))
+        {
+            foreach (PropertyEntry prop in entity
+                         .Properties
+                         .Where(x => x.Metadata.ClrType == typeof(DateTime)))
+            {
+                Console.WriteLine(prop);
+                prop.CurrentValue = ((DateTime) prop.CurrentValue).ToUniversalTime();
+            }
+        }
+
+        return base.SaveChangesAsync(cancellationToken);
     }
 }

@@ -3,6 +3,10 @@ dotnet tool update --global dotnet-ef
 ```
 
 ```bash
+dotnet tool update -g dotnet-aspnet-codegenerator
+```
+
+```bash
 dotnet ef migrations --project App.DAL.EF --startup-project RecipeApp add initial
 ```
 
@@ -19,6 +23,12 @@ dotnet ef database --project App.DAL.EF --startup-project RecipeApp drop
 ```
 
 ```bash
+cd RecipeApp
+dotnet aspnet-codegenerator identity -dc App.DAL.EF.AppDbContext -f
+cd ..
+```
+
+```bash
 $WebApp = "RecipeApp"
 $Domain = "App.Domain"
 $DbContext = "AppDbContext"
@@ -29,17 +39,21 @@ $Entities = Get-ChildItem -Path $Domain -Filter '*.cs' | ForEach-Object { $_.Bas
 cd $WebApp
 
 foreach ($Entity in $Entities) {
-    dotnet aspnet-codegenerator controller `
-        --controllerName ($Entity + "Controller") `
-        --readWriteActions `
-        --model "$Domain.$Entity" `
-        --dataContext $DbContext `
-        --useDefaultLayout `
-        --relativeFolderPath $Output `
-        --useAsyncActions `
-        --referenceScriptLibraries `
-        --force
+    if ($Entity) { 
+        dotnet aspnet-codegenerator controller `
+            --controllerName ($Entity + "Controller") `
+            --readWriteActions `
+            --model "$Domain.$Entity" `
+            --dataContext $DbContext `
+            --useDefaultLayout `
+            --relativeFolderPath $Output `
+            --useAsyncActions `
+            --referenceScriptLibraries `
+            --force
+    }
 }
+
+cd ..
 ```
 
 * `--controllerName` or `-name` - Name of the controller.
