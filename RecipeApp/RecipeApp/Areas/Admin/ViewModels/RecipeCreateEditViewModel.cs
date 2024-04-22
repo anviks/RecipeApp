@@ -12,7 +12,7 @@ public class RecipeCreateEditViewModel
     public Recipe Recipe { get; set; } = default!;
     public SelectList? AuthorUserSelectList { get; set; }
     public SelectList? UpdatingUserSelectList { get; set; }
-    [FileSize(0, 1048576)]
+    [FileSize(0, 10 * 1024 * 1024)]
     [AllowedExtensions([".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".svg"])]
     public IFormFile RecipeImage { get; set; } = default!;
 }

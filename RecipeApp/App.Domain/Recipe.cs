@@ -16,7 +16,6 @@ public class Recipe : BaseEntityId
     public string Description { get; set; } = default!;
     
     // TODO: update in ERD
-    // TODO: remove hacky solution if possible
     public string ImageFileName { get; set; } = default!;
     
     [Column(TypeName = "json")]

@@ -80,7 +80,7 @@
             @Html.DisplayNameFor(model => model.AuthorUser)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AuthorUser!.FirstName)
+            @Html.DisplayFor(model => model.AuthorUser!.UserName)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.UpdatedAt)
@@ -92,7 +92,7 @@
             @Html.DisplayNameFor(model => model.UpdatingUser)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UpdatingUser!.FirstName)
+            @Html.DisplayFor(model => model.UpdatingUser!.UserName)
         </dd>
     </dl>
 </div>

@@ -54,9 +54,9 @@ public class RecipeController : Controller
         var viewModel = new RecipeCreateEditViewModel
         {
             AuthorUserSelectList =
-                new SelectList(_unitOfWork.Users.FindAll(), nameof(AppUser.Id), nameof(AppUser.FirstName)),
+                new SelectList(_unitOfWork.Users.FindAll(), nameof(AppUser.Id), nameof(AppUser.UserName)),
             UpdatingUserSelectList =
-                new SelectList(_unitOfWork.Users.FindAll(), nameof(AppUser.Id), nameof(AppUser.FirstName))
+                new SelectList(_unitOfWork.Users.FindAll(), nameof(AppUser.Id), nameof(AppUser.UserName))
         };
         return View(viewModel);
     }
@@ -90,9 +90,9 @@ public class RecipeController : Controller
         }
 
         viewModel.AuthorUserSelectList = new SelectList(await _unitOfWork.Users.FindAllAsync(), nameof(AppUser.Id),
-            nameof(AppUser.FirstName), viewModel.Recipe.AuthorUserId);
+            nameof(AppUser.UserName), viewModel.Recipe.AuthorUserId);
         viewModel.UpdatingUserSelectList = new SelectList(await _unitOfWork.Users.FindAllAsync(), nameof(AppUser.Id),
-            nameof(AppUser.FirstName), viewModel.Recipe.UpdatingUserId);
+            nameof(AppUser.UserName), viewModel.Recipe.UpdatingUserId);
 
         return View(viewModel);
     }
@@ -114,9 +114,9 @@ public class RecipeController : Controller
         var viewModel = new RecipeCreateEditViewModel
         {
             AuthorUserSelectList = new SelectList(await _unitOfWork.Users.FindAllAsync(), nameof(AppUser.Id),
-                nameof(AppUser.FirstName), recipe.AuthorUserId),
+                nameof(AppUser.UserName), recipe.AuthorUserId),
             UpdatingUserSelectList = new SelectList(await _unitOfWork.Users.FindAllAsync(), nameof(AppUser.Id),
-                nameof(AppUser.FirstName), recipe.UpdatingUserId)
+                nameof(AppUser.UserName), recipe.UpdatingUserId)
         };
 
         return View(viewModel);
@@ -156,9 +156,9 @@ public class RecipeController : Controller
         }
 
         viewModel.AuthorUserSelectList = new SelectList(await _unitOfWork.Users.FindAllAsync(), nameof(AppUser.Id),
-            nameof(AppUser.FirstName), viewModel.Recipe.AuthorUserId);
+            nameof(AppUser.UserName), viewModel.Recipe.AuthorUserId);
         viewModel.UpdatingUserSelectList = new SelectList(await _unitOfWork.Users.FindAllAsync(), nameof(AppUser.Id),
-            nameof(AppUser.FirstName), viewModel.Recipe.UpdatingUserId);
+            nameof(AppUser.UserName), viewModel.Recipe.UpdatingUserId);
         
         return View(viewModel);
     }

@@ -37,9 +37,7 @@ public static class DataSeeder
         var user = new AppUser
         {
             Email = "anviks@taltech.ee",
-            UserName = "0anviks@taltech.ee",
-            FirstName = "Andreas",
-            LastName = "Viks",
+            UserName = "admin",
             SecurityStamp = Guid.NewGuid().ToString()
         };
 

@@ -4,7 +4,7 @@
 ## Get latest from `dotnet new gitignore`
 
 
-/RecipeApp/RecipeApp/wwwroot/uploads
+/RecipeApp/wwwroot/uploads
 
 # dotenv files
 .env
@@ -524,4 +524,3 @@ Backup of *.doc*
 
 # Visio autosave temporary files
 *.~vsd*
-
