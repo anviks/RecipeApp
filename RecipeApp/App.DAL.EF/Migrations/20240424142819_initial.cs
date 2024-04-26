@@ -243,7 +243,7 @@ namespace App.DAL.EF.Migrations
                     RefreshToken = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     ExpirationDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     PreviousRefreshToken = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true),
-                    PreviousExpirationDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    PreviousExpirationDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -395,9 +395,9 @@ namespace App.DAL.EF.Migrations
                 columns: new[] { "Id", "Description", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("4399cba0-f503-4655-9525-b20af8282ae1"), "An ingredient that can be measured by volume.", "Volumetric" },
-                    { new Guid("53e4a7a8-366f-4692-a7b6-3a9ec9a8f731"), "An ingredient that can be measured by weight.", "Weighable" },
-                    { new Guid("eb6d171a-db76-4f80-971f-69f1a2aa0d02"), "An ingredient that can be counted.", "Countable" }
+                    { new Guid("7c5169c6-02ad-4086-b6c3-512ffa4d5e70"), "An ingredient that can be measured by weight.", "Weighable" },
+                    { new Guid("a0030cd4-d6d1-4083-9bc6-7a794b0e6f33"), "An ingredient that can be measured by volume.", "Volumetric" },
+                    { new Guid("f9b0905d-06c2-4409-896e-ba5fc5497caf"), "An ingredient that can be counted.", "Countable" }
                 });
 
             migrationBuilder.InsertData(
@@ -405,19 +405,19 @@ namespace App.DAL.EF.Migrations
                 columns: new[] { "Id", "Abbreviation", "IngredientTypeId", "Name", "UnitMultiplier" },
                 values: new object[,]
                 {
-                    { new Guid("06f35906-a4d9-493e-a7d2-9dbb3018806c"), "c", new Guid("4399cba0-f503-4655-9525-b20af8282ae1"), "cup", 236.588f },
-                    { new Guid("16afc29e-0135-46cc-9796-e080eb73041e"), "g", new Guid("53e4a7a8-366f-4692-a7b6-3a9ec9a8f731"), "gram", 1f },
-                    { new Guid("1f98a8b8-1ef5-484b-8446-dc93b6d32b21"), "l", new Guid("4399cba0-f503-4655-9525-b20af8282ae1"), "liter", 1000f },
-                    { new Guid("278b95b1-bb10-4b76-b387-4b118e7e4caf"), "oz", new Guid("53e4a7a8-366f-4692-a7b6-3a9ec9a8f731"), "ounce", 28.3495f },
-                    { new Guid("50337838-87ab-4704-b919-f296b11c46dc"), "ml", new Guid("4399cba0-f503-4655-9525-b20af8282ae1"), "milliliter", 1f },
-                    { new Guid("74645914-5faa-4b05-bd2a-bb0c4ae587c9"), "gal", new Guid("4399cba0-f503-4655-9525-b20af8282ae1"), "gallon", 3785.41f },
-                    { new Guid("83c0fffb-73d0-4064-8756-a74c5328fed6"), "lb", new Guid("53e4a7a8-366f-4692-a7b6-3a9ec9a8f731"), "pound", 453.592f },
-                    { new Guid("9199b14c-4809-4129-a397-063e7fff46dd"), "tbsp", new Guid("4399cba0-f503-4655-9525-b20af8282ae1"), "tablespoon", 14.7868f },
-                    { new Guid("9beb3d8f-488a-4a12-a82d-cc0cdf959007"), "kg", new Guid("53e4a7a8-366f-4692-a7b6-3a9ec9a8f731"), "kilogram", 1000f },
-                    { new Guid("a27b146b-09e9-4aa6-aa91-d3557c78b1e0"), "qt", new Guid("4399cba0-f503-4655-9525-b20af8282ae1"), "quart", 946.353f },
-                    { new Guid("b848595c-47aa-456f-aedf-a25d37d8554f"), "pt", new Guid("4399cba0-f503-4655-9525-b20af8282ae1"), "pint", 473.176f },
-                    { new Guid("c60c5532-b2c4-495b-b380-1d8bff0c1c83"), "fl oz", new Guid("4399cba0-f503-4655-9525-b20af8282ae1"), "fluid ounce", 29.5735f },
-                    { new Guid("c919925b-fb3f-42c3-958e-8cdcccf1318e"), "tsp", new Guid("4399cba0-f503-4655-9525-b20af8282ae1"), "teaspoon", 4.92892f }
+                    { new Guid("00d5fb84-5e0c-433c-b9e4-e093a5288219"), "ml", new Guid("a0030cd4-d6d1-4083-9bc6-7a794b0e6f33"), "milliliter", 1f },
+                    { new Guid("04a9fbfd-c42a-4dfa-a688-09ecfd48a42e"), "lb", new Guid("7c5169c6-02ad-4086-b6c3-512ffa4d5e70"), "pound", 453.592f },
+                    { new Guid("089b9f15-3f03-4a82-994a-91a367f10335"), "oz", new Guid("7c5169c6-02ad-4086-b6c3-512ffa4d5e70"), "ounce", 28.3495f },
+                    { new Guid("280fbb4c-011c-4c97-8f7b-940e7e9f2d9c"), "tbsp", new Guid("a0030cd4-d6d1-4083-9bc6-7a794b0e6f33"), "tablespoon", 14.7868f },
+                    { new Guid("5f5c0b63-3ab0-42c8-b58c-94afcc5e9e54"), "tsp", new Guid("a0030cd4-d6d1-4083-9bc6-7a794b0e6f33"), "teaspoon", 4.92892f },
+                    { new Guid("8043ff17-d152-44cd-a6f5-f96079ae7119"), "gal", new Guid("a0030cd4-d6d1-4083-9bc6-7a794b0e6f33"), "gallon", 3785.41f },
+                    { new Guid("a33ad165-ded1-4a69-9915-47b404b8684b"), "c", new Guid("a0030cd4-d6d1-4083-9bc6-7a794b0e6f33"), "cup", 236.588f },
+                    { new Guid("a9930896-d12e-4b77-9029-3cbeaecabc20"), "g", new Guid("7c5169c6-02ad-4086-b6c3-512ffa4d5e70"), "gram", 1f },
+                    { new Guid("b02f59a9-0b46-4074-b06d-f928ab1f521b"), "kg", new Guid("7c5169c6-02ad-4086-b6c3-512ffa4d5e70"), "kilogram", 1000f },
+                    { new Guid("bad931e5-5546-4c90-8caa-8d9db01a4683"), "pt", new Guid("a0030cd4-d6d1-4083-9bc6-7a794b0e6f33"), "pint", 473.176f },
+                    { new Guid("cf423ef6-8b88-4d63-a0ed-e65455269406"), "fl oz", new Guid("a0030cd4-d6d1-4083-9bc6-7a794b0e6f33"), "fluid ounce", 29.5735f },
+                    { new Guid("f3f5cdf6-563d-4563-bea7-a82128865091"), "qt", new Guid("a0030cd4-d6d1-4083-9bc6-7a794b0e6f33"), "quart", 946.353f },
+                    { new Guid("f985379d-4eba-4eef-b16e-f9ccb3244869"), "l", new Guid("a0030cd4-d6d1-4083-9bc6-7a794b0e6f33"), "liter", 1000f }
                 });
 
             migrationBuilder.CreateIndex(

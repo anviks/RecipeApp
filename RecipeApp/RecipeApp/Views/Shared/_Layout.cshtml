@@ -45,6 +45,7 @@
                             <li><a class="dropdown-item" asp-area="Admin" asp-controller="Unit" asp-action="Index">Units</a></li>
                         </ul>
                     </li>
+                    <partial name="_LanguageSelectionPartial"/>
                 </ul>
                 <partial name="_LoginPartial"/>
             </div>
@@ -59,7 +60,7 @@
 
 <footer class="border-top footer text-muted">
     <div class="container">
-        &copy; 2024 - RecipeApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        &copy; 2024 - RecipeApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> | @Thread.CurrentThread.CurrentCulture.Name | @Thread.CurrentThread.CurrentUICulture.Name
     </div>
 </footer>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>

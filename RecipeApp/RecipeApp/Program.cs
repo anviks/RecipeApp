@@ -1,10 +1,13 @@
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using App.Contracts.DAL;
 using App.DAL.EF;
 using App.Domain.Identity;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using RecipeApp;
 
@@ -27,30 +30,56 @@ builder.Services
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
-// // clear default claims
-// JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-// builder.Services
-//     .AddAuthentication()
-//     .AddCookie(options => { options.SlidingExpiration = true; })
-//     .AddJwtBearer(options =>
-//     {
-//         options.RequireHttpsMetadata = false;
-//         options.SaveToken = false;
-//         options.TokenValidationParameters = new TokenValidationParameters()
-//         {
-//             ValidIssuer = builder.Configuration.GetValue<string>("JWT:issuer"),
-//             ValidAudience = builder.Configuration.GetValue<string>("JWT:audience"),
-//             IssuerSigningKey =
-//                 new SymmetricSecurityKey(
-//                     Encoding.UTF8.GetBytes(
-//                         builder.Configuration.GetValue<string>("JWT:issuer")
-//                     )
-//                 ),
-//             ClockSkew = TimeSpan.Zero,
-//         };
-//     });
+// clear default claims
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+builder.Services
+    .AddAuthentication()
+    .AddCookie(options => { options.SlidingExpiration = true; })
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = false;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidIssuer = builder.Configuration.GetValue<string>("JWT:issuer"),
+            ValidAudience = builder.Configuration.GetValue<string>("JWT:audience"),
+            IssuerSigningKey =
+                new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(
+                        builder.Configuration.GetValue<string>("JWT:key")!
+                    )
+                ),
+            ClockSkew = TimeSpan.Zero
+        };
+    });
 
 builder.Services.AddControllersWithViews();
+
+var supportedCultures = builder.Configuration
+    .GetSection("SupportedCultures")
+    .GetChildren()
+    .Select(conf => new CultureInfo(conf.Value!))
+    .ToArray();
+
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    // datetime and currency support
+    options.SupportedCultures = supportedCultures;
+    // UI translated strings
+    options.SupportedUICultures = supportedCultures;
+    // if nothing is found, use this
+    options.DefaultRequestCulture = new RequestCulture(
+        builder.Configuration["DefaultCulture"]!, 
+        builder.Configuration["DefaultCulture"]!);
+    options.SetDefaultCulture(builder.Configuration["DefaultCulture"]!);
+
+    options.RequestCultureProviders = new List<IRequestCultureProvider>
+    {
+        // Order is important, it's in which order they will be evaluated
+        new QueryStringRequestCultureProvider(),
+        new CookieRequestCultureProvider()
+    };
+});
 
 // ===================================================
 WebApplication app = builder.Build();
@@ -75,17 +104,17 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseRequestLocalization(options: app.Services.GetService<IOptions<RequestLocalizationOptions>>()?.Value!);
+
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "area",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
 
 app.MapRazorPages();
 
