@@ -73,19 +73,14 @@ namespace RecipeApp.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
-            [StringLength(64, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.",
+            [StringLength(64, 
+                ErrorMessageResourceType = typeof(Base.Resources.ValidationErrors), 
+                ErrorMessageResourceName = "StringLengthBetween",
                 MinimumLength = 3)]
-            [RegularExpression("^(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$", ErrorMessage = """
-                Invalid username format. Usernames must meet the following criteria:
-
-                <ul>
-                    <li>Start with a letter or digit.</li>
-                    <li>Can contain letters, digits, periods (.), or underscores (_).</li>
-                    <li>Cannot have two consecutive periods (.) or underscores (_).</li>
-                    <li>Must end with a letter or digit.</li>
-                </ul>
-                """)]
-            [Display(Name = "Username")]
+            [RegularExpression("^(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$", 
+                ErrorMessageResourceType = typeof(Base.Resources.ValidationErrors), 
+                ErrorMessageResourceName = "UsernameRegex")]
+            [Display(ResourceType = typeof(Base.Resources.Attributes), Name = nameof(Username))]
             public string Username { get; set; }
 
             /// <summary>
@@ -94,7 +89,7 @@ namespace RecipeApp.Areas.Identity.Pages.Account
             /// </summary>
             [Required]
             [EmailAddress]
-            [Display(Name = "Email")]
+            [Display(ResourceType = typeof(Base.Resources.Attributes), Name = nameof(Email))]
             public string Email { get; set; }
 
             /// <summary>
@@ -102,10 +97,10 @@ namespace RecipeApp.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.",
+            [StringLength(100, ErrorMessageResourceType = typeof(Base.Resources.ValidationErrors), ErrorMessageResourceName = "StringLengthBetween",
                 MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Password")]
+            [Display(ResourceType = typeof(Base.Resources.Attributes), Name = nameof(Password))]
             public string Password { get; set; }
 
             /// <summary>
@@ -113,12 +108,11 @@ namespace RecipeApp.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare(nameof(Password), ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(ResourceType = typeof(Base.Resources.Attributes), Name = nameof(ConfirmPassword))]
+            [Compare(nameof(Password), ErrorMessageResourceType = typeof(Base.Resources.ValidationErrors), ErrorMessageResourceName = "ConfirmationPasswordMatch")]
             public string ConfirmPassword { get; set; }
         }
-
-
+        
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;

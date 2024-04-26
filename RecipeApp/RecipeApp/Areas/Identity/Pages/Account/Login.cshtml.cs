@@ -19,19 +19,12 @@ using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace RecipeApp.Areas.Identity.Pages.Account
 {
-    public class LoginModel : PageModel
+    public class LoginModel(
+        SignInManager<AppUser> signInManager,
+        ILogger<LoginModel> logger,
+        UserManager<AppUser> userManager)
+        : PageModel
     {
-        private readonly UserManager<AppUser> _userManager;
-        private readonly SignInManager<AppUser> _signInManager;
-        private readonly ILogger<LoginModel> _logger;
-
-        public LoginModel(SignInManager<AppUser> signInManager, ILogger<LoginModel> logger, UserManager<AppUser> userManager)
-        {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _logger = logger;
-        }
-
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
@@ -99,7 +92,7 @@ namespace RecipeApp.Areas.Identity.Pages.Account
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ExternalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             ReturnUrl = returnUrl;
         }
@@ -108,7 +101,7 @@ namespace RecipeApp.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
 
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ExternalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (!ModelState.IsValid) return Page();
             // This doesn't count login failures towards account lockout
@@ -119,7 +112,7 @@ namespace RecipeApp.Areas.Identity.Pages.Account
 
             if (isEmail)
             {
-                AppUser user = await _userManager.FindByEmailAsync(Input.UsernameOrEmail);
+                AppUser user = await userManager.FindByEmailAsync(Input.UsernameOrEmail);
                 if (user != null) userName = user.UserName ?? string.Empty;
             }
             else
@@ -127,11 +120,11 @@ namespace RecipeApp.Areas.Identity.Pages.Account
                 userName = Input.UsernameOrEmail;
             }
                 
-            SignInResult result = await _signInManager.PasswordSignInAsync(userName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+            SignInResult result = await signInManager.PasswordSignInAsync(userName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
 
             if (result.Succeeded)
             {
-                _logger.LogInformation("User logged in.");
+                logger.LogInformation("User logged in.");
                 return LocalRedirect(returnUrl);
             }
             if (result.RequiresTwoFactor)
@@ -140,7 +133,7 @@ namespace RecipeApp.Areas.Identity.Pages.Account
             }
             if (result.IsLockedOut)
             {
-                _logger.LogWarning("User account locked out.");
+                logger.LogWarning("User account locked out.");
                 return RedirectToPage("./Lockout");
             }
 

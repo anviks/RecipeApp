@@ -7,7 +7,7 @@ dotnet tool update -g dotnet-aspnet-codegenerator
 ```
 
 ```bash
-dotnet ef migrations --project App.DAL.EF --startup-project RecipeApp add initial
+dotnet ef migrations --project App.DAL.EF --startup-project RecipeApp add Initial
 ```
 
 ```bash

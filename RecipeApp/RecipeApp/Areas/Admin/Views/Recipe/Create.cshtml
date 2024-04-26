@@ -13,14 +13,6 @@
         <form asp-action="Create" enctype="multipart/form-data">
             <partial name="_CreateEdit" model="Model"/>
             <div class="form-group">
-                <label asp-for="Recipe.AuthorUserId" class="control-label"></label>
-                <select asp-for="Recipe.AuthorUserId" class="form-control" asp-items="Model.AuthorUserSelectList"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Recipe.UpdatingUserId" class="control-label"></label>
-                <select asp-for="Recipe.UpdatingUserId" class="form-control" asp-items="Model.UpdatingUserSelectList"></select>
-            </div>
-            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary"/>
             </div>
         </form>

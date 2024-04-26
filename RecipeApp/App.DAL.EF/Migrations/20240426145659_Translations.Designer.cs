@@ -3,6 +3,7 @@ using System;
 using App.DAL.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace App.DAL.EF.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240426145659_Translations")]
+    partial class Translations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -222,19 +225,19 @@ namespace App.DAL.EF.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("82644f03-3e38-4b3d-9ceb-1b9a30c833e7"),
+                            Id = new Guid("18b67533-edb6-4d90-b02a-dc3f772e5e16"),
                             Description = "An ingredient that can be measured by volume.",
                             Name = "Volumetric"
                         },
                         new
                         {
-                            Id = new Guid("cdfba50b-da25-4158-a02c-d43958cd6803"),
+                            Id = new Guid("c41dbd19-a9c1-41ca-a752-179e3bb91666"),
                             Description = "An ingredient that can be measured by weight.",
                             Name = "Weighable"
                         },
                         new
                         {
-                            Id = new Guid("ca3db1eb-a2fa-4285-8e9d-790f8d015ff1"),
+                            Id = new Guid("93c2bb0d-11b4-4eff-b2b5-2fdc1898aa3d"),
                             Description = "An ingredient that can be counted.",
                             Name = "Countable"
                         });
@@ -442,105 +445,105 @@ namespace App.DAL.EF.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("5228f545-4f52-405d-9dfe-6992fc26df78"),
+                            Id = new Guid("5241ef40-dc06-4451-b996-46df9fb537cd"),
                             Abbreviation = "g",
-                            IngredientTypeId = new Guid("cdfba50b-da25-4158-a02c-d43958cd6803"),
+                            IngredientTypeId = new Guid("c41dbd19-a9c1-41ca-a752-179e3bb91666"),
                             Name = "gram",
                             UnitMultiplier = 1f
                         },
                         new
                         {
-                            Id = new Guid("a617b85b-09cd-4f9a-8f13-0ccca0d9492e"),
+                            Id = new Guid("f05bc460-5704-4302-925c-38902b1ee5ec"),
                             Abbreviation = "kg",
-                            IngredientTypeId = new Guid("cdfba50b-da25-4158-a02c-d43958cd6803"),
+                            IngredientTypeId = new Guid("c41dbd19-a9c1-41ca-a752-179e3bb91666"),
                             Name = "kilogram",
                             UnitMultiplier = 1000f
                         },
                         new
                         {
-                            Id = new Guid("2ca62cde-1eb2-47a8-99a9-57228724038e"),
+                            Id = new Guid("def50c38-9eaa-472b-876d-cce8cf987e21"),
                             Abbreviation = "oz",
-                            IngredientTypeId = new Guid("cdfba50b-da25-4158-a02c-d43958cd6803"),
+                            IngredientTypeId = new Guid("c41dbd19-a9c1-41ca-a752-179e3bb91666"),
                             Name = "ounce",
                             UnitMultiplier = 28.3495f
                         },
                         new
                         {
-                            Id = new Guid("fda1cebf-b7ef-476d-bf10-bc6648709911"),
+                            Id = new Guid("39c7a527-d49c-4502-8747-2e1b351420d0"),
                             Abbreviation = "lb",
-                            IngredientTypeId = new Guid("cdfba50b-da25-4158-a02c-d43958cd6803"),
+                            IngredientTypeId = new Guid("c41dbd19-a9c1-41ca-a752-179e3bb91666"),
                             Name = "pound",
                             UnitMultiplier = 453.592f
                         },
                         new
                         {
-                            Id = new Guid("3559d31c-3d4c-4ad1-be9a-81857a32d24f"),
+                            Id = new Guid("9a5b74d4-ff3a-4f20-8aad-9364285df827"),
                             Abbreviation = "ml",
-                            IngredientTypeId = new Guid("82644f03-3e38-4b3d-9ceb-1b9a30c833e7"),
+                            IngredientTypeId = new Guid("18b67533-edb6-4d90-b02a-dc3f772e5e16"),
                             Name = "milliliter",
                             UnitMultiplier = 1f
                         },
                         new
                         {
-                            Id = new Guid("c894e555-750d-4bae-ae4f-c90fdd4266c7"),
+                            Id = new Guid("6e0c9c3a-451d-4bc4-8945-d72287dcc37b"),
                             Abbreviation = "l",
-                            IngredientTypeId = new Guid("82644f03-3e38-4b3d-9ceb-1b9a30c833e7"),
+                            IngredientTypeId = new Guid("18b67533-edb6-4d90-b02a-dc3f772e5e16"),
                             Name = "liter",
                             UnitMultiplier = 1000f
                         },
                         new
                         {
-                            Id = new Guid("cfb49829-10cb-4084-8352-7de8fccad535"),
+                            Id = new Guid("baf58e9e-e27a-49e5-8091-11aeb9c69acf"),
                             Abbreviation = "fl oz",
-                            IngredientTypeId = new Guid("82644f03-3e38-4b3d-9ceb-1b9a30c833e7"),
+                            IngredientTypeId = new Guid("18b67533-edb6-4d90-b02a-dc3f772e5e16"),
                             Name = "fluid ounce",
                             UnitMultiplier = 29.5735f
                         },
                         new
                         {
-                            Id = new Guid("685976ea-0f26-4a1c-926f-67fc416d980b"),
+                            Id = new Guid("bf23b109-3e8e-4ca1-8a48-f1604f3ac56e"),
                             Abbreviation = "c",
-                            IngredientTypeId = new Guid("82644f03-3e38-4b3d-9ceb-1b9a30c833e7"),
+                            IngredientTypeId = new Guid("18b67533-edb6-4d90-b02a-dc3f772e5e16"),
                             Name = "cup",
                             UnitMultiplier = 236.588f
                         },
                         new
                         {
-                            Id = new Guid("40fec259-177e-40db-80b7-7cf8e46737bb"),
+                            Id = new Guid("05666ad7-9824-4a7f-bd58-44bb25e40792"),
                             Abbreviation = "pt",
-                            IngredientTypeId = new Guid("82644f03-3e38-4b3d-9ceb-1b9a30c833e7"),
+                            IngredientTypeId = new Guid("18b67533-edb6-4d90-b02a-dc3f772e5e16"),
                             Name = "pint",
                             UnitMultiplier = 473.176f
                         },
                         new
                         {
-                            Id = new Guid("5001fde0-395a-49e7-bc87-b078bfcfcc6a"),
+                            Id = new Guid("ed9748c0-e38a-4172-8f9b-f4586feef92d"),
                             Abbreviation = "qt",
-                            IngredientTypeId = new Guid("82644f03-3e38-4b3d-9ceb-1b9a30c833e7"),
+                            IngredientTypeId = new Guid("18b67533-edb6-4d90-b02a-dc3f772e5e16"),
                             Name = "quart",
                             UnitMultiplier = 946.353f
                         },
                         new
                         {
-                            Id = new Guid("29c63c42-4a20-439e-bfb0-d97d22ad6188"),
+                            Id = new Guid("8900a741-f031-45bc-aa25-a84e30778ca7"),
                             Abbreviation = "gal",
-                            IngredientTypeId = new Guid("82644f03-3e38-4b3d-9ceb-1b9a30c833e7"),
+                            IngredientTypeId = new Guid("18b67533-edb6-4d90-b02a-dc3f772e5e16"),
                             Name = "gallon",
                             UnitMultiplier = 3785.41f
                         },
                         new
                         {
-                            Id = new Guid("64bab0b6-0ea2-4b12-a50e-6305467ac082"),
+                            Id = new Guid("e9c3feb9-8385-4deb-92e8-b8cb417a0b56"),
                             Abbreviation = "tsp",
-                            IngredientTypeId = new Guid("82644f03-3e38-4b3d-9ceb-1b9a30c833e7"),
+                            IngredientTypeId = new Guid("18b67533-edb6-4d90-b02a-dc3f772e5e16"),
                             Name = "teaspoon",
                             UnitMultiplier = 4.92892f
                         },
                         new
                         {
-                            Id = new Guid("9945ffa4-33f2-4197-b69d-a7928b8dc1ff"),
+                            Id = new Guid("be3be443-5fe2-4520-a1aa-e7a8547dbe5c"),
                             Abbreviation = "tbsp",
-                            IngredientTypeId = new Guid("82644f03-3e38-4b3d-9ceb-1b9a30c833e7"),
+                            IngredientTypeId = new Guid("18b67533-edb6-4d90-b02a-dc3f772e5e16"),
                             Name = "tablespoon",
                             UnitMultiplier = 14.7868f
                         });

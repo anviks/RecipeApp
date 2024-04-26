@@ -1,0 +1,53 @@
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="Title" xml:space="preserve">
+        <value>Název receptu</value>
+    </data>
+    <data name="Description" xml:space="preserve">
+        <value>Popis</value>
+    </data>
+    <data name="Instructions" xml:space="preserve">
+        <value>Instrukce</value>
+    </data>
+    <data name="PreparationTime" xml:space="preserve">
+        <value>Čas na přípravu</value>
+    </data>
+    <data name="CookingTime" xml:space="preserve">
+        <value>Čas na vaření</value>
+    </data>
+    <data name="Servings" xml:space="preserve">
+        <value>Porce</value>
+    </data>
+    <data name="UpdatingUser" xml:space="preserve">
+        <value>Aktualizoval(a)</value>
+    </data>
+    <data name="UpdatedAt" xml:space="preserve">
+        <value>Aktualizováno</value>
+    </data>
+    <data name="AuthorUser" xml:space="preserve">
+        <value>Autor</value>
+    </data>
+    <data name="CreatedAt" xml:space="preserve">
+        <value>Vytvořeno</value>
+    </data>
+    <data name="IsGlutenFree" xml:space="preserve">
+        <value>Bezlepkový</value>
+    </data>
+    <data name="IsVegan" xml:space="preserve">
+        <value>Veganské</value>
+    </data>
+    <data name="IsVegetarian" xml:space="preserve">
+        <value>Vegetariánské</value>
+    </data>
+</root>

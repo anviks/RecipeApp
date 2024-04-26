@@ -14,5 +14,6 @@ public class RecipeCreateEditViewModel
     public SelectList? UpdatingUserSelectList { get; set; }
     [FileSize(0, 10 * 1024 * 1024)]
     [AllowedExtensions([".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".svg"])]
-    public IFormFile RecipeImage { get; set; } = default!;
+    // [Required]
+    public IFormFile? RecipeImage { get; set; } = default!;
 }
