@@ -1,4 +1,4 @@
-using System.Configuration;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
@@ -13,12 +13,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
-using TokenResponse = App.DTO.v1_0.Identity.TokenResponse;
 
 namespace RecipeApp.ApiControllers.Identity;
 
 [ApiController]
-[Route("api/identity/[controller]/[action]")]
+[Route("/api/identity/[controller]/[action]")]
 public class AccountController(
     UserManager<AppUser> userManager,
     ILogger<AccountController> logger,
@@ -28,7 +27,7 @@ public class AccountController(
 ) : ControllerBase
 {
     [HttpPost]
-    public async Task<ActionResult<TokenResponse>> Register(
+    public async Task<ActionResult<LoginResponse>> Register(
         [FromBody] RegisterRequest request,
         [FromQuery] int expiresInSeconds)
     {
@@ -97,7 +96,7 @@ public class AccountController(
             );
         }
 
-        return Ok(new TokenResponse
+        return Ok(new LoginResponse
         {
             JsonWebToken = await CreateJwt(user, expiresInSeconds),
             RefreshToken = refreshToken.RefreshToken,
@@ -105,7 +104,7 @@ public class AccountController(
     }
 
     [HttpPost]
-    public async Task<ActionResult<TokenResponse>> Login(
+    public async Task<ActionResult<LoginResponse>> Login(
         [FromBody] LoginRequest loginRequest,
         [FromQuery] int expiresInSeconds
     )
@@ -113,28 +112,21 @@ public class AccountController(
         expiresInSeconds = GetValidExpiration(expiresInSeconds);
 
         AppUser? user;
+        
+        var emailValidator = new EmailAddressAttribute();
+        var isEmail = emailValidator.IsValid(loginRequest.UsernameOrEmail);
 
-        if (loginRequest.Email != null)
+        if (isEmail)
         {
-            user = await userManager.FindByEmailAsync(loginRequest.Email);
+            user = await userManager.FindByEmailAsync(loginRequest.UsernameOrEmail);
             if (user == null)
-                logger.LogWarning("{User} with email {Email} not found", nameof(AppUser), loginRequest.Email);
-        }
-        else if (loginRequest.Username != null)
-        {
-            user = await userManager.FindByNameAsync(loginRequest.Username);
-            if (user == null)
-                logger.LogWarning("{User} with username {Username} not found", nameof(AppUser), loginRequest.Username);
+                logger.LogWarning("{User} with email {Email} not found", nameof(AppUser), loginRequest.UsernameOrEmail);
         }
         else
         {
-            // TODO: random delay
-            return BadRequest(
-                new RestApiErrorResponse
-                {
-                    Status = HttpStatusCode.BadRequest,
-                    Error = "Invalid login attempt"
-                });
+            user = await userManager.FindByNameAsync(loginRequest.UsernameOrEmail);
+            if (user == null)
+                logger.LogWarning("{User} with username {Username} not found", nameof(AppUser), loginRequest.UsernameOrEmail);
         }
 
         if (user == null)
@@ -171,28 +163,22 @@ public class AccountController(
         context.RefreshTokens.Add(refreshToken);
         await context.SaveChangesAsync();
 
-        return Ok(new TokenResponse
+        return Ok(new LoginResponse
         {
             JsonWebToken = await CreateJwt(user, expiresInSeconds),
-            RefreshToken = refreshToken.RefreshToken
+            RefreshToken = refreshToken.RefreshToken,
+            Username = user.UserName!,
+            Email = user.Email!
         });
     }
 
     [HttpPost]
-    public async Task<ActionResult<TokenResponse>> RefreshToken(
+    public async Task<ActionResult<LoginResponse>> RefreshToken(
         [FromBody] RefreshTokenRequest request,
         [FromQuery] int expiresInSeconds
     )
     {
-        expiresInSeconds = GetValidExpiration(expiresInSeconds);
-
-        // extract jwt object
-        JwtSecurityToken securityToken;
-        try
-        {
-            securityToken = new JwtSecurityTokenHandler().ReadJwtToken(request.JsonWebToken);
-        }
-        catch
+        if (request.JsonWebToken == null)
         {
             return BadRequest(
                 new RestApiErrorResponse
@@ -202,6 +188,10 @@ public class AccountController(
                 }
             );
         }
+        
+        // extract jwt object
+        JwtSecurityToken securityToken = new JwtSecurityTokenHandler().ReadJwtToken(request.JsonWebToken);
+        expiresInSeconds = GetValidExpiration(expiresInSeconds);
 
         // validate jwt, ignore expiration date
         if (!IdentityHelpers.IsJwtValid(
@@ -277,7 +267,7 @@ public class AccountController(
             await context.SaveChangesAsync();
         }
 
-        return Ok(new TokenResponse
+        return Ok(new LoginResponse
         {
             JsonWebToken = await CreateJwt(user, expiresInSeconds),
             RefreshToken = userRefreshToken.RefreshToken

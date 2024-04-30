@@ -15,7 +15,7 @@ namespace RecipeApp.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Roles = "Admin")]
-public class RecipeController(
+public class RecipesController(
     IAppUnitOfWork unitOfWork,
     IWebHostEnvironment environment,
     UserManager<AppUser> userManager

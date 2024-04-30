@@ -9,22 +9,15 @@ namespace RecipeApp.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Roles = "Admin")]
-public class CategoryController : Controller
+public class IngredientTypesController(IAppUnitOfWork unitOfWork) : Controller
 {
-    private readonly IAppUnitOfWork _unitOfWork;
-
-    public CategoryController(IAppUnitOfWork unitOfWork)
-    {
-        _unitOfWork = unitOfWork;
-    }
-
-    // GET: Category
+    // GET: IngredientType
     public async Task<IActionResult> Index()
     {
-        return View(await _unitOfWork.Categories.FindAllAsync());
+        return View(await unitOfWork.IngredientTypes.FindAllAsync());
     }
 
-    // GET: Category/Details/5
+    // GET: IngredientType/Details/5
     public async Task<IActionResult> Details(Guid? id)
     {
         if (id == null)
@@ -32,37 +25,37 @@ public class CategoryController : Controller
             return NotFound();
         }
 
-        Category? category = await _unitOfWork.Categories.FindAsync(id.Value);
-        if (category == null)
+        IngredientType? ingredientType = await unitOfWork.IngredientTypes.FindAsync(id.Value);
+        if (ingredientType == null)
         {
             return NotFound();
         }
 
-        return View(category);
+        return View(ingredientType);
     }
 
-    // GET: Category/Create
+    // GET: IngredientType/Create
     public IActionResult Create()
     {
         return View();
     }
 
-    // POST: Category/Create
+    // POST: IngredientType/Create
     // To protect from overposting attacks, enable the specific properties you want to bind to.
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Name,Description,BroadnessIndex,Id")] Category category)
+    public async Task<IActionResult> Create([Bind("Name,Description,Id")] IngredientType ingredientType)
     {
-        if (!ModelState.IsValid) return View(category);
+        if (!ModelState.IsValid) return View(ingredientType);
         
-        category.Id = Guid.NewGuid();
-        _unitOfWork.Categories.Add(category);
-        await _unitOfWork.SaveChangesAsync();
+        ingredientType.Id = Guid.NewGuid();
+        unitOfWork.IngredientTypes.Add(ingredientType);
+        await unitOfWork.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 
-    // GET: Category/Edit/5
+    // GET: IngredientType/Edit/5
     public async Task<IActionResult> Edit(Guid? id)
     {
         if (id == null)
@@ -70,36 +63,35 @@ public class CategoryController : Controller
             return NotFound();
         }
 
-        Category? category = await _unitOfWork.Categories.FindAsync(id.Value);
-        if (category == null)
+        IngredientType? ingredientType = await unitOfWork.IngredientTypes.FindAsync(id.Value);
+        if (ingredientType == null)
         {
             return NotFound();
         }
-        return View(category);
+        return View(ingredientType);
     }
 
-    // POST: Category/Edit/5
+    // POST: IngredientType/Edit/5
     // To protect from overposting attacks, enable the specific properties you want to bind to.
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(Guid id, [Bind("Name,Description,BroadnessIndex,Id")] Category category)
+    public async Task<IActionResult> Edit(Guid id, [Bind("Name,Description,Id")] IngredientType ingredientType)
     {
-        if (id != category.Id)
+        if (id != ingredientType.Id)
         {
             return NotFound();
         }
 
-        if (!ModelState.IsValid) return View(category);
-        
+        if (!ModelState.IsValid) return View(ingredientType);
         try
         {
-            _unitOfWork.Categories.Update(category);
-            await _unitOfWork.SaveChangesAsync();
+            unitOfWork.IngredientTypes.Update(ingredientType);
+            await unitOfWork.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!await _unitOfWork.Categories.ExistsAsync(category.Id))
+            if (!await unitOfWork.IngredientTypes.ExistsAsync(ingredientType.Id))
             {
                 return NotFound();
             }
@@ -109,7 +101,7 @@ public class CategoryController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // GET: Category/Delete/5
+    // GET: IngredientType/Delete/5
     public async Task<IActionResult> Delete(Guid? id)
     {
         if (id == null)
@@ -117,27 +109,27 @@ public class CategoryController : Controller
             return NotFound();
         }
 
-        Category? category = await _unitOfWork.Categories.FindAsync(id.Value);
-        if (category == null)
+        IngredientType? ingredientType = await unitOfWork.IngredientTypes.FindAsync(id.Value);
+        if (ingredientType == null)
         {
             return NotFound();
         }
 
-        return View(category);
+        return View(ingredientType);
     }
 
-    // POST: Category/Delete/5
+    // POST: IngredientType/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        Category? category = await _unitOfWork.Categories.FindAsync(id);
-        if (category != null)
+        IngredientType? ingredientType = await unitOfWork.IngredientTypes.FindAsync(id);
+        if (ingredientType != null)
         {
-            await _unitOfWork.Categories.RemoveAsync(category);
+            await unitOfWork.IngredientTypes.RemoveAsync(ingredientType);
         }
 
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 }

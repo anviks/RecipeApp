@@ -9,19 +9,12 @@ namespace RecipeApp.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Roles = "Admin")]
-public class UnitController : Controller
+public class UnitsController(IAppUnitOfWork unitOfWork) : Controller
 {
-    private readonly IAppUnitOfWork _unitOfWork;
-
-    public UnitController(IAppUnitOfWork unitOfWork)
-    {
-        _unitOfWork = unitOfWork;
-    }
-
     // GET: Unit
     public async Task<IActionResult> Index()
     {
-        return View(await _unitOfWork.Units.FindAllAsync());
+        return View(await unitOfWork.Units.FindAllAsync());
     }
 
     // GET: Unit/Details/5
@@ -32,7 +25,7 @@ public class UnitController : Controller
             return NotFound();
         }
 
-        Unit? unit = await _unitOfWork.Units.FindAsync(id.Value);
+        Unit? unit = await unitOfWork.Units.FindAsync(id.Value);
         if (unit == null)
         {
             return NotFound();
@@ -44,7 +37,7 @@ public class UnitController : Controller
     // GET: Unit/Create
     public IActionResult Create()
     {
-        ViewData["IngredientTypeId"] = new SelectList(_unitOfWork.IngredientTypes.FindAll(), "Id", "Description");
+        ViewData["IngredientTypeId"] = new SelectList(unitOfWork.IngredientTypes.FindAll(), "Id", "Description");
         return View();
     }
 
@@ -58,11 +51,11 @@ public class UnitController : Controller
         if (ModelState.IsValid)
         {
             unit.Id = Guid.NewGuid();
-            _unitOfWork.Units.Add(unit);
-            await _unitOfWork.SaveChangesAsync();
+            unitOfWork.Units.Add(unit);
+            await unitOfWork.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        ViewData["IngredientTypeId"] = new SelectList(await _unitOfWork.IngredientTypes.FindAllAsync(), "Id", "Description", unit.IngredientTypeId);
+        ViewData["IngredientTypeId"] = new SelectList(await unitOfWork.IngredientTypes.FindAllAsync(), "Id", "Description", unit.IngredientTypeId);
         return View(unit);
     }
 
@@ -74,12 +67,12 @@ public class UnitController : Controller
             return NotFound();
         }
 
-        Unit? unit = await _unitOfWork.Units.FindAsync(id.Value);
+        Unit? unit = await unitOfWork.Units.FindAsync(id.Value);
         if (unit == null)
         {
             return NotFound();
         }
-        ViewData["IngredientTypeId"] = new SelectList(await _unitOfWork.IngredientTypes.FindAllAsync(), "Id", "Description", unit.IngredientTypeId);
+        ViewData["IngredientTypeId"] = new SelectList(await unitOfWork.IngredientTypes.FindAllAsync(), "Id", "Description", unit.IngredientTypeId);
         return View(unit);
     }
 
@@ -99,12 +92,12 @@ public class UnitController : Controller
         {
             try
             {
-                _unitOfWork.Units.Update(unit);
-                await _unitOfWork.SaveChangesAsync();
+                unitOfWork.Units.Update(unit);
+                await unitOfWork.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await _unitOfWork.Units.ExistsAsync(unit.Id))
+                if (!await unitOfWork.Units.ExistsAsync(unit.Id))
                 {
                     return NotFound();
                 }
@@ -113,7 +106,7 @@ public class UnitController : Controller
             }
             return RedirectToAction(nameof(Index));
         }
-        ViewData["IngredientTypeId"] = new SelectList(await _unitOfWork.IngredientTypes.FindAllAsync(), "Id", "Description", unit.IngredientTypeId);
+        ViewData["IngredientTypeId"] = new SelectList(await unitOfWork.IngredientTypes.FindAllAsync(), "Id", "Description", unit.IngredientTypeId);
         return View(unit);
     }
 
@@ -125,7 +118,7 @@ public class UnitController : Controller
             return NotFound();
         }
 
-        Unit? unit = await _unitOfWork.Units.FindAsync(id.Value);
+        Unit? unit = await unitOfWork.Units.FindAsync(id.Value);
         if (unit == null)
         {
             return NotFound();
@@ -139,13 +132,13 @@ public class UnitController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        Unit? unit = await _unitOfWork.Units.FindAsync(id);
+        Unit? unit = await unitOfWork.Units.FindAsync(id);
         if (unit != null)
         {
-            await _unitOfWork.Units.RemoveAsync(unit);
+            await unitOfWork.Units.RemoveAsync(unit);
         }
 
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 }

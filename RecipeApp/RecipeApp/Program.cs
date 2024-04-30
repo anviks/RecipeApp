@@ -61,6 +61,18 @@ var supportedCultures = builder.Configuration
     .Select(conf => new CultureInfo(conf.Value!))
     .ToArray();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost",
+        policyBuilder =>
+        {
+            policyBuilder
+                .WithOrigins("http://localhost:3000", "https://localhost:3000")
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
+});
+
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
     // datetime and currency support
@@ -69,7 +81,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.SupportedUICultures = supportedCultures;
     // if nothing is found, use this
     options.DefaultRequestCulture = new RequestCulture(
-        builder.Configuration["DefaultCulture"]!, 
+        builder.Configuration["DefaultCulture"]!,
         builder.Configuration["DefaultCulture"]!);
     options.SetDefaultCulture(builder.Configuration["DefaultCulture"]!);
 
@@ -117,5 +129,7 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
+
+app.UseCors("AllowLocalhost");
 
 app.Run();

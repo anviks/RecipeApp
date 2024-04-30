@@ -11,19 +11,12 @@ namespace RecipeApp.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Roles = "Admin")]
-public class IngredientTypeAssociationController : Controller
+public class IngredientTypeAssociationsController(IAppUnitOfWork unitOfWork) : Controller
 {
-    private readonly IAppUnitOfWork _unitOfWork;
-
-    public IngredientTypeAssociationController(IAppUnitOfWork unitOfWork)
-    {
-        _unitOfWork = unitOfWork;
-    }
-
     // GET: IngredientTypeAssociation
     public async Task<IActionResult> Index()
     {
-        return View(await _unitOfWork.IngredientTypeAssociations.FindAllAsync());
+        return View(await unitOfWork.IngredientTypeAssociations.FindAllAsync());
     }
 
     // GET: IngredientTypeAssociation/Details/5
@@ -35,7 +28,7 @@ public class IngredientTypeAssociationController : Controller
         }
 
         IngredientTypeAssociation? ingredientTypeAssociation =
-            await _unitOfWork.IngredientTypeAssociations.FindAsync(id.Value);
+            await unitOfWork.IngredientTypeAssociations.FindAsync(id.Value);
         if (ingredientTypeAssociation == null)
         {
             return NotFound();
@@ -49,9 +42,9 @@ public class IngredientTypeAssociationController : Controller
     {
         var viewModel = new IngredientTypeAssociationCreateEditViewModel
         {
-            IngredientSelectList = new SelectList(_unitOfWork.Ingredients.FindAll(), nameof(Ingredient.Id),
+            IngredientSelectList = new SelectList(unitOfWork.Ingredients.FindAll(), nameof(Ingredient.Id),
                 nameof(Ingredient.Name)),
-            IngredientTypeSelectList = new SelectList(_unitOfWork.IngredientTypes.FindAll(), nameof(IngredientType.Id),
+            IngredientTypeSelectList = new SelectList(unitOfWork.IngredientTypes.FindAll(), nameof(IngredientType.Id),
                 nameof(IngredientType.Description))
         };
         return View(viewModel);
@@ -66,14 +59,14 @@ public class IngredientTypeAssociationController : Controller
     {
         if (ModelState.IsValid)
         {
-            _unitOfWork.IngredientTypeAssociations.Add(viewModel.IngredientTypeAssociation);
-            await _unitOfWork.SaveChangesAsync();
+            unitOfWork.IngredientTypeAssociations.Add(viewModel.IngredientTypeAssociation);
+            await unitOfWork.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        viewModel.IngredientSelectList = new SelectList(await _unitOfWork.Ingredients.FindAllAsync(),
+        viewModel.IngredientSelectList = new SelectList(await unitOfWork.Ingredients.FindAllAsync(),
             nameof(Ingredient.Id), nameof(Ingredient.Name), viewModel.IngredientTypeAssociation.IngredientId);
-        viewModel.IngredientTypeSelectList = new SelectList(await _unitOfWork.IngredientTypes.FindAllAsync(),
+        viewModel.IngredientTypeSelectList = new SelectList(await unitOfWork.IngredientTypes.FindAllAsync(),
             nameof(IngredientType.Id), nameof(IngredientType.Description),
             viewModel.IngredientTypeAssociation.IngredientTypeId);
         return View(viewModel);
@@ -88,7 +81,7 @@ public class IngredientTypeAssociationController : Controller
         }
 
         IngredientTypeAssociation? ingredientTypeAssociation =
-            await _unitOfWork.IngredientTypeAssociations.FindAsync(id.Value);
+            await unitOfWork.IngredientTypeAssociations.FindAsync(id.Value);
         if (ingredientTypeAssociation == null)
         {
             return NotFound();
@@ -97,9 +90,9 @@ public class IngredientTypeAssociationController : Controller
         var viewModel = new IngredientTypeAssociationCreateEditViewModel
         {
             IngredientTypeAssociation = ingredientTypeAssociation,
-            IngredientSelectList = new SelectList(await _unitOfWork.Ingredients.FindAllAsync(), nameof(Ingredient.Id),
+            IngredientSelectList = new SelectList(await unitOfWork.Ingredients.FindAllAsync(), nameof(Ingredient.Id),
                 nameof(Ingredient.Name), ingredientTypeAssociation.IngredientId),
-            IngredientTypeSelectList = new SelectList(await _unitOfWork.IngredientTypes.FindAllAsync(),
+            IngredientTypeSelectList = new SelectList(await unitOfWork.IngredientTypes.FindAllAsync(),
                 nameof(IngredientType.Id), nameof(IngredientType.Description),
                 ingredientTypeAssociation.IngredientTypeId)
         };
@@ -123,12 +116,12 @@ public class IngredientTypeAssociationController : Controller
         {
             try
             {
-                _unitOfWork.IngredientTypeAssociations.Update(viewModel.IngredientTypeAssociation);
-                await _unitOfWork.SaveChangesAsync();
+                unitOfWork.IngredientTypeAssociations.Update(viewModel.IngredientTypeAssociation);
+                await unitOfWork.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await _unitOfWork.IngredientTypeAssociations.ExistsAsync(id))
+                if (!await unitOfWork.IngredientTypeAssociations.ExistsAsync(id))
                 {
                     return NotFound();
                 }
@@ -139,11 +132,11 @@ public class IngredientTypeAssociationController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        viewModel.IngredientSelectList = new SelectList(await _unitOfWork.Ingredients.FindAllAsync(), 
+        viewModel.IngredientSelectList = new SelectList(await unitOfWork.Ingredients.FindAllAsync(), 
             nameof(Ingredient.Id), 
             nameof(Ingredient.Name), 
             viewModel.IngredientTypeAssociation.IngredientId);
-        viewModel.IngredientTypeSelectList = new SelectList(await _unitOfWork.IngredientTypes.FindAllAsync(), 
+        viewModel.IngredientTypeSelectList = new SelectList(await unitOfWork.IngredientTypes.FindAllAsync(), 
             nameof(IngredientType.Id), 
             nameof(IngredientType.Description), 
             viewModel.IngredientTypeAssociation.IngredientTypeId);
@@ -160,7 +153,7 @@ public class IngredientTypeAssociationController : Controller
         }
 
         IngredientTypeAssociation? ingredientTypeAssociation =
-            await _unitOfWork.IngredientTypeAssociations.FindAsync(id.Value);
+            await unitOfWork.IngredientTypeAssociations.FindAsync(id.Value);
         if (ingredientTypeAssociation == null)
         {
             return NotFound();
@@ -175,13 +168,13 @@ public class IngredientTypeAssociationController : Controller
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
         IngredientTypeAssociation? ingredientTypeAssociation =
-            await _unitOfWork.IngredientTypeAssociations.FindAsync(id);
+            await unitOfWork.IngredientTypeAssociations.FindAsync(id);
         if (ingredientTypeAssociation != null)
         {
-            await _unitOfWork.IngredientTypeAssociations.RemoveAsync(ingredientTypeAssociation);
+            await unitOfWork.IngredientTypeAssociations.RemoveAsync(ingredientTypeAssociation);
         }
 
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 }

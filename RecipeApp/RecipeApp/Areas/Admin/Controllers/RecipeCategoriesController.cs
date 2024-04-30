@@ -10,19 +10,12 @@ namespace RecipeApp.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Roles = "Admin")]
-public class RecipeCategoryController : Controller
+public class RecipeCategoriesController(IAppUnitOfWork unitOfWork) : Controller
 {
-    private readonly IAppUnitOfWork _unitOfWork;
-
-    public RecipeCategoryController(IAppUnitOfWork unitOfWork)
-    {
-        _unitOfWork = unitOfWork;
-    }
-
     // GET: RecipeCategory
     public async Task<IActionResult> Index()
     {
-        return View(await _unitOfWork.RecipeCategories.FindAllAsync());
+        return View(await unitOfWork.RecipeCategories.FindAllAsync());
     }
 
     // GET: RecipeCategory/Details/5
@@ -33,7 +26,7 @@ public class RecipeCategoryController : Controller
             return NotFound();
         }
 
-        RecipeCategory? recipeCategory = await _unitOfWork.RecipeCategories.FindAsync(id.Value);
+        RecipeCategory? recipeCategory = await unitOfWork.RecipeCategories.FindAsync(id.Value);
         if (recipeCategory == null)
         {
             return NotFound();
@@ -45,8 +38,8 @@ public class RecipeCategoryController : Controller
     // GET: RecipeCategory/Create
     public IActionResult Create()
     {
-        ViewData["CategoryId"] = new SelectList(_unitOfWork.Categories.FindAll(), "Id", "Name");
-        ViewData["RecipeId"] = new SelectList(_unitOfWork.Recipes.FindAll(), "Id", "Description");
+        ViewData["CategoryId"] = new SelectList(unitOfWork.Categories.FindAll(), "Id", "Name");
+        ViewData["RecipeId"] = new SelectList(unitOfWork.Recipes.FindAll(), "Id", "Description");
         return View();
     }
 
@@ -60,12 +53,12 @@ public class RecipeCategoryController : Controller
         if (ModelState.IsValid)
         {
             recipeCategory.Id = Guid.NewGuid();
-            _unitOfWork.RecipeCategories.Add(recipeCategory);
-            await _unitOfWork.SaveChangesAsync();
+            unitOfWork.RecipeCategories.Add(recipeCategory);
+            await unitOfWork.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        ViewData["CategoryId"] = new SelectList(await _unitOfWork.Categories.FindAllAsync(), "Id", "Name", recipeCategory.CategoryId);
-        ViewData["RecipeId"] = new SelectList(await _unitOfWork.Recipes.FindAllAsync(), "Id", "Description", recipeCategory.RecipeId);
+        ViewData["CategoryId"] = new SelectList(await unitOfWork.Categories.FindAllAsync(), "Id", "Name", recipeCategory.CategoryId);
+        ViewData["RecipeId"] = new SelectList(await unitOfWork.Recipes.FindAllAsync(), "Id", "Description", recipeCategory.RecipeId);
         return View(recipeCategory);
     }
 
@@ -77,13 +70,13 @@ public class RecipeCategoryController : Controller
             return NotFound();
         }
 
-        RecipeCategory? recipeCategory = await _unitOfWork.RecipeCategories.FindAsync(id.Value);
+        RecipeCategory? recipeCategory = await unitOfWork.RecipeCategories.FindAsync(id.Value);
         if (recipeCategory == null)
         {
             return NotFound();
         }
-        ViewData["CategoryId"] = new SelectList(await _unitOfWork.Categories.FindAllAsync(), "Id", "Name", recipeCategory.CategoryId);
-        ViewData["RecipeId"] = new SelectList(await _unitOfWork.Recipes.FindAllAsync(), "Id", "Description", recipeCategory.RecipeId);
+        ViewData["CategoryId"] = new SelectList(await unitOfWork.Categories.FindAllAsync(), "Id", "Name", recipeCategory.CategoryId);
+        ViewData["RecipeId"] = new SelectList(await unitOfWork.Recipes.FindAllAsync(), "Id", "Description", recipeCategory.RecipeId);
         return View(recipeCategory);
     }
 
@@ -103,12 +96,12 @@ public class RecipeCategoryController : Controller
         {
             try
             {
-                _unitOfWork.RecipeCategories.Update(recipeCategory);
-                await _unitOfWork.SaveChangesAsync();
+                unitOfWork.RecipeCategories.Update(recipeCategory);
+                await unitOfWork.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await _unitOfWork.RecipeCategories.ExistsAsync(recipeCategory.Id))
+                if (!await unitOfWork.RecipeCategories.ExistsAsync(recipeCategory.Id))
                 {
                     return NotFound();
                 }
@@ -117,8 +110,8 @@ public class RecipeCategoryController : Controller
             }
             return RedirectToAction(nameof(Index));
         }
-        ViewData["CategoryId"] = new SelectList(await _unitOfWork.Categories.FindAllAsync(), "Id", "Name", recipeCategory.CategoryId);
-        ViewData["RecipeId"] = new SelectList(await _unitOfWork.Recipes.FindAllAsync(), "Id", "Description", recipeCategory.RecipeId);
+        ViewData["CategoryId"] = new SelectList(await unitOfWork.Categories.FindAllAsync(), "Id", "Name", recipeCategory.CategoryId);
+        ViewData["RecipeId"] = new SelectList(await unitOfWork.Recipes.FindAllAsync(), "Id", "Description", recipeCategory.RecipeId);
         return View(recipeCategory);
     }
 
@@ -130,7 +123,7 @@ public class RecipeCategoryController : Controller
             return NotFound();
         }
 
-        RecipeCategory? recipeCategory = await _unitOfWork.RecipeCategories.FindAsync(id.Value);
+        RecipeCategory? recipeCategory = await unitOfWork.RecipeCategories.FindAsync(id.Value);
         if (recipeCategory == null)
         {
             return NotFound();
@@ -144,13 +137,13 @@ public class RecipeCategoryController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        RecipeCategory? recipeCategory = await _unitOfWork.RecipeCategories.FindAsync(id);
+        RecipeCategory? recipeCategory = await unitOfWork.RecipeCategories.FindAsync(id);
         if (recipeCategory != null)
         {
-            await _unitOfWork.RecipeCategories.RemoveAsync(recipeCategory);
+            await unitOfWork.RecipeCategories.RemoveAsync(recipeCategory);
         }
 
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 }

@@ -9,19 +9,12 @@ namespace RecipeApp.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Roles = "Admin")]
-public class ReviewController : Controller
+public class ReviewsController(IAppUnitOfWork unitOfWork) : Controller
 {
-    private readonly IAppUnitOfWork _unitOfWork;
-
-    public ReviewController(IAppUnitOfWork unitOfWork)
-    {
-        _unitOfWork = unitOfWork;
-    }
-
     // GET: Review
     public async Task<IActionResult> Index()
     {
-        return View(await _unitOfWork.Reviews.FindAllAsync());
+        return View(await unitOfWork.Reviews.FindAllAsync());
     }
 
     // GET: Review/Details/5
@@ -32,7 +25,7 @@ public class ReviewController : Controller
             return NotFound();
         }
 
-        Review? review = await _unitOfWork.Reviews.FindAsync(id.Value);
+        Review? review = await unitOfWork.Reviews.FindAsync(id.Value);
         if (review == null)
         {
             return NotFound();
@@ -44,8 +37,8 @@ public class ReviewController : Controller
     // GET: Review/Create
     public IActionResult Create()
     {
-        ViewData["RecipeId"] = new SelectList(_unitOfWork.Recipes.FindAll(), "Id", "Description");
-        ViewData["UserId"] = new SelectList(_unitOfWork.Users.FindAll(), "Id", "FirstName");
+        ViewData["RecipeId"] = new SelectList(unitOfWork.Recipes.FindAll(), "Id", "Description");
+        ViewData["UserId"] = new SelectList(unitOfWork.Users.FindAll(), "Id", "FirstName");
         return View();
     }
 
@@ -59,12 +52,12 @@ public class ReviewController : Controller
         if (ModelState.IsValid)
         {
             review.Id = Guid.NewGuid();
-            _unitOfWork.Reviews.Add(review);
-            await _unitOfWork.SaveChangesAsync();
+            unitOfWork.Reviews.Add(review);
+            await unitOfWork.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        ViewData["RecipeId"] = new SelectList(await _unitOfWork.Recipes.FindAllAsync(), "Id", "Description", review.RecipeId);
-        ViewData["UserId"] = new SelectList(await _unitOfWork.Users.FindAllAsync(), "Id", "FirstName", review.UserId);
+        ViewData["RecipeId"] = new SelectList(await unitOfWork.Recipes.FindAllAsync(), "Id", "Description", review.RecipeId);
+        ViewData["UserId"] = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "FirstName", review.UserId);
         return View(review);
     }
 
@@ -76,13 +69,13 @@ public class ReviewController : Controller
             return NotFound();
         }
 
-        Review? review = await _unitOfWork.Reviews.FindAsync(id.Value);
+        Review? review = await unitOfWork.Reviews.FindAsync(id.Value);
         if (review == null)
         {
             return NotFound();
         }
-        ViewData["RecipeId"] = new SelectList(await _unitOfWork.Recipes.FindAllAsync(), "Id", "Description", review.RecipeId);
-        ViewData["UserId"] = new SelectList(await _unitOfWork.Users.FindAllAsync(), "Id", "FirstName", review.UserId);
+        ViewData["RecipeId"] = new SelectList(await unitOfWork.Recipes.FindAllAsync(), "Id", "Description", review.RecipeId);
+        ViewData["UserId"] = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "FirstName", review.UserId);
         return View(review);
     }
 
@@ -102,12 +95,12 @@ public class ReviewController : Controller
         {
             try
             {
-                _unitOfWork.Reviews.Update(review);
-                await _unitOfWork.SaveChangesAsync();
+                unitOfWork.Reviews.Update(review);
+                await unitOfWork.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await _unitOfWork.Reviews.ExistsAsync(review.Id))
+                if (!await unitOfWork.Reviews.ExistsAsync(review.Id))
                 {
                     return NotFound();
                 }
@@ -116,8 +109,8 @@ public class ReviewController : Controller
             }
             return RedirectToAction(nameof(Index));
         }
-        ViewData["RecipeId"] = new SelectList(await _unitOfWork.Recipes.FindAllAsync(), "Id", "Description", review.RecipeId);
-        ViewData["UserId"] = new SelectList(await _unitOfWork.Users.FindAllAsync(), "Id", "FirstName", review.UserId);
+        ViewData["RecipeId"] = new SelectList(await unitOfWork.Recipes.FindAllAsync(), "Id", "Description", review.RecipeId);
+        ViewData["UserId"] = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "FirstName", review.UserId);
         return View(review);
     }
 
@@ -129,7 +122,7 @@ public class ReviewController : Controller
             return NotFound();
         }
 
-        Review? review = await _unitOfWork.Reviews.FindAsync(id.Value);
+        Review? review = await unitOfWork.Reviews.FindAsync(id.Value);
         if (review == null)
         {
             return NotFound();
@@ -143,13 +136,13 @@ public class ReviewController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        Review? review = await _unitOfWork.Reviews.FindAsync(id);
+        Review? review = await unitOfWork.Reviews.FindAsync(id);
         if (review != null)
         {
-            await _unitOfWork.Reviews.RemoveAsync(review);
+            await unitOfWork.Reviews.RemoveAsync(review);
         }
 
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 }

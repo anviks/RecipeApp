@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.3" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.3"/>
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.3"/>
@@ -33,28 +34,28 @@
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Areas\Admin\Views\Category\Create.cshtml" />
-      <AdditionalFiles Include="Areas\Admin\Views\Category\Delete.cshtml" />
-      <AdditionalFiles Include="Areas\Admin\Views\Category\Details.cshtml" />
-      <AdditionalFiles Include="Areas\Admin\Views\Category\Edit.cshtml" />
-      <AdditionalFiles Include="Areas\Admin\Views\Category\Index.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Categories\Create.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Categories\Delete.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Categories\Details.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Categories\Edit.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Categories\Index.cshtml" />
       <AdditionalFiles Include="Areas\Admin\Views\Home\Index.cshtml" />
       <AdditionalFiles Include="Areas\Admin\Views\Home\Privacy.cshtml" />
-      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypeAssociation\Create.cshtml" />
-      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypeAssociation\Delete.cshtml" />
-      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypeAssociation\Details.cshtml" />
-      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypeAssociation\Edit.cshtml" />
-      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypeAssociation\Index.cshtml" />
-      <AdditionalFiles Include="Areas\Admin\Views\IngredientType\Create.cshtml" />
-      <AdditionalFiles Include="Areas\Admin\Views\IngredientType\Delete.cshtml" />
-      <AdditionalFiles Include="Areas\Admin\Views\IngredientType\Details.cshtml" />
-      <AdditionalFiles Include="Areas\Admin\Views\IngredientType\Edit.cshtml" />
-      <AdditionalFiles Include="Areas\Admin\Views\IngredientType\Index.cshtml" />
-      <AdditionalFiles Include="Areas\Admin\Views\Ingredient\Create.cshtml" />
-      <AdditionalFiles Include="Areas\Admin\Views\Ingredient\Delete.cshtml" />
-      <AdditionalFiles Include="Areas\Admin\Views\Ingredient\Details.cshtml" />
-      <AdditionalFiles Include="Areas\Admin\Views\Ingredient\Edit.cshtml" />
-      <AdditionalFiles Include="Areas\Admin\Views\Ingredient\Index.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypeAssociations\Create.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypeAssociations\Delete.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypeAssociations\Details.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypeAssociations\Edit.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypeAssociations\Index.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypes\Create.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypes\Delete.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypes\Details.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypes\Edit.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypes\Index.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Ingredients\Create.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Ingredients\Delete.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Ingredients\Details.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Ingredients\Edit.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Ingredients\Index.cshtml" />
     </ItemGroup>
 
     <ItemGroup>

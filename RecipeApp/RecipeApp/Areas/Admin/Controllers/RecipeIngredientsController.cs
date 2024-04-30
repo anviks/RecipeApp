@@ -10,19 +10,12 @@ namespace RecipeApp.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Roles = "Admin")]
-public class RecipeIngredientController : Controller
+public class RecipeIngredientsController(IAppUnitOfWork unitOfWork) : Controller
 {
-    private readonly IAppUnitOfWork _unitOfWork;
-
-    public RecipeIngredientController(IAppUnitOfWork unitOfWork)
-    {
-        _unitOfWork = unitOfWork;
-    }
-
     // GET: RecipeIngredient
     public async Task<IActionResult> Index()
     {
-        return View(await _unitOfWork.RecipeIngredients.FindAllAsync());
+        return View(await unitOfWork.RecipeIngredients.FindAllAsync());
     }
 
     // GET: RecipeIngredient/Details/5
@@ -33,7 +26,7 @@ public class RecipeIngredientController : Controller
             return NotFound();
         }
 
-        RecipeIngredient? recipeIngredient = await _unitOfWork.RecipeIngredients.FindAsync(id.Value);
+        RecipeIngredient? recipeIngredient = await unitOfWork.RecipeIngredients.FindAsync(id.Value);
         if (recipeIngredient == null)
         {
             return NotFound();
@@ -45,9 +38,9 @@ public class RecipeIngredientController : Controller
     // GET: RecipeIngredient/Create
     public IActionResult Create()
     {
-        ViewData["IngredientId"] = new SelectList(_unitOfWork.Ingredients.FindAll(), "Id", "Name");
-        ViewData["RecipeId"] = new SelectList(_unitOfWork.Recipes.FindAll(), "Id", "Description");
-        ViewData["UnitId"] = new SelectList(_unitOfWork.Units.FindAll(), "Id", "Name");
+        ViewData["IngredientId"] = new SelectList(unitOfWork.Ingredients.FindAll(), "Id", "Name");
+        ViewData["RecipeId"] = new SelectList(unitOfWork.Recipes.FindAll(), "Id", "Description");
+        ViewData["UnitId"] = new SelectList(unitOfWork.Units.FindAll(), "Id", "Name");
         return View();
     }
 
@@ -61,13 +54,13 @@ public class RecipeIngredientController : Controller
         if (ModelState.IsValid)
         {
             recipeIngredient.Id = Guid.NewGuid();
-            _unitOfWork.RecipeIngredients.Add(recipeIngredient);
-            await _unitOfWork.SaveChangesAsync();
+            unitOfWork.RecipeIngredients.Add(recipeIngredient);
+            await unitOfWork.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        ViewData["IngredientId"] = new SelectList(await _unitOfWork.Ingredients.FindAllAsync(), "Id", "Name", recipeIngredient.IngredientId);
-        ViewData["RecipeId"] = new SelectList(await _unitOfWork.Recipes.FindAllAsync(), "Id", "Description", recipeIngredient.RecipeId);
-        ViewData["UnitId"] = new SelectList(await _unitOfWork.Units.FindAllAsync(), "Id", "Name", recipeIngredient.UnitId);
+        ViewData["IngredientId"] = new SelectList(await unitOfWork.Ingredients.FindAllAsync(), "Id", "Name", recipeIngredient.IngredientId);
+        ViewData["RecipeId"] = new SelectList(await unitOfWork.Recipes.FindAllAsync(), "Id", "Description", recipeIngredient.RecipeId);
+        ViewData["UnitId"] = new SelectList(await unitOfWork.Units.FindAllAsync(), "Id", "Name", recipeIngredient.UnitId);
         return View(recipeIngredient);
     }
 
@@ -79,14 +72,14 @@ public class RecipeIngredientController : Controller
             return NotFound();
         }
 
-        RecipeIngredient? recipeIngredient = await _unitOfWork.RecipeIngredients.FindAsync(id.Value);
+        RecipeIngredient? recipeIngredient = await unitOfWork.RecipeIngredients.FindAsync(id.Value);
         if (recipeIngredient == null)
         {
             return NotFound();
         }
-        ViewData["IngredientId"] = new SelectList(await _unitOfWork.Ingredients.FindAllAsync(), "Id", "Name", recipeIngredient.IngredientId);
-        ViewData["RecipeId"] = new SelectList(await _unitOfWork.Recipes.FindAllAsync(), "Id", "Description", recipeIngredient.RecipeId);
-        ViewData["UnitId"] = new SelectList(await _unitOfWork.Units.FindAllAsync(), "Id", "Name", recipeIngredient.UnitId);
+        ViewData["IngredientId"] = new SelectList(await unitOfWork.Ingredients.FindAllAsync(), "Id", "Name", recipeIngredient.IngredientId);
+        ViewData["RecipeId"] = new SelectList(await unitOfWork.Recipes.FindAllAsync(), "Id", "Description", recipeIngredient.RecipeId);
+        ViewData["UnitId"] = new SelectList(await unitOfWork.Units.FindAllAsync(), "Id", "Name", recipeIngredient.UnitId);
         return View(recipeIngredient);
     }
 
@@ -106,12 +99,12 @@ public class RecipeIngredientController : Controller
         {
             try
             {
-                _unitOfWork.RecipeIngredients.Update(recipeIngredient);
-                await _unitOfWork.SaveChangesAsync();
+                unitOfWork.RecipeIngredients.Update(recipeIngredient);
+                await unitOfWork.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await _unitOfWork.RecipeIngredients.ExistsAsync(id))
+                if (!await unitOfWork.RecipeIngredients.ExistsAsync(id))
                 {
                     return NotFound();
                 }
@@ -120,9 +113,9 @@ public class RecipeIngredientController : Controller
             }
             return RedirectToAction(nameof(Index));
         }
-        ViewData["IngredientId"] = new SelectList(await _unitOfWork.Ingredients.FindAllAsync(), "Id", "Name", recipeIngredient.IngredientId);
-        ViewData["RecipeId"] = new SelectList(await _unitOfWork.Recipes.FindAllAsync(), "Id", "Description", recipeIngredient.RecipeId);
-        ViewData["UnitId"] = new SelectList(await _unitOfWork.Units.FindAllAsync(), "Id", "Name", recipeIngredient.UnitId);
+        ViewData["IngredientId"] = new SelectList(await unitOfWork.Ingredients.FindAllAsync(), "Id", "Name", recipeIngredient.IngredientId);
+        ViewData["RecipeId"] = new SelectList(await unitOfWork.Recipes.FindAllAsync(), "Id", "Description", recipeIngredient.RecipeId);
+        ViewData["UnitId"] = new SelectList(await unitOfWork.Units.FindAllAsync(), "Id", "Name", recipeIngredient.UnitId);
         return View(recipeIngredient);
     }
 
@@ -134,7 +127,7 @@ public class RecipeIngredientController : Controller
             return NotFound();
         }
 
-        RecipeIngredient? recipeIngredient = await _unitOfWork.RecipeIngredients.FindAsync(id.Value);
+        RecipeIngredient? recipeIngredient = await unitOfWork.RecipeIngredients.FindAsync(id.Value);
         if (recipeIngredient == null)
         {
             return NotFound();
@@ -148,13 +141,13 @@ public class RecipeIngredientController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        RecipeIngredient? recipeIngredient = await _unitOfWork.RecipeIngredients.FindAsync(id);
+        RecipeIngredient? recipeIngredient = await unitOfWork.RecipeIngredients.FindAsync(id);
         if (recipeIngredient != null)
         {
-            await _unitOfWork.RecipeIngredients.RemoveAsync(recipeIngredient);
+            await unitOfWork.RecipeIngredients.RemoveAsync(recipeIngredient);
         }
 
-        await _unitOfWork.SaveChangesAsync();
+        await unitOfWork.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 }
