@@ -1,18 +1,20 @@
 using App.Contracts.DAL.Repositories;
-using App.Domain;
-using Base.Contracts.DAL;
+using AutoMapper;
+using AppDomain = App.Domain;
 using Base.DAL.EF;
 using Microsoft.EntityFrameworkCore;
+using DAL_DTO = App.DAL.DTO;
 
 namespace App.DAL.EF.Repositories;
 
-public class RecipeRepository : BaseEntityRepository<Recipe, Recipe, AppDbContext>, IRecipeRepository
+public class RecipeRepository(AppDbContext dbContext, IMapper mapper)
+    : BaseEntityRepository<AppDomain.Recipe, DAL_DTO.Recipe, AppDbContext>(
+            dbContext,
+            new DalDomainMapper<AppDomain.Recipe, DAL_DTO.Recipe>(mapper)
+        ),
+        IRecipeRepository
 {
-    public RecipeRepository(AppDbContext dbContext) : base(dbContext, new DalDummyMapper<Recipe, Recipe>())
-    {
-    }
-    
-    protected override IQueryable<Recipe> GetQuery(bool tracking = false)
+    protected override IQueryable<AppDomain.Recipe> GetQuery(bool tracking = false)
     {
         var query = base.GetQuery(tracking);
         return query

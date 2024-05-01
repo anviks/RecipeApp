@@ -1,8 +1,5 @@
-using App.Domain;
-using Microsoft.AspNetCore.Mvc;
+using App.DAL.DTO;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Http;
 using RecipeApp.Validation.File;
 
 namespace RecipeApp.Areas.Admin.ViewModels;

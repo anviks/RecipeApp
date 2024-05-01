@@ -1,6 +1,8 @@
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using App.BLL;
+using App.Contracts.BLL;
 using App.Contracts.DAL;
 using App.DAL.EF;
 using App.Domain.Identity;
@@ -21,6 +23,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 builder.Services.AddScoped<IAppUnitOfWork, AppUnitOfWork>();
+builder.Services.AddScoped<IAppBusinessLogic, AppBusinessLogic>();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -61,18 +64,6 @@ var supportedCultures = builder.Configuration
     .Select(conf => new CultureInfo(conf.Value!))
     .ToArray();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowLocalhost",
-        policyBuilder =>
-        {
-            policyBuilder
-                .WithOrigins("http://localhost:3000", "https://localhost:3000")
-                .AllowAnyMethod()
-                .AllowAnyHeader();
-        });
-});
-
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
     // datetime and currency support
@@ -92,6 +83,23 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
         new CookieRequestCultureProvider()
     };
 });
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost", policyBuilder =>
+    {
+        policyBuilder
+            .WithOrigins("http://localhost:3000", "https://localhost:3000")
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
+
+// reference any class from class library to be scanned for mapper configurations
+builder.Services.AddAutoMapper(
+    typeof(App.DAL.EF.AutoMapperProfile),
+    typeof(App.BLL.AutoMapperProfile)
+);
 
 // ===================================================
 WebApplication app = builder.Build();

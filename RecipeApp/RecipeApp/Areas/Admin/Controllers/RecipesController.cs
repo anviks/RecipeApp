@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using App.Contracts.DAL;
+using App.DAL.DTO;
 using App.DAL.EF;
-using App.Domain;
 using App.Domain.Identity;
 using Base.Contracts.DAL;
 using Microsoft.AspNetCore.Authorization;
