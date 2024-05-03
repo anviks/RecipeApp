@@ -10,8 +10,7 @@ namespace App.DAL.EF.Repositories;
 public class RecipeRepository(AppDbContext dbContext, IMapper mapper)
     : BaseEntityRepository<AppDomain.Recipe, DAL_DTO.Recipe, AppDbContext>(
             dbContext,
-            new DalDomainMapper<AppDomain.Recipe, DAL_DTO.Recipe>(mapper)
-        ),
+            new DalDomainMapper<AppDomain.Recipe, DAL_DTO.Recipe>(mapper)),
         IRecipeRepository
 {
     protected override IQueryable<AppDomain.Recipe> GetQuery(bool tracking = false)

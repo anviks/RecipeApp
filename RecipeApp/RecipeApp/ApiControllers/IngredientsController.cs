@@ -10,6 +10,7 @@ namespace RecipeApp.ApiControllers;
 public class IngredientsController(IAppUnitOfWork unitOfWork) : ControllerBase
 {
     // GET: Ingredients
+    [HttpGet]
     public async Task<ActionResult<List<Ingredient>>> Index()
     {
         return Ok(await unitOfWork.Ingredients.FindAllAsync());

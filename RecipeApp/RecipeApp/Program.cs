@@ -6,12 +6,15 @@ using App.Contracts.BLL;
 using App.Contracts.DAL;
 using App.DAL.EF;
 using App.Domain.Identity;
+using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using RecipeApp;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -86,10 +89,10 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowLocalhost", policyBuilder =>
+    options.AddPolicy("AllowCors", policyBuilder =>
     {
         policyBuilder
-            .WithOrigins("http://localhost:3000", "https://localhost:3000")
+            .AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader();
     });
@@ -100,6 +103,27 @@ builder.Services.AddAutoMapper(
     typeof(App.DAL.EF.AutoMapperProfile),
     typeof(App.BLL.AutoMapperProfile)
 );
+
+IApiVersioningBuilder apiVersioningBuilder = builder.Services.AddApiVersioning(options =>
+{
+    options.ReportApiVersions = true;
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+});
+
+apiVersioningBuilder.AddApiExplorer(options =>
+{
+    // add the versioned api explorer, which also adds IApiVersionDescriptionProvider service
+    // note: the specified format code will format the version as "'v'major[.minor][-status]"
+    options.GroupNameFormat = "'v'VVV";
+
+    // note: this option is only necessary when versioning by url segment. the SubstitutionFormat
+    // can also be used to control the format of the API version in route templates
+    options.SubstituteApiVersionInUrl = true;
+});
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+builder.Services.AddSwaggerGen();
 
 // ===================================================
 WebApplication app = builder.Build();
@@ -128,6 +152,22 @@ app.UseRequestLocalization(options: app.Services.GetService<IOptions<RequestLoca
 
 app.UseAuthorization();
 
+app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+    var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+    foreach (ApiVersionDescription description in provider.ApiVersionDescriptions)
+    {
+        options.SwaggerEndpoint(
+            $"/swagger/{description.GroupName}/swagger.json",
+            description.GroupName.ToUpperInvariant()
+        );
+    }
+    // serve from root
+    // options.RoutePrefix = string.Empty;
+});
+
+
 app.MapControllerRoute(
     name: "area",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
@@ -138,6 +178,6 @@ app.MapControllerRoute(
 
 app.MapRazorPages();
 
-app.UseCors("AllowLocalhost");
+app.UseCors("AllowCors");
 
 app.Run();

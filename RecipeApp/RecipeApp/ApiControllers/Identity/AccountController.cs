@@ -6,6 +6,7 @@ using App.DAL.EF;
 using App.Domain.Identity;
 using App.DTO.v1_0;
 using App.DTO.v1_0.Identity;
+using Asp.Versioning;
 using Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -16,8 +17,9 @@ using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace RecipeApp.ApiControllers.Identity;
 
+[ApiVersion("1.0")]
 [ApiController]
-[Route("/api/identity/[controller]/[action]")]
+[Route("/api/v{version:apiVersion}/[controller]/[action]")]
 public class AccountController(
     UserManager<AppUser> userManager,
     ILogger<AccountController> logger,
@@ -27,6 +29,11 @@ public class AccountController(
 ) : ControllerBase
 {
     [HttpPost]
+    [Consumes("application/json")]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(LoginResponse), (int) HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(RestApiErrorResponse), (int) HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(RestApiErrorResponse), (int) HttpStatusCode.NotFound)]
     public async Task<ActionResult<LoginResponse>> Register(
         [FromBody] RegisterRequest request,
         [FromQuery] int expiresInSeconds)
