@@ -18,12 +18,12 @@ using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 namespace RecipeApp.ApiControllers.Identity;
 
 [ApiVersion("1.0")]
-[ApiController]
 [Route("/api/v{version:apiVersion}/[controller]/[action]")]
+[ApiController]
 public class AccountController(
     UserManager<AppUser> userManager,
-    ILogger<AccountController> logger,
     SignInManager<AppUser> signInManager,
+    ILogger<AccountController> logger,
     IConfiguration configuration,
     AppDbContext context
 ) : ControllerBase
@@ -31,9 +31,9 @@ public class AccountController(
     [HttpPost]
     [Consumes("application/json")]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(LoginResponse), (int) HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(RestApiErrorResponse), (int) HttpStatusCode.BadRequest)]
-    [ProducesResponseType(typeof(RestApiErrorResponse), (int) HttpStatusCode.NotFound)]
+    [ProducesResponseType<LoginResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<LoginResponse>> Register(
         [FromBody] RegisterRequest request,
         [FromQuery] int expiresInSeconds)
@@ -107,10 +107,17 @@ public class AccountController(
         {
             JsonWebToken = await CreateJwt(user, expiresInSeconds),
             RefreshToken = refreshToken.RefreshToken,
+            Username = user.UserName!,
+            Email = user.Email!
         });
     }
 
     [HttpPost]
+    [Consumes("application/json")]
+    [Produces("application/json")]
+    [ProducesResponseType<LoginResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<LoginResponse>> Login(
         [FromBody] LoginRequest loginRequest,
         [FromQuery] int expiresInSeconds
@@ -180,6 +187,11 @@ public class AccountController(
     }
 
     [HttpPost]
+    [Consumes("application/json")]
+    [Produces("application/json")]
+    [ProducesResponseType<LoginResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<LoginResponse>> RefreshToken(
         [FromBody] RefreshTokenRequest request,
         [FromQuery] int expiresInSeconds
@@ -283,6 +295,11 @@ public class AccountController(
 
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpPost]
+    [Consumes("application/json")]
+    [Produces("application/json")]
+    [ProducesResponseType<LogoutResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<LogoutResponse>> Logout([FromBody] LogoutRequest request)
     {
         // delete the refresh token - so user is kicked out after jwt expiration

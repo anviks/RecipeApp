@@ -41,7 +41,7 @@ public static class DataSeeder
             SecurityStamp = Guid.NewGuid().ToString()
         };
 
-        res = await userManager.CreateAsync(user, "123.PUHKAv");
+        res = await userManager.CreateAsync(user, "qwerty");
         if (!res.Succeeded)
         {
             Console.WriteLine(res.ToString());
