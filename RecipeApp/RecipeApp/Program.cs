@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Npgsql;
 using RecipeApp;
 using RecipeApp.Helpers;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -24,6 +25,8 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
                        throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+NpgsqlConnection.GlobalTypeMapper.EnableDynamicJson();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
@@ -73,7 +76,14 @@ builder.Services
         };
     });
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(
+    options => { options.ModelBinderProviders.Insert(0, new CustomLangStrBinderProvider()); }
+).AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.WriteIndented = true;
+    options.JsonSerializerOptions.AllowTrailingCommas = true;
+});
+
 
 var supportedCultures = builder.Configuration
     .GetSection("SupportedCultures")
