@@ -1,5 +1,5 @@
-@using App.DAL.DTO
-@model IEnumerable<App.DAL.DTO.Recipe>
+@using BLL_DTO = App.BLL.DTO
+@model IEnumerable<BLL_DTO.RecipeResponse>
 
 @{
     ViewData["Title"] = "Index";
@@ -62,7 +62,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (Recipe item in Model) {
+@foreach (BLL_DTO.RecipeResponse item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
@@ -74,7 +74,7 @@
                 @Html.DisplayFor(modelItem => item.ImageFileName)
             </td>
             <td>
-                <img src="@Url.Content("~/uploads/recipe-images/" + item.ImageFileName)" alt="@item.Title" width="60" height="60" />
+                <img src="@Url.Content("~/uploads/images/" + item.ImageFileName)" alt="@item.Title" width="60" height="60" />
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Instructions)
@@ -101,13 +101,13 @@
                 @Html.DisplayFor(modelItem => item.CreatedAt)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AuthorUser!.UserName)
+                @Html.DisplayFor(modelItem => item.AuthorUser)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.UpdatedAt)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.UpdatingUser!.UserName)
+                @Html.DisplayFor(modelItem => item.UpdatingUser)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

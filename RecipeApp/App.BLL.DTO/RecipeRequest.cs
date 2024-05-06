@@ -1,8 +1,9 @@
-﻿using Base.Domain;
+using Base.Domain;
+using Microsoft.AspNetCore.Http;
 
-namespace App.DAL.DTO;
+namespace App.BLL.DTO;
 
-public class Recipe : BaseEntityId
+public class RecipeRequest : BaseEntityId
 {
     public string Title { get; set; } = default!;
     public string Description { get; set; } = default!;
@@ -14,8 +15,4 @@ public class Recipe : BaseEntityId
     public bool IsVegetarian { get; set; }
     public bool IsVegan { get; set; }
     public bool IsGlutenFree { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public Guid AuthorUserId { get; set; }
-    public DateTime? UpdatedAt { get; set; }
-    public Guid? UpdatingUserId { get; set; }
 }

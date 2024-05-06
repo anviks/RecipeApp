@@ -5,6 +5,7 @@ using App.Domain.Identity;
 using AutoMapper;
 using Base.Contracts.DAL;
 using Base.DAL.EF;
+using Helpers;
 
 namespace App.DAL.EF;
 
@@ -15,7 +16,7 @@ public class AppUnitOfWork(AppDbContext dbContext, IMapper mapper)
     private IEntityRepository<AppUser>? _users;
     public IEntityRepository<AppUser> Users => _users ??=
                                                new BaseEntityRepository<AppUser, AppUser, AppDbContext>(UowDbContext,
-                                                   new DalDomainMapper<AppUser, AppUser>(mapper));
+                                                   new EntityMapper<AppUser, AppUser>(mapper));
     
     private ICategoryRepository? _categories;
     public ICategoryRepository Categories => _categories ??= new CategoryRepository(UowDbContext, mapper);

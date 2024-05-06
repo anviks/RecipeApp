@@ -1,8 +1,8 @@
 ﻿using Base.Domain;
 
-namespace App.DAL.DTO;
+namespace App.BLL.DTO;
 
-public class Recipe : BaseEntityId
+public class RecipeResponse : BaseEntityId
 {
     public string Title { get; set; } = default!;
     public string Description { get; set; } = default!;
@@ -15,7 +15,7 @@ public class Recipe : BaseEntityId
     public bool IsVegan { get; set; }
     public bool IsGlutenFree { get; set; }
     public DateTime CreatedAt { get; set; }
-    public Guid AuthorUserId { get; set; }
+    public string AuthorUser { get; set; } = default!;
     public DateTime? UpdatedAt { get; set; }
-    public Guid? UpdatingUserId { get; set; }
+    public string? UpdatingUser { get; set; }
 }

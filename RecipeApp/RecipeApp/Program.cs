@@ -10,11 +10,14 @@ using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using RecipeApp;
+using RecipeApp.Helpers;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using AutoMapperProfile = RecipeApp.Helpers.AutoMapperProfile;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +35,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services
     .AddIdentity<AppUser, AppRole>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddErrorDescriber<LocalizedIdentityErrorDescriber>()
     .AddDefaultUI()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
@@ -111,7 +115,8 @@ builder.Services.AddCors(options =>
 // reference any class from class library to be scanned for mapper configurations
 builder.Services.AddAutoMapper(
     typeof(App.DAL.EF.AutoMapperProfile),
-    typeof(App.BLL.AutoMapperProfile)
+    typeof(App.BLL.AutoMapperProfile),
+    typeof(AutoMapperProfile)
 );
 
 IApiVersioningBuilder apiVersioningBuilder = builder.Services.AddApiVersioning(options =>
@@ -134,6 +139,8 @@ apiVersioningBuilder.AddApiExplorer(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSingleton<IConfigureOptions<MvcOptions>, ConfigureModelBindingLocalization>();
 
 // ===================================================
 WebApplication app = builder.Build();

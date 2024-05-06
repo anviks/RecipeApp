@@ -39,7 +39,7 @@
 
     <ItemGroup>
       <Folder Include="Areas\Admin\Controllers\" />
-      <Folder Include="wwwroot\uploads\recipe-images\" />
+      <Folder Include="wwwroot\uploads\images\" />
     </ItemGroup>
 
     <PropertyGroup>

@@ -1,11 +1,18 @@
+using System.Net;
+using App.Contracts.BLL;
 using App.DAL.EF;
 using App.Domain;
+using App.Domain.Identity;
 using App.DTO.v1_0;
 using Asp.Versioning;
+using Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using BLL_DTO = App.BLL.DTO;
 
 namespace RecipeApp.ApiControllers;
 
@@ -13,34 +20,45 @@ namespace RecipeApp.ApiControllers;
 [Route("api/v{version:apiVersion}/[controller]")]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 [ApiController]
-public class RecipesController(AppDbContext context) : ControllerBase
+public class RecipesController(
+    IAppBusinessLogic businessLogic,
+    UserManager<AppUser> userManager,
+    EntityMapper<App.DTO.v1_0.Recipe, BLL_DTO.RecipeResponse> mapper)
+    : ControllerBase
 {
     // GET: api/v1/Recipes
     [HttpGet]
     [AllowAnonymous]
     [Produces("application/json")]
-    [ProducesResponseType<IEnumerable<Recipe>>(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Recipe>>> GetRecipes()
+    [ProducesResponseType<IEnumerable<App.DTO.v1_0.Recipe>>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<App.DTO.v1_0.Recipe>>> GetRecipes()
     {
-        return await context.Recipes.ToListAsync();
+        var allRecipes = await businessLogic.Recipes.FindAllAsync();
+        return Ok(allRecipes.Select(mapper.Map).ToList());
     }
 
     // GET: api/v1/Recipes/5
     [HttpGet("{id:guid}")]
     [AllowAnonymous]
     [Produces("application/json")]
-    [ProducesResponseType<Recipe>(StatusCodes.Status200OK)]
+    [ProducesResponseType<App.DTO.v1_0.Recipe>(StatusCodes.Status200OK)]
     [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Recipe>> GetRecipe(Guid id)
+    public async Task<ActionResult<App.DTO.v1_0.Recipe>> GetRecipe(Guid id)
     {
-        Recipe? recipe = await context.Recipes.FindAsync(id);
-
+        BLL_DTO.RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(id);
+        
         if (recipe == null)
         {
-            return NotFound();
+            return NotFound(
+                new RestApiErrorResponse
+                {
+                    Status = HttpStatusCode.NotFound,
+                    Error = $"Recipe with id {id} not found."
+                }
+            );
         }
 
-        return recipe;
+        return Ok(mapper.Map(recipe));
     }
 
     // PUT: api/v1/Recipes/5
@@ -50,29 +68,44 @@ public class RecipesController(AppDbContext context) : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> PutRecipe(Guid id, Recipe recipe)
+    public async Task<IActionResult> PutRecipe(Guid id, App.DTO.v1_0.Recipe recipe)
     {
         if (id != recipe.Id)
         {
             return BadRequest();
         }
 
-        context.Entry(recipe).State = EntityState.Modified;
+        BLL_DTO.RecipeResponse? existingRecipe = await businessLogic.Recipes.FindAsync(id);
+        if (existingRecipe == null)
+        {
+            return NotFound(
+                new RestApiErrorResponse
+                {
+                    Status = HttpStatusCode.NotFound,
+                    Error = $"Recipe with id {id} not found."
+                }
+            );
+        }
 
         try
         {
-            await context.SaveChangesAsync();
+            businessLogic.Recipes.Update(mapper.Map(recipe)!);
+            await businessLogic.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!RecipeExists(id))
+            if (!await businessLogic.Recipes.ExistsAsync(id))
             {
-                return NotFound();
+                return NotFound(
+                    new RestApiErrorResponse
+                    {
+                        Status = HttpStatusCode.NotFound,
+                        Error = $"Recipe with id {id} not found."
+                    }
+                );
             }
-            else
-            {
-                throw;
-            }
+
+            throw;
         }
 
         return NoContent();
@@ -83,12 +116,12 @@ public class RecipesController(AppDbContext context) : ControllerBase
     [HttpPost]
     [Consumes("application/json")]
     [Produces("application/json")]
-    [ProducesResponseType<Recipe>(StatusCodes.Status201Created)]
+    [ProducesResponseType<App.DTO.v1_0.Recipe>(StatusCodes.Status201Created)]
     [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<Recipe>> PostRecipe(Recipe recipe)
+    public async Task<ActionResult<App.DTO.v1_0.Recipe>> PostRecipe(App.DTO.v1_0.Recipe recipe)
     {
-        context.Recipes.Add(recipe);
-        await context.SaveChangesAsync();
+        businessLogic.Recipes.Add(mapper.Map(recipe)!);
+        await businessLogic.SaveChangesAsync();
 
         return CreatedAtAction("GetRecipe", new
         {
@@ -103,20 +136,16 @@ public class RecipesController(AppDbContext context) : ControllerBase
     [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteRecipe(Guid id)
     {
-        Recipe? recipe = await context.Recipes.FindAsync(id);
+        BLL_DTO.RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(id);
+        
         if (recipe == null)
         {
             return NotFound();
         }
 
-        context.Recipes.Remove(recipe);
-        await context.SaveChangesAsync();
+        await businessLogic.Recipes.RemoveAsync(recipe);
+        await businessLogic.SaveChangesAsync();
 
         return NoContent();
-    }
-
-    private bool RecipeExists(Guid id)
-    {
-        return context.Recipes.Any(e => e.Id == id);
     }
 }

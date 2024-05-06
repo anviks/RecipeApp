@@ -8,6 +8,7 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
-        CreateMap<DAL_DTO.Recipe, BLL_DTO.Recipe>().ReverseMap();
+        CreateMap<DAL_DTO.Recipe, BLL_DTO.RecipeResponse>().ReverseMap();
+        CreateMap<BLL_DTO.RecipeRequest, BLL_DTO.RecipeResponse>().ReverseMap();
     }
 }

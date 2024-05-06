@@ -1,14 +1,14 @@
 using App.Contracts.DAL.Repositories;
-using App.Domain;
 using AutoMapper;
-using Base.Contracts.DAL;
 using Base.DAL.EF;
+using Helpers;
+using Domain = App.Domain;
+using DAL_DTO = App.DAL.DTO;
 
 namespace App.DAL.EF.Repositories;
 
 public class CategoryRepository(AppDbContext dbContext, IMapper mapper)
-    : BaseEntityRepository<Category, Category, AppDbContext>(
+    : BaseEntityRepository<Domain.Category, Domain.Category, AppDbContext>(
             dbContext,
-            new DalDomainMapper<Category, Category>(mapper)
-        ),
+            new EntityMapper<Domain.Category, Domain.Category>(mapper)),
         ICategoryRepository;

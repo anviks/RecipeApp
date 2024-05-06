@@ -2,14 +2,14 @@
 
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <div class="form-group">
-    <label asp-for="Recipe.Title" class="control-label"></label>
-    <input asp-for="Recipe.Title" class="form-control"/>
-    <span asp-validation-for="Recipe.Title" class="text-danger"></span>
+    <label asp-for="RecipeRequest.Title" class="control-label"></label>
+    <input asp-for="RecipeRequest.Title" class="form-control"/>
+    <span asp-validation-for="RecipeRequest.Title" class="text-danger"></span>
 </div>
 <div class="form-group">
-    <label asp-for="Recipe.Description" class="control-label"></label>
-    <input asp-for="Recipe.Description" class="form-control"/>
-    <span asp-validation-for="Recipe.Description" class="text-danger"></span>
+    <label asp-for="RecipeRequest.Description" class="control-label"></label>
+    <input asp-for="RecipeRequest.Description" class="form-control"/>
+    <span asp-validation-for="RecipeRequest.Description" class="text-danger"></span>
 </div>
 <div class="form-group">
     <label asp-for="RecipeImage" class="control-label"></label>
@@ -17,37 +17,37 @@
     <span asp-validation-for="RecipeImage" class="text-danger"></span>
 </div>
 <div class="form-group">
-    <label asp-for="Recipe.Instructions" class="control-label"></label>
-    <input asp-for="Recipe.Instructions" class="form-control"/>
-    <span asp-validation-for="Recipe.Instructions" class="text-danger"></span>
+    <label asp-for="RecipeRequest.Instructions" class="control-label"></label>
+    <input asp-for="RecipeRequest.Instructions" class="form-control"/>
+    <span asp-validation-for="RecipeRequest.Instructions" class="text-danger"></span>
 </div>
 <div class="form-group">
-    <label asp-for="Recipe.PreparationTime" class="control-label"></label>
-    <input asp-for="Recipe.PreparationTime" class="form-control"/>
-    <span asp-validation-for="Recipe.PreparationTime" class="text-danger"></span>
+    <label asp-for="RecipeRequest.PreparationTime" class="control-label"></label>
+    <input asp-for="RecipeRequest.PreparationTime" class="form-control"/>
+    <span asp-validation-for="RecipeRequest.PreparationTime" class="text-danger"></span>
 </div>
 <div class="form-group">
-    <label asp-for="Recipe.CookingTime" class="control-label"></label>
-    <input asp-for="Recipe.CookingTime" class="form-control"/>
-    <span asp-validation-for="Recipe.CookingTime" class="text-danger"></span>
+    <label asp-for="RecipeRequest.CookingTime" class="control-label"></label>
+    <input asp-for="RecipeRequest.CookingTime" class="form-control"/>
+    <span asp-validation-for="RecipeRequest.CookingTime" class="text-danger"></span>
 </div>
 <div class="form-group">
-    <label asp-for="Recipe.Servings" class="control-label"></label>
-    <input asp-for="Recipe.Servings" class="form-control"/>
-    <span asp-validation-for="Recipe.Servings" class="text-danger"></span>
+    <label asp-for="RecipeRequest.Servings" class="control-label"></label>
+    <input asp-for="RecipeRequest.Servings" class="form-control"/>
+    <span asp-validation-for="RecipeRequest.Servings" class="text-danger"></span>
 </div>
 <div class="form-group form-check">
     <label class="form-check-label">
-        <input class="form-check-input" asp-for="Recipe.IsVegetarian"/> @Html.DisplayNameFor(model => model.Recipe.IsVegetarian)
+        <input class="form-check-input" asp-for="RecipeRequest.IsVegetarian"/> @Html.DisplayNameFor(model => model.RecipeRequest.IsVegetarian)
     </label>
 </div>
 <div class="form-group form-check">
     <label class="form-check-label">
-        <input class="form-check-input" asp-for="Recipe.IsVegan"/> @Html.DisplayNameFor(model => model.Recipe.IsVegan)
+        <input class="form-check-input" asp-for="RecipeRequest.IsVegan"/> @Html.DisplayNameFor(model => model.RecipeRequest.IsVegan)
     </label>
 </div>
 <div class="form-group form-check">
     <label class="form-check-label">
-        <input class="form-check-input" asp-for="Recipe.IsGlutenFree"/> @Html.DisplayNameFor(model => model.Recipe.IsGlutenFree)
+        <input class="form-check-input" asp-for="RecipeRequest.IsGlutenFree"/> @Html.DisplayNameFor(model => model.RecipeRequest.IsGlutenFree)
     </label>
 </div>

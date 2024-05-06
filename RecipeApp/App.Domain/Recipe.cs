@@ -58,8 +58,6 @@ public class Recipe : BaseEntityId
     public AppUser? UpdatingUser { get; set; }
     
     public ICollection<RecipeIngredient>? RecipeIngredients { get; set; }
-    
     public ICollection<RecipeCategory>? RecipeCategories { get; set; }
-    
     public ICollection<Review>? Reviews { get; set; }
 }

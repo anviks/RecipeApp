@@ -19,6 +19,14 @@
         <Generator>PublicResXFileCodeGenerator</Generator>
         <LastGenOutput>Common.Designer.cs</LastGenOutput>
       </EmbeddedResource>
+      <EmbeddedResource Update="ModelBindingErrors.resx">
+        <Generator>PublicResXFileCodeGenerator</Generator>
+        <LastGenOutput>ModelBindingErrors.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="IdentityErrors.resx">
+        <Generator>PublicResXFileCodeGenerator</Generator>
+        <LastGenOutput>IdentityErrors.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>
@@ -36,6 +44,16 @@
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
         <DependentUpon>Common.resx</DependentUpon>
+      </Compile>
+      <Compile Update="ModelBindingErrors.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>ModelBindingErrors.resx</DependentUpon>
+      </Compile>
+      <Compile Update="IdentityErrors.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>IdentityErrors.resx</DependentUpon>
       </Compile>
     </ItemGroup>
 

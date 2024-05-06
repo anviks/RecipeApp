@@ -1,10 +1,8 @@
-using App.Domain;
 using AutoMapper;
-using Base.Contracts.DAL;
 
-namespace App.DAL.EF;
+namespace Helpers;
 
-public class DalDomainMapper<TLeft, TRight>(IMapper mapper) : IDalMapper<TLeft, TRight>
+public class EntityMapper<TLeft, TRight>(IMapper mapper)
     where TLeft : class
     where TRight : class
 {
