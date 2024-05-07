@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
-namespace RecipeApp.Validation.File;
+namespace Helpers.Validation.File;
 
 public class AllowedExtensionsAttribute(string[] extensions) : ValidationAttribute
 {
@@ -15,8 +16,5 @@ public class AllowedExtensionsAttribute(string[] extensions) : ValidationAttribu
             : ValidationResult.Success;
     }
 
-    private string GetErrorMessage()
-    {
-        return $"Allowed file extensions are {string.Join(", ", extensions)}.";
-    }
+    private string GetErrorMessage() => $"Allowed file extensions are {string.Join(", ", extensions)}.";
 }

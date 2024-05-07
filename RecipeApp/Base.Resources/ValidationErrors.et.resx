@@ -30,4 +30,7 @@
                      &lt;li&gt;Peab lõppema tähe või numbriga.&lt;/li&gt;
                  &lt;/ul&gt;</value>
     </data>
+    <data name="MissingImageFile" xml:space="preserve">
+        <value>Palun valige pilt.</value>
+    </data>
 </root>

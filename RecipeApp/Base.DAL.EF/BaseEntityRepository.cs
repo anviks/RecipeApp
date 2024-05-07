@@ -40,24 +40,24 @@ public class BaseEntityRepository<TKey, TDomainEntity, TDalEntity, TDbContext> :
 
     public virtual TDalEntity Add(TDalEntity entity)
     {
-        var entry = DbContext.Add(entity);
-        return entry.Entity;
+        var entry = DbContext.Add(Mapper.Map(entity)!);
+        return Mapper.Map(entry.Entity)!;
     }
 
     public virtual void AddRange(IEnumerable<TDalEntity> entities)
     {
-        DbContext.AddRange(entities);
+        DbContext.AddRange(entities.Select(Mapper.Map)!);
     }
 
     public virtual TDalEntity Update(TDalEntity entity)
     {
-        var entry = DbContext.Update(entity);
-        return entry.Entity;
+        var entry = DbContext.Update(Mapper.Map(entity)!);
+        return Mapper.Map(entry.Entity)!;
     }
 
     public virtual void UpdateRange(IEnumerable<TDalEntity> entities)
     {
-        DbContext.UpdateRange(entities);
+        DbContext.UpdateRange(entities.Select(Mapper.Map)!);
     }
 
     public virtual int Remove(TDalEntity entity)

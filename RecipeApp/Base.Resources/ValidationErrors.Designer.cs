@@ -69,6 +69,15 @@ namespace Base.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please select an image..
+        /// </summary>
+        public static string MissingImageFile {
+            get {
+                return ResourceManager.GetString("MissingImageFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The {0} must be at least {2} and at max {1} characters long..
         /// </summary>
         public static string StringLengthBetween {

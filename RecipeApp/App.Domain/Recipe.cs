@@ -18,11 +18,12 @@ public class Recipe : BaseEntityId
     public string Description { get; set; } = default!;
     
     // TODO: update in ERD
-    public string ImageFileName { get; set; } = default!;
+    public string ImageFileUrl { get; set; } = default!;
     
-    [Column(TypeName = "json")]
+    // TODO: update type in ERD
+    [Column(TypeName = "jsonb")]
     [Display(ResourceType = typeof(App.Resources.App.Domain.Recipe), Name = nameof(Instructions))]
-    public string Instructions { get; set; } = default!;
+    public List<string> Instructions { get; set; } = default!;
     
     // TODO: update in ERD? misspelled as "PrepationTime"
     [Display(ResourceType = typeof(App.Resources.App.Domain.Recipe), Name = nameof(PreparationTime))]

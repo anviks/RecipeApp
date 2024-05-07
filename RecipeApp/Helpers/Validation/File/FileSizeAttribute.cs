@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
-namespace RecipeApp.Validation.File;
+namespace Helpers.Validation.File;
 
 public class FileSizeAttribute(int minSize, int maxSize) : ValidationAttribute
 {
@@ -13,13 +14,6 @@ public class FileSizeAttribute(int minSize, int maxSize) : ValidationAttribute
         return ValidationResult.Success;
     }
     
-    private string GetTooSmallErrorMessage()
-    {
-        return $"Minimum allowed file size is {minSize} bytes.";
-    }
-
-    private string GetTooLargeErrorMessage()
-    {
-        return $"Maximum allowed file size is {maxSize} bytes.";
-    }
+    private string GetTooSmallErrorMessage() => $"Minimum allowed file size is {minSize} bytes.";
+    private string GetTooLargeErrorMessage() => $"Maximum allowed file size is {maxSize} bytes.";
 }

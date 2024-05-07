@@ -6,7 +6,7 @@ public class RecipeResponse : BaseEntityId
 {
     public string Title { get; set; } = default!;
     public string Description { get; set; } = default!;
-    public string ImageFileName { get; set; } = default!;
+    public string ImageFileUrl { get; set; } = default!;
     public List<string> Instructions { get; set; } = default!;
     public int PreparationTime { get; set; }
     public int CookingTime { get; set; }

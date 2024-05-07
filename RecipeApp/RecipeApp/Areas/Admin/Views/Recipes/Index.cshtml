@@ -20,7 +20,7 @@
                 @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ImageFileName)
+                @Html.DisplayNameFor(model => model.ImageFileUrl)
             </th>
             <th>
                 Image
@@ -71,13 +71,13 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ImageFileName)
+                @Html.DisplayFor(modelItem => item.ImageFileUrl)
             </td>
             <td>
-                <img src="@Url.Content("~/uploads/images/" + item.ImageFileName)" alt="@item.Title" width="60" height="60" />
+                <img src="@Url.Content(item.ImageFileUrl)" alt="@item.Title" width="60" height="60" />
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Instructions)
+                @string.Join("\n", item.Instructions)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.PreparationTime)

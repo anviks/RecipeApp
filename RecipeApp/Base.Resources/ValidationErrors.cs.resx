@@ -30,4 +30,7 @@
                      &lt;li&gt;Musí končit písmenem nebo číslicí.&lt;/li&gt;
                  &lt;/ul&gt;</value>
     </data>
+    <data name="MissingImageFile" xml:space="preserve">
+        <value>Vyberte prosím obrázek.</value>
+    </data>
 </root>

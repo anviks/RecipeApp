@@ -6,7 +6,6 @@ namespace App.Contracts.BLL.Services;
 
 public interface IRecipeService : IEntityRepository<BLL_DTO.RecipeResponse>
 {
-    public BLL_DTO.RecipeResponse Add(BLL_DTO.RecipeResponse recipeResponse, Guid userId);
-    public BLL_DTO.RecipeResponse Add(BLL_DTO.RecipeRequest recipe, Guid userId);
-    public BLL_DTO.RecipeResponse Update(BLL_DTO.RecipeResponse recipeResponse, Guid userId);
+    public Task<BLL_DTO.RecipeResponse> AddAsync(BLL_DTO.RecipeRequest recipeRequest, Guid userId, string webRootPath);
+    public Task<BLL_DTO.RecipeResponse> UpdateAsync(BLL_DTO.RecipeRequest recipeRequest, Guid userId, string webRootPath);
 }

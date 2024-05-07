@@ -1,11 +1,11 @@
 using System.Net;
 using App.DTO.v1_0;
 using Asp.Versioning;
+using Helpers.Validation.File;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using RecipeApp.Validation.File;
 
 namespace RecipeApp.ApiControllers;
 
@@ -43,7 +43,7 @@ public class ImagesController(IWebHostEnvironment environment) : ControllerBase
             await file.CopyToAsync(stream);
         }
 
-        var uploadUrl = "/uploads/images/" + fileName;
+        var uploadUrl = "~/uploads/images/" + fileName;
 
         return Created(uploadUrl, new { imageUrl = uploadUrl });
     }

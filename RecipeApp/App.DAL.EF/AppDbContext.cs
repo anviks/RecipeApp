@@ -80,10 +80,13 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid, IdentityUs
         {
             foreach (PropertyEntry prop in entity
                          .Properties
-                         .Where(x => x.Metadata.ClrType == typeof(DateTime)))
+                         .Where(x => x.Metadata.ClrType == typeof(DateTime) || x.Metadata.ClrType == typeof(DateTime?)))
             {
-                Console.WriteLine(prop);
-                prop.CurrentValue = ((DateTime) prop.CurrentValue).ToUniversalTime();
+                Console.WriteLine(prop.Metadata.Name);
+                if (prop.CurrentValue != null)
+                {
+                    prop.CurrentValue = ((DateTime) prop.CurrentValue).ToUniversalTime();
+                }
             }
         }
 

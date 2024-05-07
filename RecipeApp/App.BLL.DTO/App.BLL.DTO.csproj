@@ -10,6 +10,7 @@
       <ProjectReference Include="..\App.Domain\App.Domain.csproj" />
       <ProjectReference Include="..\App.Resources\App.Resources.csproj" />
       <ProjectReference Include="..\Base.Contracts.Domain\Base.Contracts.Domain.csproj" />
+      <ProjectReference Include="..\Helpers\Helpers.csproj" />
     </ItemGroup>
 
     <ItemGroup>

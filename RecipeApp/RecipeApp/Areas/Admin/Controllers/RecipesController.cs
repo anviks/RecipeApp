@@ -1,8 +1,10 @@
 using System.Security.Claims;
+using App.BLL.Exceptions;
 using App.Contracts.BLL;
 using App.Contracts.DAL;
 using App.DAL.EF;
 using App.Domain.Identity;
+using AutoMapper;
 using Base.Contracts.DAL;
 using Helpers;
 using Microsoft.AspNetCore.Authorization;
@@ -20,12 +22,14 @@ namespace RecipeApp.Areas.Admin.Controllers;
 [Authorize(Roles = "Admin")]
 public class RecipesController(
     IAppBusinessLogic businessLogic,
-    EntityMapper<BLL_DTO.RecipeRequest, DAL_DTO.Recipe> requestDalMapper,
-    EntityMapper<BLL_DTO.RecipeRequest, BLL_DTO.RecipeResponse> requestResponseMapper,
-    IWebHostEnvironment environment,
-    UserManager<AppUser> userManager
+    IMapper mapper,
+    UserManager<AppUser> userManager,
+    IWebHostEnvironment environment
 ) : Controller
 {
+    private readonly EntityMapper<BLL_DTO.RecipeRequest, DAL_DTO.Recipe> _requestDalMapper = new(mapper);
+    private readonly EntityMapper<BLL_DTO.RecipeRequest, BLL_DTO.RecipeResponse> _requestResponseMapper = new(mapper);
+
     // GET: Recipe
     public async Task<IActionResult> Index()
     {
@@ -54,7 +58,7 @@ public class RecipesController(
     // GET: Recipe/Create
     public IActionResult Create()
     {
-        return View(new RecipeCreateEditViewModel());
+        return View();
     }
 
     // POST: Recipe/Create
@@ -62,11 +66,23 @@ public class RecipesController(
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(RecipeCreateEditViewModel viewModel)
+    public async Task<IActionResult> Create(BLL_DTO.RecipeRequest request)
     {
-        if (!ModelState.IsValid) return View(viewModel);
-        
-        businessLogic.Recipes.Add(viewModel.RecipeRequest, Guid.Parse(userManager.GetUserId(User)!));
+        if (!ModelState.IsValid) return View(request);
+
+        try
+        {
+            await businessLogic.Recipes.AddAsync(
+                request, 
+                Guid.Parse(userManager.GetUserId(User)!),
+                environment.WebRootPath);
+        }
+        catch (MissingImageException e)
+        {
+            ModelState.AddModelError(nameof(request.ImageFile), e.Message);
+            return View(request);
+        }
+
         await businessLogic.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
@@ -85,12 +101,7 @@ public class RecipesController(
             return NotFound();
         }
 
-        var viewModel = new RecipeCreateEditViewModel
-        {
-            RecipeRequest = requestResponseMapper.Map(recipe)!
-        };
-
-        return View(viewModel);
+        return View(_requestResponseMapper.Map(recipe));
     }
 
     // POST: Recipe/Edit/5
@@ -98,27 +109,19 @@ public class RecipesController(
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(Guid id, RecipeCreateEditViewModel viewModel)
+    public async Task<IActionResult> Edit(Guid id, BLL_DTO.RecipeRequest request)
     {
-        if (id != viewModel.RecipeRequest.Id)
+        if (id != request.Id)
         {
             return NotFound();
         }
-    
-        BLL_DTO.RecipeResponse existingRecipe = (await businessLogic.Recipes.FindAsync(id))!;
-        DAL_DTO.Recipe newRecipe = requestDalMapper.Map(viewModel.RecipeRequest)!;
-        newRecipe.CreatedAt = existingRecipe.CreatedAt;
-        newRecipe.AuthorUserId = (await userManager.FindByNameAsync(existingRecipe.AuthorUser))!.Id;
-        newRecipe.UpdatedAt = DateTime.Now.ToUniversalTime();
-        newRecipe.UpdatingUserId = (await userManager.GetUserAsync(User))!.Id;
-        newRecipe.ImageFileName = existingRecipe.ImageFileName;
-        
-        ModelState.Clear();
-        if (TryValidateModel(viewModel))
+
+        if (ModelState.IsValid)
         {
             try
             {
-                businessLogic.Recipes.Update(requestResponseMapper.Map(requestDalMapper.Map(newRecipe))!);
+                await businessLogic.Recipes.UpdateAsync(request, Guid.Parse(userManager.GetUserId(User)!),
+                    environment.WebRootPath);
                 await businessLogic.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -134,7 +137,7 @@ public class RecipesController(
             return RedirectToAction(nameof(Index));
         }
 
-        return View(viewModel);
+        return View(request);
     }
 
     // GET: Recipe/Delete/5

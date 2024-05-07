@@ -37,4 +37,7 @@
                     &lt;li&gt;End with a letter or a digit.&lt;/li&gt;
                 &lt;/ul&gt;</value>
     </data>
+    <data name="MissingImageFile" xml:space="preserve">
+        <value>Please select an image.</value>
+    </data>
 </root>
