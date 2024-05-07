@@ -73,7 +73,7 @@ public class RecipesController(
         try
         {
             await businessLogic.Recipes.AddAsync(
-                request, 
+                request,
                 Guid.Parse(userManager.GetUserId(User)!),
                 environment.WebRootPath);
         }
@@ -162,12 +162,7 @@ public class RecipesController(
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        BLL_DTO.RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(id);
-        if (recipe != null)
-        {
-            await businessLogic.Recipes.RemoveAsync(recipe);
-        }
-
+        await businessLogic.Recipes.RemoveAsync(id, environment.WebRootPath);
         await businessLogic.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }

@@ -23,8 +23,6 @@ public interface IEntityRepository<TEntity, in TKey>
     Task<int> RemoveAsync(TKey id);
     int RemoveRange(IEnumerable<TEntity> entities);
     int RemoveRange(IEnumerable<TKey> ids);
-    Task<int> RemoveRangeAsync(IEnumerable<TEntity> entities);
-    Task<int> RemoveRangeAsync(IEnumerable<TKey> ids);
     
     TEntity? Find(TKey id, bool tracking = false);
     Task<TEntity?> FindAsync(TKey id, bool tracking = false);

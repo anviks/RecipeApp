@@ -88,17 +88,6 @@ public class BaseEntityService<TDalEntity, TBllEntity, TRepository, TKey>(
         return Repository.RemoveRange(ids);
     }
 
-    public virtual async Task<int> RemoveRangeAsync(IEnumerable<TBllEntity> entities)
-    {
-        var dalEntities = entities.Select(Mapper.Map).Select(e => e!);
-        return await Repository.RemoveRangeAsync(dalEntities);
-    }
-
-    public virtual async Task<int> RemoveRangeAsync(IEnumerable<TKey> ids)
-    {
-        return await Repository.RemoveRangeAsync(ids);
-    }
-
     public virtual TBllEntity? Find(TKey id, bool tracking = false)
     {
         TDalEntity? dalEntity = Repository.Find(id, tracking);

@@ -26,7 +26,7 @@ public class RecipeService(
     private readonly string[] _uploadPathFromWebroot = ["uploads", "images"];
 
     public async Task<BLL_DTO.RecipeResponse> AddAsync(BLL_DTO.RecipeRequest recipeRequest, Guid userId,
-        string webRootPath)
+        string localWebRootPath)
     {
         if (recipeRequest.ImageFile == null) throw new MissingImageException();
 
@@ -34,14 +34,14 @@ public class RecipeService(
         dalRecipe.CreatedAt = DateTime.Now;
         dalRecipe.AuthorUserId = userId;
 
-        var uploadUrl = await SaveImage(recipeRequest.ImageFile, webRootPath);
+        var uploadUrl = await SaveImage(recipeRequest.ImageFile, localWebRootPath);
         dalRecipe.ImageFileUrl = uploadUrl;
         DAL_DTO.Recipe addedRecipe = Repository.Add(dalRecipe);
         return Mapper.Map(addedRecipe)!;
     }
 
     public async Task<BLL_DTO.RecipeResponse> UpdateAsync(BLL_DTO.RecipeRequest recipeRequest, Guid userId,
-        string webRootPath)
+        string localWebRootPath)
     {
         DAL_DTO.Recipe existingRecipe = (await Repository.FindAsync(recipeRequest.Id))!;
         DAL_DTO.Recipe dalRecipe = _recipeMapper.Map(recipeRequest)!;
@@ -52,8 +52,9 @@ public class RecipeService(
         
         if (recipeRequest.ImageFile != null)
         {
-            var uploadUrl = await SaveImage(recipeRequest.ImageFile, webRootPath);
+            var uploadUrl = await SaveImage(recipeRequest.ImageFile, localWebRootPath);
             dalRecipe.ImageFileUrl = uploadUrl;
+            DeleteImage(localWebRootPath, existingRecipe.ImageFileUrl);
         }
         else
         {
@@ -62,6 +63,14 @@ public class RecipeService(
 
         DAL_DTO.Recipe updatedRecipe = Repository.Update(dalRecipe);
         return Mapper.Map(updatedRecipe)!;
+    }
+    
+    public async Task<int> RemoveAsync(Guid id, string localWebRootPath)
+    {
+        DAL_DTO.Recipe? existingRecipe = await Repository.FindAsync(id);
+        if (existingRecipe == null) return 0;
+        DeleteImage(localWebRootPath, existingRecipe.ImageFileUrl);
+        return await Repository.RemoveAsync(id);
     }
 
     private async Task<string> SaveImage(IFormFile file, string webRootPath)
@@ -76,5 +85,14 @@ public class RecipeService(
 
         var uploadUrl = "~/" + string.Join("/", _uploadPathFromWebroot.Concat(new[] { fileName }));
         return uploadUrl;
+    }
+
+    private static void DeleteImage(string localWebRootPath, string imageUrl)
+    {
+        var absoluteImagePath = Path.Combine(new []{localWebRootPath}.Concat(imageUrl.Replace("~/", "").Split('/')).ToArray());
+        if (File.Exists(absoluteImagePath))
+        {
+            File.Delete(absoluteImagePath);
+        }
     }
 }

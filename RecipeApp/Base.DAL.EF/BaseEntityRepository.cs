@@ -67,7 +67,10 @@ public class BaseEntityRepository<TKey, TDomainEntity, TDalEntity, TDbContext> :
 
     public virtual int Remove(TKey id)
     {
-        return GetQuery().Where(e => e.Id.Equals(id)).ExecuteDelete();
+        TDomainEntity? entity = DbSet.Find(id);
+        if (entity == null) return 0;
+        DbContext.Remove(entity);
+        return 1;
     }
 
     public virtual async Task<int> RemoveAsync(TDalEntity entity)
@@ -77,7 +80,10 @@ public class BaseEntityRepository<TKey, TDomainEntity, TDalEntity, TDbContext> :
 
     public virtual async Task<int> RemoveAsync(TKey id)
     {
-        return await GetQuery().Where(e => e.Id.Equals(id)).ExecuteDeleteAsync();
+        TDomainEntity? entity = await DbSet.FindAsync(id);
+        if (entity == null) return 0;
+        DbSet.Remove(entity);
+        return 1;
     }
 
     public virtual int RemoveRange(IEnumerable<TDalEntity> entities)
@@ -87,17 +93,9 @@ public class BaseEntityRepository<TKey, TDomainEntity, TDalEntity, TDbContext> :
 
     public virtual int RemoveRange(IEnumerable<TKey> ids)
     {
-        return GetQuery().Where(e => ids.Contains(e.Id)).ExecuteDelete();
-    }
-
-    public virtual async Task<int> RemoveRangeAsync(IEnumerable<TDalEntity> entities)
-    {
-        return await RemoveRangeAsync(entities.Select(e => e.Id));
-    }
-
-    public virtual async Task<int> RemoveRangeAsync(IEnumerable<TKey> ids)
-    {
-        return await GetQuery().Where(e => ids.Contains(e.Id)).ExecuteDeleteAsync();
+        var entities = DbSet.Where(e => ids.Contains(e.Id));
+        DbSet.RemoveRange(entities);
+        return entities.Count();
     }
 
     public virtual TDalEntity? Find(TKey id, bool tracking = false)
@@ -132,11 +130,11 @@ public class BaseEntityRepository<TKey, TDomainEntity, TDalEntity, TDbContext> :
 
     public virtual bool Exists(TKey id, bool tracking = false)
     {
-        return Find(id, tracking) != null;
+        return DbSet.Any(e => e.Id.Equals(id));
     }
 
     public virtual async Task<bool> ExistsAsync(TKey id, bool tracking = false)
     {
-        return await FindAsync(id, tracking) != null;
+        return await DbSet.AnyAsync(e => e.Id.Equals(id));
     }
 }
