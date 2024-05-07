@@ -1,6 +1,6 @@
 using Base.Domain;
 
-namespace App.BLL.DTO.Identity;
+namespace App.DTO.v1_0.Identity;
 
 public class AppUser : BaseEntityId
 {

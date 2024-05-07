@@ -1,18 +1,12 @@
 using Base.Domain;
-using Helpers.Validation.File;
-using Microsoft.AspNetCore.Http;
 
-namespace App.BLL.DTO;
+namespace App.DTO.v1_0;
 
-public class RecipeRequest : BaseEntityId
+public class RecipeResponse : BaseEntityId
 {
     public string Title { get; set; } = default!;
     public string Description { get; set; } = default!;
-
-    [FileSize(0, 10 * 1024 * 1024)]
-    [AllowedExtensions([".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".svg"])]
-    public IFormFile? ImageFile { get; set; } = default!;
-
+    public string ImageFileUrl { get; set; } = default!;
     public List<string> Instructions { get; set; } = default!;
     public int PreparationTime { get; set; }
     public int CookingTime { get; set; }
@@ -20,4 +14,8 @@ public class RecipeRequest : BaseEntityId
     public bool IsVegetarian { get; set; }
     public bool IsVegan { get; set; }
     public bool IsGlutenFree { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public Identity.AppUser AuthorUser { get; set; } = default!;
+    public DateTime? UpdatedAt { get; set; }
+    public Identity.AppUser? UpdatingUser { get; set; }
 }
