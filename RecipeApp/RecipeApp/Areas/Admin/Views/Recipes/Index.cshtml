@@ -101,13 +101,13 @@
                 @Html.DisplayFor(modelItem => item.CreatedAt)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AuthorUser)
+                @Html.DisplayFor(modelItem => item.AuthorUser.Username)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.UpdatedAt)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.UpdatingUser)
+                @Html.DisplayFor(modelItem => item.UpdatingUser!.Username)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

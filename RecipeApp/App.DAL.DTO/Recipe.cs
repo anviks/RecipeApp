@@ -1,4 +1,5 @@
-﻿using Base.Domain;
+﻿using App.Domain.Identity;
+using Base.Domain;
 
 namespace App.DAL.DTO;
 
@@ -16,6 +17,8 @@ public class Recipe : BaseEntityId
     public bool IsGlutenFree { get; set; }
     public DateTime CreatedAt { get; set; }
     public Guid AuthorUserId { get; set; }
+    public AppUser AuthorUser { get; set; } = default!;
     public DateTime? UpdatedAt { get; set; }
     public Guid? UpdatingUserId { get; set; }
+    public AppUser? UpdatingUser { get; set; }
 }

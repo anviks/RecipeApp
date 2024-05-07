@@ -11,5 +11,6 @@ public class AutoMapperProfile : Profile
         CreateMap<DAL_DTO.Recipe, BLL_DTO.RecipeResponse>().ReverseMap();
         CreateMap<DAL_DTO.Recipe, BLL_DTO.RecipeRequest>().ReverseMap();
         CreateMap<BLL_DTO.RecipeRequest, BLL_DTO.RecipeResponse>().ReverseMap();
+        CreateMap<App.Domain.Identity.AppUser, BLL_DTO.Identity.AppUser>();
     }
 }

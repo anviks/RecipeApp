@@ -1,4 +1,5 @@
-﻿using Base.Domain;
+﻿using BLL_DTO = App.BLL.DTO.Identity;
+using Base.Domain;
 
 namespace App.BLL.DTO;
 
@@ -15,7 +16,7 @@ public class RecipeResponse : BaseEntityId
     public bool IsVegan { get; set; }
     public bool IsGlutenFree { get; set; }
     public DateTime CreatedAt { get; set; }
-    public string AuthorUser { get; set; } = default!;
+    public BLL_DTO.AppUser AuthorUser { get; set; } = default!;
     public DateTime? UpdatedAt { get; set; }
-    public string? UpdatingUser { get; set; }
+    public BLL_DTO.AppUser? UpdatingUser { get; set; }
 }
