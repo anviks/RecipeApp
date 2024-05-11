@@ -1,24 +1,55 @@
 <script setup lang="ts">
-import { inject, ref } from 'vue';
-import type { Ingredient } from '@/types';
+import { inject, onMounted, ref } from 'vue';
+import type { Ingredient, IngredientType } from '@/types';
 import IngredientsService from '@/services/ingredientsService';
 import { useRouter } from 'vue-router';
 import { handleApiResult } from '@/helpers/apiUtils';
+import type IngredientTypesService from '@/services/ingredientTypesService';
+import type IngredientTypeAssociationsService from '@/services/ingredientTypeAssociationsService';
 
 const ingredientsService = inject('ingredientsService') as IngredientsService;
+const ingredientTypesService = inject('ingredientTypesService') as IngredientTypesService;
+const ingredientTypeAssociationsService = inject('ingredientTypeAssociationsService') as IngredientTypeAssociationsService;
 const router = useRouter();
-const ingredient = ref<Ingredient>({ name: '' });
+const ingredient = ref<Ingredient>({ name: '', ingredientTypeAssociations: [] });
+const ingredientTypes = ref<IngredientType[]>([]);
 const errors = ref<string[]>([]);
 
+onMounted(async () => {
+    const types = await ingredientTypesService.findAll();
+    ingredientTypes.value = types.data!;
+});
+
 const submitCreate = async () => {
-    await handleApiResult<Ingredient>(
-        ingredientsService.create(ingredient.value!),
-        ingredient,
-        errors,
+    const associations = ingredient.value.ingredientTypeAssociations!;
+    await handleApiResult({
+        result: ingredientsService.create(ingredient.value),
+        dataRef: ingredient,
+        errorsRef: errors,
         router,
-        'Ingredients',
-        'Ingredients'
-    );
+        fallbackRedirect: 'Ingredients'
+    });
+
+    for (const association of associations) {
+        association.ingredientId = ingredient.value.id!;
+        await handleApiResult({
+            result: ingredientTypeAssociationsService.create(association),
+            errorsRef: errors,
+            router,
+            fallbackRedirect: 'Ingredients'
+        });
+    }
+    
+    await router.push({ name: 'Ingredients' });
+};
+
+const addType = () => {
+    ingredient.value.ingredientTypeAssociations!.push({ ingredientTypeId: '', ingredientId: '' });
+};
+
+const removeType = () => {
+    const length = ingredient.value.ingredientTypeAssociations!.length;
+    ingredient.value.ingredientTypeAssociations!.splice(length - 1, 1);
 };
 </script>
 
@@ -34,6 +65,20 @@ const submitCreate = async () => {
                     <label class="control-label" for="Name">Name</label>
                     <input class="form-control valid" type="text" v-model="ingredient.name">
                     <span class="text-danger field-validation-valid"></span>
+                </div>
+                <div v-for="(association, index) in ingredient.ingredientTypeAssociations" :key="index"
+                     class="form-group">
+                    <label class="control-label" for="IngredientType">Type</label>
+                    <select class="form-control" id="IngredientType"
+                            v-model="ingredient.ingredientTypeAssociations![index].ingredientTypeId">
+                        <option v-for="type in ingredientTypes" :key="type.id" :value="type.id">{{ type.name }}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button @click.prevent="addType" type="submit" class="btn btn-primary">Add Type</button>
+                    <button @click.prevent="removeType" type="submit" class="btn btn-danger"
+                            :disabled="ingredient.ingredientTypeAssociations?.length === 0">Remove Type
+                    </button>
                 </div>
                 <div class="form-group">
                     <button @click.prevent="submitCreate" type="submit" class="btn btn-primary">Create</button>

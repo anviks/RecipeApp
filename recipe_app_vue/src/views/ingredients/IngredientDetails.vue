@@ -1,26 +1,34 @@
 <script setup lang="ts">
-import type { Ingredient, Optional, ResultObject } from '@/types';
+import type { Ingredient, IngredientType, Optional } from '@/types';
 import { inject, onMounted, ref } from 'vue';
 import IngredientsService from '@/services/ingredientsService';
 import { useRoute, useRouter } from 'vue-router';
 import { handleApiResult } from '@/helpers/apiUtils';
 import ConditionalContent from '@/components/ConditionalContent.vue';
+import type IngredientTypesService from '@/services/ingredientTypesService';
 
 const route = useRoute();
 const router = useRouter();
 const id = route.params.id.toString();
 const ingredientsService = inject('ingredientsService') as IngredientsService;
+const ingredientTypesService = inject('ingredientTypesService') as IngredientTypesService;
 const ingredient = ref<Optional<Ingredient>>(null);
+const ingredientTypes = ref<IngredientType[]>([]);
 const errors = ref<string[]>([]);
 
 onMounted(async () => {
-    await handleApiResult<Ingredient>(
-        ingredientsService.findById(id),
-        ingredient,
-        errors,
+    await handleApiResult<Ingredient>({
+        result: ingredientsService.findById(id),
+        dataRef: ingredient,
+        errorsRef: errors,
         router,
-        'Ingredients'
-    );
+        fallbackRedirect: 'Ingredients'
+    });
+    
+    for (const association of ingredient.value!.ingredientTypeAssociations!) {
+        const type = await ingredientTypesService.findById(association.ingredientTypeId);
+        ingredientTypes.value.push(type.data!);
+    }
 });
 </script>
 
@@ -37,6 +45,14 @@ onMounted(async () => {
                 </dt>
                 <dd class="col-sm-10">
                     {{ ingredient!.name }}
+                </dd>
+            </dl>
+            <dl v-for="type in ingredientTypes" :key="type.id" class="row">
+                <dt class="col-sm-2">
+                    Type
+                </dt>
+                <dd class="col-sm-10">
+                    {{ type.name }}
                 </dd>
             </dl>
         </ConditionalContent>

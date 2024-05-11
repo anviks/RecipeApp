@@ -14,13 +14,13 @@ const router = useRouter();
 const id = route.params.id.toString();
 
 onMounted(async () => {
-    await handleApiResult<IngredientType>(
-        ingredientTypesService.findById(id),
-        ingredientType,
-        errors,
+    await handleApiResult<IngredientType>({
+        result: ingredientTypesService.findById(id),
+        dataRef: ingredientType,
+        errorsRef: errors,
         router,
-        'IngredientTypes'
-    );
+        fallbackRedirect: 'IngredientTypes'
+    });
 });
 </script>
 

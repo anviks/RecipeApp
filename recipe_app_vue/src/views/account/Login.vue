@@ -28,7 +28,7 @@ const submitLogin = async () => {
         errors.value = [];
         await router.push(returnUrl ?? '/');
     } else {
-        errors.value = result.errors!;
+        errors.value = result.errors?.map(e => e.message) ?? [];
     }
 
     loginIsOngoing.value = false;

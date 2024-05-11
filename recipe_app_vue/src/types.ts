@@ -26,10 +26,17 @@ export interface UserInfo {
 export interface Ingredient {
     id?: string;
     name: string;
+    ingredientTypeAssociations?: IngredientTypeAssociation[];
 }
 
 export interface IngredientType {
     id?: string;
     name: string;
     description: string;
+}
+
+export interface IngredientTypeAssociation {
+    id?: string;
+    ingredientId: string;
+    ingredientTypeId: string;
 }

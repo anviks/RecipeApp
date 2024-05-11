@@ -14,24 +14,24 @@ const ingredient = ref<Optional<Ingredient>>(null);
 const errors = ref<string[]>([]);
 
 onMounted(async () => {
-    await handleApiResult<Ingredient>(
-        ingredientsService.findById(id),
-        ingredient,
-        errors,
+    await handleApiResult<Ingredient>({
+        result: ingredientsService.findById(id),
+        dataRef: ingredient,
+        errorsRef: errors,
         router,
-        'Ingredients'
-    );
+        fallbackRedirect: 'Ingredients'
+    });
 });
 
 const submitEdit = async () => {
-    await handleApiResult<Ingredient>(
-        ingredientsService.update(id, ingredient.value!),
-        ingredient,
-        errors,
+    await handleApiResult<Ingredient>({
+        result: ingredientsService.update(id, ingredient.value!),
+        dataRef: ingredient,
+        errorsRef: errors,
         router,
-        'Ingredients',
-        'Ingredients'
-    );
+        fallbackRedirect: 'Ingredients',
+        successRedirect: 'Ingredients'
+    });
 };
 </script>
 

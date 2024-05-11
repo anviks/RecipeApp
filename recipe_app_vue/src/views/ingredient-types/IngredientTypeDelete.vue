@@ -14,24 +14,23 @@ const ingredientType = ref<Optional<IngredientType>>(null);
 const errors = ref<string[]>([]);
 
 onMounted(async () => {
-    await handleApiResult<IngredientType>(
-        ingredientTypesService.findById(id),
-        ingredientType,
-        errors,
+    await handleApiResult<IngredientType>({
+        result: ingredientTypesService.findById(id),
+        dataRef: ingredientType,
+        errorsRef: errors,
         router,
-        'IngredientTypes'
-    );
+        fallbackRedirect: 'IngredientTypes'
+    });
 });
 
 const deleteIngredientType = async () => {
-    await handleApiResult<IngredientType>(
-        ingredientTypesService.delete(ingredientType.value!.id!),
-        ingredientType,
-        errors,
+    await handleApiResult<IngredientType>({
+        result: ingredientTypesService.delete(ingredientType.value!.id!),
+        errorsRef: errors,
         router,
-        'IngredientTypes',
-        'IngredientTypes'
-    );
+        fallbackRedirect: 'IngredientTypes',
+        successRedirect: 'IngredientTypes'
+    });
 };
 </script>
 

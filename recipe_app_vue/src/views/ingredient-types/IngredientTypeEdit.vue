@@ -14,24 +14,24 @@ const router = useRouter();
 const id = route.params.id.toString();
 
 onMounted(async () => {
-    await handleApiResult<IngredientType>(
-        ingredientTypesService.findById(id),
-        ingredientType,
-        errors,
+    await handleApiResult<IngredientType>({
+        result: ingredientTypesService.findById(id),
+        dataRef: ingredientType,
+        errorsRef: errors,
         router,
-        'IngredientTypes'
-    );
+        fallbackRedirect: 'IngredientTypes'
+    });
 });
 
 const submitEdit = async () => {
-    await handleApiResult<IngredientType>(
-        ingredientTypesService.update(id, ingredientType.value!),
-        ingredientType,
-        errors,
+    await handleApiResult<IngredientType>({
+        result: ingredientTypesService.update(id, ingredientType.value!),
+        dataRef: ingredientType,
+        errorsRef: errors,
         router,
-        'IngredientTypes',
-        'IngredientTypes'
-    );
+        fallbackRedirect: 'IngredientTypes',
+        successRedirect: 'IngredientTypes'
+    });
 };
 </script>
 

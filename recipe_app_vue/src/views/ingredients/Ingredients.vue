@@ -22,18 +22,24 @@ onMounted(async () => {
             <th>
                 Name
             </th>
+            <th>
+                Types
+            </th>
             <th></th>
         </tr>
         </thead>
         <tbody>
-        <tr v-for="element in ingredients.data" :key="element.id">
+        <tr v-for="ingredient in ingredients.data" :key="ingredient.id">
             <td>
-                {{ element.name }}
+                {{ ingredient.name }}
             </td>
             <td>
-                <RouterLink :to="{name: 'IngredientEdit', params: {id: element.id}}">Edit</RouterLink> |
-                <RouterLink :to="{name: 'IngredientDetails', params: {id: element.id}}">Details</RouterLink> |
-                <RouterLink :to="{name: 'IngredientDelete', params: {id: element.id}}">Delete</RouterLink>
+                {{ ingredient.ingredientTypeAssociations?.length }}
+            </td>
+            <td>
+                <RouterLink :to="{name: 'IngredientEdit', params: {id: ingredient.id}}">Edit</RouterLink> |
+                <RouterLink :to="{name: 'IngredientDetails', params: {id: ingredient.id}}">Details</RouterLink> |
+                <RouterLink :to="{name: 'IngredientDelete', params: {id: ingredient.id}}">Delete</RouterLink>
             </td>
         </tr>
         </tbody>

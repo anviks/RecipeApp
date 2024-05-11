@@ -11,14 +11,14 @@ const ingredientType = ref<IngredientType>({ name: '', description: '' });
 const errors = ref<string[]>([]);
 
 const submitCreate = async () => {
-    await handleApiResult<IngredientType>(
-        ingredientTypesService.create(ingredientType.value!),
-        ingredientType,
-        errors,
+    await handleApiResult<IngredientType>({
+        result: ingredientTypesService.create(ingredientType.value!),
+        dataRef: ingredientType,
+        errorsRef: errors,
         router,
-        'IngredientTypes',
-        'IngredientTypes'
-    );
+        fallbackRedirect: 'IngredientTypes',
+        successRedirect: 'IngredientTypes'
+    });
 };
 </script>
 
