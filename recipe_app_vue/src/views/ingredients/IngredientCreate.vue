@@ -1,16 +1,24 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import type { Ingredient, Optional } from '@/types';
+import { inject, ref } from 'vue';
+import type { Ingredient } from '@/types';
 import IngredientsService from '@/services/ingredientsService';
 import { useRouter } from 'vue-router';
+import { handleApiResult } from '@/helpers/apiUtils';
 
-
+const ingredientsService = inject('ingredientsService') as IngredientsService;
 const router = useRouter();
-let ingredient = ref<Ingredient>({ name: '' });
+const ingredient = ref<Ingredient>({ name: '' });
+const errors = ref<string[]>([]);
 
 const submitCreate = async () => {
-    await IngredientsService.create(ingredient.value!);
-    await router.push({ name: 'Ingredients' });
+    await handleApiResult<Ingredient>(
+        ingredientsService.create(ingredient.value!),
+        ingredient,
+        errors,
+        router,
+        'Ingredients',
+        'Ingredients'
+    );
 };
 </script>
 
@@ -28,7 +36,7 @@ const submitCreate = async () => {
                     <span class="text-danger field-validation-valid"></span>
                 </div>
                 <div class="form-group">
-                    <button @click.prevent="submitCreate" type="submit" class="btn btn-primary">Save</button>
+                    <button @click.prevent="submitCreate" type="submit" class="btn btn-primary">Create</button>
                 </div>
             </form>
         </div>

@@ -1,7 +1,13 @@
 export type Optional<T> = T | null | undefined | never;
 
+export interface ErrorResponse {
+    status?: number;
+    statusText?: string;
+    message: string;
+}
+
 export interface ResultObject<TResponseData> {
-    errors?: string[];
+    errors?: ErrorResponse[];
     data?: TResponseData;
 }
 

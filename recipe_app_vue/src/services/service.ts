@@ -1,10 +1,11 @@
 import type { ResultObject } from '@/types';
-import httpClient from '@/services/httpClient';
+import httpClient from '@/helpers/httpClient';
 
 export default abstract class Service {
-    protected constructor() {}
+    public constructor() {
+    }
 
-    protected static async makeRequest<T>(
+    protected async makeRequest<T>(
         method: string,
         url: string,
         data?: any,
@@ -18,22 +19,20 @@ export default abstract class Service {
                 headers,
                 data
             });
-            if (response.status < 300) {
-                return {
-                    data: response.data
-                };
-            }
             return {
-                errors: [response.status.toString() + ' ' + response.statusText]
+                data: response.data
             };
         } catch (error: any) {
+            console.error(error);
             return {
-                errors: [JSON.stringify(error)]
+                errors: [{
+                    status: error.response.status,
+                    statusText: error.response.statusText,
+                    message: error.response.data?.error
+                }]
             };
         }
     }
-    
-    protected static getServiceUrl(): string {
-        return '';
-    }
+
+    protected abstract getServiceUrl(): string;
 }

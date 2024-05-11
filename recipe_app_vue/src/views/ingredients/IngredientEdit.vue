@@ -1,21 +1,37 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import type { Ingredient, ResultObject } from '@/types';
+import { inject, onMounted, ref } from 'vue';
+import type { Ingredient, Optional } from '@/types';
 import { useRoute, useRouter } from 'vue-router';
 import IngredientsService from '@/services/ingredientsService';
+import { handleApiResult } from '@/helpers/apiUtils';
+import ConditionalContent from '@/components/ConditionalContent.vue';
 
-let ingredient = ref<ResultObject<Ingredient>>({});
 const route = useRoute();
 const router = useRouter();
 const id = route.params.id.toString();
+const ingredientsService = inject('ingredientsService') as IngredientsService;
+const ingredient = ref<Optional<Ingredient>>(null);
+const errors = ref<string[]>([]);
 
 onMounted(async () => {
-    ingredient.value = await IngredientsService.findById(id);
+    await handleApiResult<Ingredient>(
+        ingredientsService.findById(id),
+        ingredient,
+        errors,
+        router,
+        'Ingredients'
+    );
 });
 
 const submitEdit = async () => {
-    await IngredientsService.update(id, ingredient.value.data!);
-    await router.push({ name: 'Ingredients' });
+    await handleApiResult<Ingredient>(
+        ingredientsService.update(id, ingredient.value!),
+        ingredient,
+        errors,
+        router,
+        'Ingredients',
+        'Ingredients'
+    );
 };
 </script>
 
@@ -25,19 +41,20 @@ const submitEdit = async () => {
     <h4>Ingredient</h4>
     <hr>
     <div class="row">
-        <div class="col-md-4">
-            <form v-if="ingredient.data" method="post">
-                <div class="form-group">
-                    <label class="control-label" for="Name">Name</label>
-                    <input class="form-control valid" type="text" v-model="ingredient.data.name">
-                    <span class="text-danger field-validation-valid"></span>
-                </div>
-                <div class="form-group">
-                    <button @click.prevent="submitEdit" type="submit" class="btn btn-primary">Save</button>
-                </div>
-            </form>
-            <span v-else>Loading...</span>
-        </div>
+        <ConditionalContent :errors="errors" :expected-content="ingredient">
+            <div class="col-md-4">
+                <form method="post">
+                    <div class="form-group">
+                        <label class="control-label" for="Name">Name</label>
+                        <input class="form-control valid" type="text" v-model="ingredient!.name">
+                        <span class="text-danger field-validation-valid"></span>
+                    </div>
+                    <div class="form-group">
+                        <button @click.prevent="submitEdit" type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </ConditionalContent>
     </div>
 
     <div>

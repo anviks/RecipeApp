@@ -2,16 +2,22 @@
 import { useAuthStore } from '@/stores/auth';
 import AccountService from '@/services/accountService';
 import { useRoute, useRouter } from 'vue-router';
+import { inject, ref, watch } from 'vue';
 
+const accountService = inject('accountService') as AccountService;
 const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
-const logout = async () => {
-    await AccountService.logout();
-    await router.push({ name: 'Home' });
-};
+const currentPath = ref<string>(route.fullPath);
 
-const currentPath = route.path;
+watch(() => route.fullPath, (newVal) => {
+    currentPath.value = newVal;
+});
+
+const logout = async () => {
+    await accountService.logout();
+    await router.push({ name: 'Login', query: { returnUrl: currentPath.value } });
+};
 </script>
 
 <template>
@@ -53,10 +59,14 @@ const currentPath = route.path;
                     </ul>
                     <ul v-if="!authStore.isAuthenticated" class="navbar-nav">
                         <li class="nav-item">
-                            <RouterLink class="nav-link text-dark" :to="{name: 'Register', query: {returnUrl: currentPath}}">Register</RouterLink>
+                            <RouterLink class="nav-link text-dark"
+                                        :to="{name: 'Register', query: {returnUrl: currentPath}}">Register
+                            </RouterLink>
                         </li>
                         <li class="nav-item">
-                            <RouterLink class="nav-link text-dark" :to="{name: 'Login', query: {returnUrl: currentPath}}">Login</RouterLink>
+                            <RouterLink class="nav-link text-dark"
+                                        :to="{name: 'Login', query: {returnUrl: currentPath}}">Login
+                            </RouterLink>
                         </li>
                     </ul>
                     <ul v-else class="navbar-nav">

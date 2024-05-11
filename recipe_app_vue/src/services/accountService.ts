@@ -1,18 +1,13 @@
 import type { LoginData, ResultObject, UserInfo } from '@/types';
-import httpClient from '@/services/httpClient';
 import { useAuthStore } from '@/stores/auth';
 import Service from '@/services/service';
 
 export default class AccountService extends Service {
-    private constructor() {
-        super();
+    async login(loginData: LoginData): Promise<ResultObject<UserInfo>> {
+        return await this.makeRequest<UserInfo>('POST', 'login', loginData);
     }
 
-    static async login(loginData: LoginData): Promise<ResultObject<UserInfo>> {
-        return await this.makeRequest<UserInfo>('POST', 'login?expiresInSeconds=5', loginData);
-    }
-
-    static async logout(): Promise<ResultObject<null>> {
+    async logout(): Promise<ResultObject<null>> {
         const authStore = useAuthStore();
         const result = await this.makeRequest<null>('POST', 'logout', {
             refreshToken: authStore.refreshToken
@@ -23,7 +18,7 @@ export default class AccountService extends Service {
         return result;
     }
 
-    protected static override getServiceUrl(): string {
+    protected override getServiceUrl(): string {
         return 'account/';
     }
 }

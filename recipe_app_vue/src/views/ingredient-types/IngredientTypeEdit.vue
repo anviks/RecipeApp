@@ -1,21 +1,37 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import type { IngredientType, ResultObject } from '@/types';
+import { inject, onMounted, ref } from 'vue';
+import type { IngredientType, Optional } from '@/types';
 import { useRoute, useRouter } from 'vue-router';
 import IngredientTypesService from '@/services/ingredientTypesService';
+import { handleApiResult } from '@/helpers/apiUtils';
+import ConditionalContent from '@/components/ConditionalContent.vue';
 
-let ingredientType = ref<ResultObject<IngredientType>>({});
+const ingredientTypesService = inject('ingredientTypesService') as IngredientTypesService;
+const ingredientType = ref<Optional<IngredientType>>(null);
+const errors = ref<string[]>([]);
 const route = useRoute();
 const router = useRouter();
 const id = route.params.id.toString();
 
 onMounted(async () => {
-    ingredientType.value = await IngredientTypesService.findById(id);
+    await handleApiResult<IngredientType>(
+        ingredientTypesService.findById(id),
+        ingredientType,
+        errors,
+        router,
+        'IngredientTypes'
+    );
 });
 
 const submitEdit = async () => {
-    await IngredientTypesService.update(id, ingredientType.value.data!);
-    await router.push({ name: 'IngredientTypes' });
+    await handleApiResult<IngredientType>(
+        ingredientTypesService.update(id, ingredientType.value!),
+        ingredientType,
+        errors,
+        router,
+        'IngredientTypes',
+        'IngredientTypes'
+    );
 };
 </script>
 
@@ -25,24 +41,25 @@ const submitEdit = async () => {
     <h4>IngredientType</h4>
     <hr>
     <div class="row">
-        <div class="col-md-4">
-            <form v-if="ingredientType.data" method="post">
-                <div class="form-group">
-                    <label class="control-label" for="Name">Name</label>
-                    <input class="form-control" type="text" id="Name" v-model="ingredientType.data.name">
-                    <span class="text-danger field-validation-valid"></span>
-                </div>
-                <div class="form-group">
-                    <label class="control-label" for="Description">Description</label>
-                    <input class="form-control" type="text" id="Description" v-model="ingredientType.data.description">
-                    <span class="text-danger field-validation-valid"></span>
-                </div>
-                <div class="form-group">
-                    <button @click.prevent="submitEdit" type="submit" class="btn btn-primary">Save</button>
-                </div>
-            </form>
-            <span v-else>Loading...</span>
-        </div>
+        <ConditionalContent :errors="errors" :expected-content="ingredientType">
+            <div class="col-md-4">
+                <form method="post">
+                    <div class="form-group">
+                        <label class="control-label" for="Name">Name</label>
+                        <input class="form-control" type="text" id="Name" v-model="ingredientType!.name">
+                        <span class="text-danger field-validation-valid"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="Description">Description</label>
+                        <input class="form-control" type="text" id="Description" v-model="ingredientType!.description">
+                        <span class="text-danger field-validation-valid"></span>
+                    </div>
+                    <div class="form-group">
+                        <button @click.prevent="submitEdit" type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </ConditionalContent>
     </div>
 
     <div>

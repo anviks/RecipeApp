@@ -1,27 +1,44 @@
 <script setup lang="ts">
-
-import type { Ingredient, ResultObject } from '@/types';
-import { onMounted, ref } from 'vue';
+import type { Ingredient, Optional } from '@/types';
+import { inject, onMounted, ref } from 'vue';
 import IngredientsService from '@/services/ingredientsService';
 import { useRoute, useRouter } from 'vue-router';
+import { handleApiResult } from '@/helpers/apiUtils';
+import ConditionalContent from '@/components/ConditionalContent.vue';
 
+const ingredientsService = inject('ingredientsService') as IngredientsService;
 const route = useRoute();
 const router = useRouter();
-const ingredient = ref<ResultObject<Ingredient>>({});
-const deleteIngredient = async () => {
-    await IngredientsService.delete(ingredient.value.data?.id!);
-    await router.push({ name: 'Ingredients' });
-};
+const id = route.params.id.toString();
+const ingredient = ref<Optional<Ingredient>>(null);
+const errors = ref<string[]>([]);
 
 onMounted(async () => {
-    ingredient.value = await IngredientsService.findById(route.params.id.toString());
+    await handleApiResult<Ingredient>(
+        ingredientsService.findById(id),
+        ingredient,
+        errors,
+        router,
+        'Ingredients'
+    );
 });
+
+const deleteIngredient = async () => {
+    await handleApiResult<Ingredient>(
+        ingredientsService.delete(ingredient.value!.id!),
+        ingredient,
+        errors,
+        router,
+        'Ingredients',
+        'Ingredients'
+    );
+};
 </script>
 
 <template>
     <h1>Delete</h1>
 
-    <div v-if="ingredient.data">
+    <ConditionalContent :errors="errors" :expected-content="ingredient">
         <h3>Are you sure you want to delete this?</h3>
         <div>
             <h4>Ingredient</h4>
@@ -32,17 +49,16 @@ onMounted(async () => {
                     Name
                 </dt>
                 <dd class="col-sm-10">
-                    {{ ingredient.data.name }}
+                    {{ ingredient!.name }}
                 </dd>
             </dl>
 
             <form method="post">
-                <input @click.prevent="deleteIngredient" type="submit" value="Delete" class="btn btn-danger"> |
+                <button @click.prevent="deleteIngredient" type="submit" class="btn btn-danger">Delete</button> |
                 <RouterLink :to="{name: 'Ingredients'}">Back to List</RouterLink>
             </form>
         </div>
-    </div>
-    <span v-else>Loading...</span>
+    </ConditionalContent>
 </template>
 
 <style scoped></style>

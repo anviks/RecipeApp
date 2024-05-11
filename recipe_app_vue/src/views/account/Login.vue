@@ -1,27 +1,26 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import AccountService from '@/services/accountService';
 import type { LoginData, ResultObject, UserInfo } from '@/types';
 import { useRoute, useRouter } from 'vue-router';
 
+const accountService = inject('accountService') as AccountService;
 const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
-
 const returnUrl = route.query.returnUrl as string | undefined;
-
-let loginData = ref<LoginData>({
+const loginData = ref<LoginData>({
     usernameOrEmail: '',
     password: ''
 });
-let loginIsOngoing = ref(false);
-let errors = ref<string[]>([]);
+const loginIsOngoing = ref(false);
+const errors = ref<string[]>([]);
 
 const submitLogin = async () => {
     loginIsOngoing.value = true;
 
-    const result: ResultObject<UserInfo> = await AccountService.login(loginData.value);
+    const result: ResultObject<UserInfo> = await accountService.login(loginData.value);
 
     if (result.data) {
         authStore.jsonWebToken = result.data.jsonWebToken;
