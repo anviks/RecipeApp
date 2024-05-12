@@ -20,7 +20,6 @@ export async function handleApiResult<T>(
         fallbackRedirect,
         successRedirect
     }: ApiResultHandlerOptions<T>) {
-    errorsRef.value = [];
     const response = await result;
     if (!response.errors && successRedirect) {
         await router.push({ name: successRedirect });
@@ -32,8 +31,10 @@ export async function handleApiResult<T>(
     } else if (response.errors && response.errors.some(item => item !== undefined!)) {
         for (const error of response.errors) {
             if (error.status === 401) {
+                errorsRef.value = [];
                 errorsRef.value.push('You must be logged in to perform this action.');
             } else if (error.status === 403) {
+                errorsRef.value = [];
                 errorsRef.value.push('You do not have permission to perform this action.');
             } else if (error.message) {
                 errorsRef.value.push(error.message);

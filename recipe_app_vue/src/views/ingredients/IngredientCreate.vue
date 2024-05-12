@@ -22,6 +22,7 @@ onMounted(async () => {
 
 const submitCreate = async () => {
     const associations = ingredient.value.ingredientTypeAssociations!;
+    
     await handleApiResult({
         result: ingredientsService.create(ingredient.value),
         dataRef: ingredient,
@@ -39,8 +40,10 @@ const submitCreate = async () => {
             fallbackRedirect: 'Ingredients'
         });
     }
-    
-    await router.push({ name: 'Ingredients' });
+
+    if (errors.value.length === 0) {
+        await router.push({ name: 'Ingredients' });
+    }
 };
 
 const addType = () => {
@@ -68,15 +71,15 @@ const removeType = () => {
                 </div>
                 <div v-for="(association, index) in ingredient.ingredientTypeAssociations" :key="index"
                      class="form-group">
-                    <label class="control-label" for="IngredientType">Type</label>
-                    <select class="form-control" id="IngredientType"
+                    <label class="control-label" :for="'IngredientType' + index">Type</label>
+                    <select class="form-control" :id="'IngredientType' + index"
                             v-model="ingredient.ingredientTypeAssociations![index].ingredientTypeId">
                         <option v-for="type in ingredientTypes" :key="type.id" :value="type.id">{{ type.name }}</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <button @click.prevent="addType" type="submit" class="btn btn-primary">Add Type</button>
-                    <button @click.prevent="removeType" type="submit" class="btn btn-danger"
+                    <button @click="addType" type="button" class="btn btn-primary">Add Type</button>
+                    <button @click="removeType" type="button" class="btn btn-danger"
                             :disabled="ingredient.ingredientTypeAssociations?.length === 0">Remove Type
                     </button>
                 </div>
