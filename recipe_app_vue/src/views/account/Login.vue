@@ -60,12 +60,15 @@ const submitLogin = async () => {
                     <div>
                         <button @click="submitLogin" :disabled="loginIsOngoing" id="login-submit" type="submit"
                                 class="w-100 btn btn-lg btn-primary">
-                                <span v-if="loginIsOngoing">
-                                    <span class="spinner-border spinner-border-sm" role="status"></span>
-                                    Loading...
-                                </span>
+                            <span v-if="loginIsOngoing">
+                                <span class="spinner-border spinner-border-sm" role="status"></span>
+                                Loading...
+                            </span>
                             <span v-else>Log in</span>
                         </button>
+                        <p>Don't have an account?
+                            <RouterLink :to="{name: 'Register', query: route.query}">Register</RouterLink>
+                        </p>
                     </div>
                 </form>
             </div>

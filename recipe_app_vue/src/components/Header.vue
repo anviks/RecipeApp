@@ -8,15 +8,17 @@ const accountService = inject('accountService') as AccountService;
 const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
-const currentPath = ref<string>(route.fullPath);
+const returnPath = ref<string>(route.path);
 
-watch(() => route.fullPath, (newVal) => {
-    currentPath.value = newVal;
+watch(() => route.path, (newVal) => {
+    if (!['/account/login', '/account/register'].includes(newVal)) {
+        returnPath.value = newVal;
+    }
 });
 
 const logout = async () => {
     await accountService.logout();
-    await router.push({ name: 'Login', query: { returnUrl: currentPath.value } });
+    await router.push({ name: 'Login', query: { returnUrl: returnPath.value } });
 };
 </script>
 
@@ -60,12 +62,12 @@ const logout = async () => {
                     <ul v-if="!authStore.isAuthenticated" class="navbar-nav">
                         <li class="nav-item">
                             <RouterLink class="nav-link text-dark"
-                                        :to="{name: 'Register', query: {returnUrl: currentPath}}">Register
+                                        :to="{name: 'Register', query: {...route.query, returnUrl: returnPath}}">Register
                             </RouterLink>
                         </li>
                         <li class="nav-item">
                             <RouterLink class="nav-link text-dark"
-                                        :to="{name: 'Login', query: {returnUrl: currentPath}}">Login
+                                        :to="{name: 'Login', query: {...route.query, returnUrl: returnPath}}">Login
                             </RouterLink>
                         </li>
                     </ul>

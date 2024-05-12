@@ -28,7 +28,7 @@ export default abstract class Service {
                 errors: [{
                     status: error.response.status,
                     statusText: error.response.statusText,
-                    message: error.response.data?.error
+                    message: error.response.data?.error || JSON.stringify(error.response.data?.errors)
                 }]
             };
         }

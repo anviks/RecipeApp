@@ -16,6 +16,13 @@ export interface LoginData {
     password: string;
 }
 
+export interface RegisterData {
+    username: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+}
+
 export interface UserInfo {
     jsonWebToken: string;
     refreshToken: string;
