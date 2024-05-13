@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { Ingredient } from '@/types';
+import { Ingredient, IngredientType } from '@/types';
 import { useParams, useRouter } from 'next/navigation';
 import { useIngredientsService } from '@/components/ServiceContext';
 import { useUserContext } from '@/components/AppState';
@@ -63,7 +63,7 @@ export default function Edit() {
     );
 }
 
-function renderIngredient(ingredient: Ingredient, setIngredient: React.Dispatch<React.SetStateAction<Ingredient>>) {
+function renderIngredient(ingredient: Ingredient, setIngredient: (ingredient: Ingredient) => void) {
     const updateInput = (e: ChangeEvent<HTMLInputElement>) => {
         setIngredient({...ingredient!, [e.target.name]: e.target.value});
     }

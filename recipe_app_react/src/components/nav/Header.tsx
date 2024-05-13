@@ -21,9 +21,15 @@ export default function Header() {
                             <li className="nav-item">
                                 <Link href={'/ingredients'} className="nav-link text-dark">Ingredients</Link>
                             </li>
+                            <li className="nav-item">
+                                <Link href={'/ingredient-types'} className="nav-link text-dark">Ingredient types</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link href={'/ingredient-type-associations'} className="nav-link text-dark">Ingredient type associations</Link>
+                            </li>
                         </ul>
                         <ul className="navbar-nav">
-                            <Identity/>
+                            <Identity />
                         </ul>
                     </div>
                 </div>

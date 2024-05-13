@@ -13,6 +13,6 @@ export default class IngredientsService extends GenericService<Ingredient> {
     }
 
     protected override getServiceUrl(): string {
-        return 'ingredients/';
+        return 'Ingredients/';
     }
 }
