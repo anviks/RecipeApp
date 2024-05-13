@@ -55,5 +55,7 @@ export interface IngredientType {
 export interface IngredientTypeAssociation {
     id?: string;
     ingredientId: string;
+    ingredient?: Ingredient;
     ingredientTypeId: string;
+    ingredientType?: IngredientType;
 }

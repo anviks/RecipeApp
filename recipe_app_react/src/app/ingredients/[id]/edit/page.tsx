@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { Ingredient, IngredientType } from '@/types';
+import { Ingredient } from '@/types';
 import { useParams, useRouter } from 'next/navigation';
 import { useIngredientsService } from '@/components/ServiceContext';
 import { useUserContext } from '@/components/AppState';
@@ -13,9 +13,9 @@ export default function Edit() {
 
     const ingredientsService = useIngredientsService();
     const { userContext, setUserContext } = useUserContext();
-    
+
     const router = useRouter();
-    
+
     let { id } = useParams();
     if (typeof id !== 'string') {
         id = id.join('');
@@ -46,12 +46,17 @@ export default function Edit() {
             <div className="row">
                 <div className="col-md-4">
                     <form method="post">
-                        {(isLoading)
-                            ? <p>Loading...</p>
-                            : renderIngredient(ingredient!, setIngredient)}
-                        <div className="form-group">
-                            <button onClick={submitEdit} type="submit" className="btn btn-primary">Save</button>
-                        </div>
+                        {
+                            (isLoading)
+                                ? <p>Loading...</p>
+                                : <>
+                                    {renderIngredient(ingredient!, setIngredient)}
+                                    <div className="form-group">
+                                        <button onClick={submitEdit} type="submit" className="btn btn-primary">Save
+                                        </button>
+                                    </div>
+                                </>
+                        }
                     </form>
                 </div>
             </div>
@@ -65,9 +70,9 @@ export default function Edit() {
 
 function renderIngredient(ingredient: Ingredient, setIngredient: (ingredient: Ingredient) => void) {
     const updateInput = (e: ChangeEvent<HTMLInputElement>) => {
-        setIngredient({...ingredient!, [e.target.name]: e.target.value});
-    }
-    
+        setIngredient({ ...ingredient!, [e.target.name]: e.target.value });
+    };
+
     return <div className="form-group">
         <label className="control-label" htmlFor="Name">Name</label>
         <input name="name" className="form-control valid" type="text" value={ingredient.name} onChange={updateInput} />
