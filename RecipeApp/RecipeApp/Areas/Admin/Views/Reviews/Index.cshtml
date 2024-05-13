@@ -1,4 +1,4 @@
-@model IEnumerable<App.Domain.Review>
+@model IEnumerable<RecipeApp.Areas.Admin.ViewModels.ReviewDetailsViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,19 +13,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.User)
+                @Html.DisplayNameFor(model => model.UserName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Recipe)
+                @Html.DisplayNameFor(model => model.RecipeTitle)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Rating)
+                @Html.DisplayNameFor(model => model.Review.Rating)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Content)
+                @Html.DisplayNameFor(model => model.Review.Content)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
+                @Html.DisplayNameFor(model => model.Review.CreatedAt)
             </th>
             <th></th>
         </tr>
@@ -34,24 +34,24 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.User!.UserName)
+                @Html.DisplayFor(modelItem => item.UserName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Recipe!.Description)
+                @Html.DisplayFor(modelItem => item.RecipeTitle)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Rating)
+                @Html.DisplayFor(modelItem => item.Review.Rating)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Content)
+                @Html.DisplayFor(modelItem => item.Review.Content)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CreatedAt)
+                @Html.DisplayFor(modelItem => item.Review.CreatedAt)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.Review.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Review.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Review.Id">Delete</a>
             </td>
         </tr>
 }

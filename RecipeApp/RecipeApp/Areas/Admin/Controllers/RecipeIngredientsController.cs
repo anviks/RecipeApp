@@ -1,21 +1,37 @@
-using App.Contracts.DAL;
-using App.DAL.EF;
-using App.Domain;
+using App.BLL.DTO;
+using App.Contracts.BLL;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using RecipeApp.Areas.Admin.ViewModels;
 
 namespace RecipeApp.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Roles = "Admin")]
-public class RecipeIngredientsController(IAppUnitOfWork unitOfWork) : Controller
+public class RecipeIngredientsController(IAppBusinessLogic businessLogic) : Controller
 {
     // GET: RecipeIngredient
     public async Task<IActionResult> Index()
     {
-        return View(await unitOfWork.RecipeIngredients.FindAllAsync());
+        var recipeIngredients = await businessLogic.RecipeIngredients.FindAllAsync();
+        var recipeIngredientsViewModels = new List<RecipeIngredientDetailsViewModel>();
+        foreach (RecipeIngredient recipeIngredient in recipeIngredients)
+        {
+            Ingredient? ingredient = await businessLogic.Ingredients.FindAsync(recipeIngredient.IngredientId);
+            RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(recipeIngredient.RecipeId);
+            Unit? unit = await businessLogic.Units.FindAsync(recipeIngredient.UnitId);
+            
+            recipeIngredientsViewModels.Add(new RecipeIngredientDetailsViewModel
+            {
+                RecipeIngredient = recipeIngredient,
+                IngredientName = ingredient!.Name,
+                RecipeName = recipe!.Title,
+                UnitName = unit!.Name
+            });
+        }
+        return View(recipeIngredientsViewModels);
     }
 
     // GET: RecipeIngredient/Details/5
@@ -26,22 +42,39 @@ public class RecipeIngredientsController(IAppUnitOfWork unitOfWork) : Controller
             return NotFound();
         }
 
-        RecipeIngredient? recipeIngredient = await unitOfWork.RecipeIngredients.FindAsync(id.Value);
+        RecipeIngredient? recipeIngredient = await businessLogic.RecipeIngredients.FindAsync(id.Value);
         if (recipeIngredient == null)
         {
             return NotFound();
         }
+        
+        Ingredient? ingredient = await businessLogic.Ingredients.FindAsync(recipeIngredient.IngredientId);
+        RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(recipeIngredient.RecipeId);
+        Unit? unit = await businessLogic.Units.FindAsync(recipeIngredient.UnitId);
+        var recipeIngredientViewModel = new RecipeIngredientDetailsViewModel
+        {
+            RecipeIngredient = recipeIngredient,
+            IngredientName = ingredient!.Name,
+            RecipeName = recipe!.Title,
+            UnitName = unit!.Name
+        };
 
-        return View(recipeIngredient);
+        return View(recipeIngredientViewModel);
     }
 
     // GET: RecipeIngredient/Create
-    public IActionResult Create()
+    public async Task<IActionResult> Create()
     {
-        ViewData["IngredientId"] = new SelectList(unitOfWork.Ingredients.FindAll(), "Id", "Name");
-        ViewData["RecipeId"] = new SelectList(unitOfWork.Recipes.FindAll(), "Id", "Description");
-        ViewData["UnitId"] = new SelectList(unitOfWork.Units.FindAll(), "Id", "Name");
-        return View();
+        var viewModel = new RecipeIngredientCreateEditViewModel
+        {
+            IngredientSelectList = new SelectList(await businessLogic.Ingredients.FindAllAsync(), nameof(Ingredient.Id),
+                nameof(Ingredient.Name)),
+            RecipeSelectList = new SelectList(await businessLogic.Recipes.FindAllAsync(), nameof(RecipeResponse.Id),
+                nameof(RecipeResponse.Title)),
+            UnitSelectList = new SelectList(await businessLogic.Units.FindAllAsync(), nameof(Unit.Id),
+                nameof(Unit.Name))
+        };
+        return View(viewModel);
     }
 
     // POST: RecipeIngredient/Create
@@ -49,19 +82,23 @@ public class RecipeIngredientsController(IAppUnitOfWork unitOfWork) : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("RecipeId,IngredientId,UnitId,CustomUnit,Quantity,IngredientModifier,Id")] RecipeIngredient recipeIngredient)
+    public async Task<IActionResult> Create(RecipeIngredientCreateEditViewModel viewModel)
     {
         if (ModelState.IsValid)
         {
+            RecipeIngredient recipeIngredient = viewModel.RecipeIngredient;
             recipeIngredient.Id = Guid.NewGuid();
-            unitOfWork.RecipeIngredients.Add(recipeIngredient);
-            await unitOfWork.SaveChangesAsync();
+            businessLogic.RecipeIngredients.Add(recipeIngredient);
+            await businessLogic.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        ViewData["IngredientId"] = new SelectList(await unitOfWork.Ingredients.FindAllAsync(), "Id", "Name", recipeIngredient.IngredientId);
-        ViewData["RecipeId"] = new SelectList(await unitOfWork.Recipes.FindAllAsync(), "Id", "Description", recipeIngredient.RecipeId);
-        ViewData["UnitId"] = new SelectList(await unitOfWork.Units.FindAllAsync(), "Id", "Name", recipeIngredient.UnitId);
-        return View(recipeIngredient);
+        viewModel.IngredientSelectList = new SelectList(await businessLogic.Ingredients.FindAllAsync(), nameof(Ingredient.Id),
+            nameof(Ingredient.Name));
+        viewModel.RecipeSelectList = new SelectList(await businessLogic.Recipes.FindAllAsync(), nameof(RecipeResponse.Id),
+            nameof(RecipeResponse.Title));
+        viewModel.UnitSelectList = new SelectList(await businessLogic.Units.FindAllAsync(), nameof(Unit.Id),
+            nameof(Unit.Name));
+        return View(viewModel);
     }
 
     // GET: RecipeIngredient/Edit/5
@@ -72,15 +109,22 @@ public class RecipeIngredientsController(IAppUnitOfWork unitOfWork) : Controller
             return NotFound();
         }
 
-        RecipeIngredient? recipeIngredient = await unitOfWork.RecipeIngredients.FindAsync(id.Value);
+        RecipeIngredient? recipeIngredient = await businessLogic.RecipeIngredients.FindAsync(id.Value);
         if (recipeIngredient == null)
         {
             return NotFound();
         }
-        ViewData["IngredientId"] = new SelectList(await unitOfWork.Ingredients.FindAllAsync(), "Id", "Name", recipeIngredient.IngredientId);
-        ViewData["RecipeId"] = new SelectList(await unitOfWork.Recipes.FindAllAsync(), "Id", "Description", recipeIngredient.RecipeId);
-        ViewData["UnitId"] = new SelectList(await unitOfWork.Units.FindAllAsync(), "Id", "Name", recipeIngredient.UnitId);
-        return View(recipeIngredient);
+        var viewModel = new RecipeIngredientCreateEditViewModel
+        {
+            RecipeIngredient = recipeIngredient,
+            IngredientSelectList = new SelectList(await businessLogic.Ingredients.FindAllAsync(), nameof(Ingredient.Id),
+                nameof(Ingredient.Name), recipeIngredient.IngredientId),
+            RecipeSelectList = new SelectList(await businessLogic.Recipes.FindAllAsync(), nameof(RecipeResponse.Id),
+                nameof(RecipeResponse.Title), recipeIngredient.RecipeId),
+            UnitSelectList = new SelectList(await businessLogic.Units.FindAllAsync(), nameof(Unit.Id),
+                nameof(Unit.Name), recipeIngredient.UnitId)
+        };
+        return View(viewModel);
     }
 
     // POST: RecipeIngredient/Edit/5
@@ -88,8 +132,9 @@ public class RecipeIngredientsController(IAppUnitOfWork unitOfWork) : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(Guid id, [Bind("RecipeId,IngredientId,UnitId,CustomUnit,Quantity,IngredientModifier,Id")] RecipeIngredient recipeIngredient)
+    public async Task<IActionResult> Edit(Guid id, RecipeIngredientCreateEditViewModel viewModel)
     {
+        RecipeIngredient recipeIngredient = viewModel.RecipeIngredient;
         if (id != recipeIngredient.Id)
         {
             return NotFound();
@@ -99,12 +144,12 @@ public class RecipeIngredientsController(IAppUnitOfWork unitOfWork) : Controller
         {
             try
             {
-                unitOfWork.RecipeIngredients.Update(recipeIngredient);
-                await unitOfWork.SaveChangesAsync();
+                businessLogic.RecipeIngredients.Update(recipeIngredient);
+                await businessLogic.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await unitOfWork.RecipeIngredients.ExistsAsync(id))
+                if (!await businessLogic.RecipeIngredients.ExistsAsync(id))
                 {
                     return NotFound();
                 }
@@ -113,10 +158,15 @@ public class RecipeIngredientsController(IAppUnitOfWork unitOfWork) : Controller
             }
             return RedirectToAction(nameof(Index));
         }
-        ViewData["IngredientId"] = new SelectList(await unitOfWork.Ingredients.FindAllAsync(), "Id", "Name", recipeIngredient.IngredientId);
-        ViewData["RecipeId"] = new SelectList(await unitOfWork.Recipes.FindAllAsync(), "Id", "Description", recipeIngredient.RecipeId);
-        ViewData["UnitId"] = new SelectList(await unitOfWork.Units.FindAllAsync(), "Id", "Name", recipeIngredient.UnitId);
-        return View(recipeIngredient);
+        
+        viewModel.IngredientSelectList = new SelectList(await businessLogic.Ingredients.FindAllAsync(), nameof(Ingredient.Id),
+            nameof(Ingredient.Name), recipeIngredient.IngredientId);
+        viewModel.RecipeSelectList = new SelectList(await businessLogic.Recipes.FindAllAsync(), nameof(RecipeResponse.Id),
+            nameof(RecipeResponse.Title), recipeIngredient.RecipeId);
+        viewModel.UnitSelectList = new SelectList(await businessLogic.Units.FindAllAsync(), nameof(Unit.Id),
+            nameof(Unit.Name), recipeIngredient.UnitId);
+        
+        return View(viewModel);
     }
 
     // GET: RecipeIngredient/Delete/5
@@ -127,13 +177,24 @@ public class RecipeIngredientsController(IAppUnitOfWork unitOfWork) : Controller
             return NotFound();
         }
 
-        RecipeIngredient? recipeIngredient = await unitOfWork.RecipeIngredients.FindAsync(id.Value);
+        RecipeIngredient? recipeIngredient = await businessLogic.RecipeIngredients.FindAsync(id.Value);
         if (recipeIngredient == null)
         {
             return NotFound();
         }
+        
+        Ingredient? ingredient = await businessLogic.Ingredients.FindAsync(recipeIngredient.IngredientId);
+        RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(recipeIngredient.RecipeId);
+        Unit? unit = await businessLogic.Units.FindAsync(recipeIngredient.UnitId);
+        var viewModel = new RecipeIngredientDetailsViewModel
+        {
+            RecipeIngredient = recipeIngredient,
+            IngredientName = ingredient!.Name,
+            RecipeName = recipe!.Title,
+            UnitName = unit!.Name
+        };
 
-        return View(recipeIngredient);
+        return View(viewModel);
     }
 
     // POST: RecipeIngredient/Delete/5
@@ -141,13 +202,13 @@ public class RecipeIngredientsController(IAppUnitOfWork unitOfWork) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        RecipeIngredient? recipeIngredient = await unitOfWork.RecipeIngredients.FindAsync(id);
+        RecipeIngredient? recipeIngredient = await businessLogic.RecipeIngredients.FindAsync(id);
         if (recipeIngredient != null)
         {
-            await unitOfWork.RecipeIngredients.RemoveAsync(recipeIngredient);
+            await businessLogic.RecipeIngredients.RemoveAsync(recipeIngredient);
         }
 
-        await unitOfWork.SaveChangesAsync();
+        await businessLogic.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 }

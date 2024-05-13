@@ -1,4 +1,4 @@
-@model IEnumerable<App.Domain.RecipeCategory>
+@model IEnumerable<RecipeApp.Areas.Admin.ViewModels.RecipeCategoryDetailsViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,10 +13,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Category)
+                @Html.DisplayNameFor(model => model.CategoryName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Recipe)
+                @Html.DisplayNameFor(model => model.RecipeName)
             </th>
             <th></th>
         </tr>
@@ -25,15 +25,15 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Category!.Name)
+                @Html.DisplayFor(modelItem => item.CategoryName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Recipe!.Description)
+                @Html.DisplayFor(modelItem => item.RecipeName)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.RecipeCategory.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.RecipeCategory.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.RecipeCategory.Id">Delete</a>
             </td>
         </tr>
 }

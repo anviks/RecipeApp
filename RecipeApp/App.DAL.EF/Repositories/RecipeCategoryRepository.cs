@@ -1,12 +1,11 @@
 using App.Contracts.DAL.Repositories;
-using App.Domain;
 using AutoMapper;
-using Base.Contracts.DAL;
+using DAL_DTO = App.DAL.DTO;
 using Base.DAL.EF;
 using Helpers;
 
 namespace App.DAL.EF.Repositories;
 
 public class RecipeCategoryRepository(AppDbContext dbContext, IMapper mapper)
-    : BaseEntityRepository<RecipeCategory, RecipeCategory, AppDbContext>(dbContext,
-        new EntityMapper<RecipeCategory, RecipeCategory>(mapper)), IRecipeCategoryRepository;
+    : BaseEntityRepository<Domain.RecipeCategory, DAL_DTO.RecipeCategory, AppDbContext>(dbContext,
+        new EntityMapper<Domain.RecipeCategory, DAL_DTO.RecipeCategory>(mapper)), IRecipeCategoryRepository;

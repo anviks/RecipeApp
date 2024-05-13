@@ -1,21 +1,36 @@
-using App.Contracts.DAL;
-using App.DAL.EF;
-using App.Domain;
+using App.BLL.DTO;
+using App.Contracts.BLL;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using RecipeApp.Areas.Admin.ViewModels;
 
 namespace RecipeApp.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Roles = "Admin")]
-public class RecipeCategoriesController(IAppUnitOfWork unitOfWork) : Controller
+public class RecipeCategoriesController(IAppBusinessLogic businessLogic) : Controller
 {
     // GET: RecipeCategory
     public async Task<IActionResult> Index()
     {
-        return View(await unitOfWork.RecipeCategories.FindAllAsync());
+        var recipeCategories = await businessLogic.RecipeCategories.FindAllAsync();
+        var viewModels = new List<RecipeCategoryDetailsViewModel>();
+
+        foreach (RecipeCategory recipeCategory in recipeCategories)
+        {
+            Category? category = await businessLogic.Categories.FindAsync(recipeCategory.CategoryId);
+            RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(recipeCategory.RecipeId);
+            viewModels.Add(new RecipeCategoryDetailsViewModel
+            {
+                RecipeCategory = recipeCategory,
+                CategoryName = category!.Name,
+                RecipeName = recipe!.Title
+            });
+        }
+
+        return View(viewModels);
     }
 
     // GET: RecipeCategory/Details/5
@@ -26,21 +41,36 @@ public class RecipeCategoriesController(IAppUnitOfWork unitOfWork) : Controller
             return NotFound();
         }
 
-        RecipeCategory? recipeCategory = await unitOfWork.RecipeCategories.FindAsync(id.Value);
+        RecipeCategory? recipeCategory = await businessLogic.RecipeCategories.FindAsync(id.Value);
         if (recipeCategory == null)
         {
             return NotFound();
         }
 
-        return View(recipeCategory);
+        Category? category = await businessLogic.Categories.FindAsync(recipeCategory.CategoryId);
+        RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(recipeCategory.RecipeId);
+        var viewModel = new RecipeCategoryDetailsViewModel
+        {
+            RecipeCategory = recipeCategory,
+            CategoryName = category!.Name,
+            RecipeName = recipe!.Title
+        };
+
+        return View(viewModel);
     }
 
     // GET: RecipeCategory/Create
-    public IActionResult Create()
+    public async Task<IActionResult> Create()
     {
-        ViewData["CategoryId"] = new SelectList(unitOfWork.Categories.FindAll(), "Id", "Name");
-        ViewData["RecipeId"] = new SelectList(unitOfWork.Recipes.FindAll(), "Id", "Description");
-        return View();
+        var viewModel = new RecipeCategoryCreateEditViewModel
+        {
+            CategorySelectList = new SelectList(await businessLogic.Categories.FindAllAsync(), nameof(Category.Id),
+                nameof(Category.Name)),
+            RecipeSelectList = new SelectList(await businessLogic.Recipes.FindAllAsync(), nameof(RecipeResponse.Id),
+                nameof(RecipeResponse.Title))
+        };
+
+        return View(viewModel);
     }
 
     // POST: RecipeCategory/Create
@@ -48,18 +78,22 @@ public class RecipeCategoriesController(IAppUnitOfWork unitOfWork) : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("CategoryId,RecipeId,Id")] RecipeCategory recipeCategory)
+    public async Task<IActionResult> Create(RecipeCategoryCreateEditViewModel viewModel)
     {
         if (ModelState.IsValid)
         {
+            RecipeCategory recipeCategory = viewModel.RecipeCategory;
             recipeCategory.Id = Guid.NewGuid();
-            unitOfWork.RecipeCategories.Add(recipeCategory);
-            await unitOfWork.SaveChangesAsync();
+            businessLogic.RecipeCategories.Add(recipeCategory);
+            await businessLogic.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        ViewData["CategoryId"] = new SelectList(await unitOfWork.Categories.FindAllAsync(), "Id", "Name", recipeCategory.CategoryId);
-        ViewData["RecipeId"] = new SelectList(await unitOfWork.Recipes.FindAllAsync(), "Id", "Description", recipeCategory.RecipeId);
-        return View(recipeCategory);
+
+        viewModel.CategorySelectList = new SelectList(await businessLogic.Categories.FindAllAsync(),
+            nameof(Category.Id), nameof(Category.Name));
+        viewModel.RecipeSelectList = new SelectList(await businessLogic.Recipes.FindAllAsync(),
+            nameof(RecipeResponse.Id), nameof(RecipeResponse.Title));
+        return View(viewModel);
     }
 
     // GET: RecipeCategory/Edit/5
@@ -70,14 +104,22 @@ public class RecipeCategoriesController(IAppUnitOfWork unitOfWork) : Controller
             return NotFound();
         }
 
-        RecipeCategory? recipeCategory = await unitOfWork.RecipeCategories.FindAsync(id.Value);
+        RecipeCategory? recipeCategory = await businessLogic.RecipeCategories.FindAsync(id.Value);
         if (recipeCategory == null)
         {
             return NotFound();
         }
-        ViewData["CategoryId"] = new SelectList(await unitOfWork.Categories.FindAllAsync(), "Id", "Name", recipeCategory.CategoryId);
-        ViewData["RecipeId"] = new SelectList(await unitOfWork.Recipes.FindAllAsync(), "Id", "Description", recipeCategory.RecipeId);
-        return View(recipeCategory);
+
+        var viewModel = new RecipeCategoryCreateEditViewModel
+        {
+            RecipeCategory = recipeCategory,
+            CategorySelectList = new SelectList(await businessLogic.Categories.FindAllAsync(), nameof(Category.Id),
+                nameof(Category.Name), recipeCategory.CategoryId),
+            RecipeSelectList = new SelectList(await businessLogic.Recipes.FindAllAsync(), nameof(RecipeResponse.Id),
+                nameof(RecipeResponse.Title), recipeCategory.RecipeId)
+        };
+        
+        return View(viewModel);
     }
 
     // POST: RecipeCategory/Edit/5
@@ -85,8 +127,9 @@ public class RecipeCategoriesController(IAppUnitOfWork unitOfWork) : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(Guid id, [Bind("CategoryId,RecipeId,Id")] RecipeCategory recipeCategory)
+    public async Task<IActionResult> Edit(Guid id, RecipeCategoryCreateEditViewModel viewModel)
     {
+        RecipeCategory recipeCategory = viewModel.RecipeCategory;
         if (id != recipeCategory.Id)
         {
             return NotFound();
@@ -96,23 +139,27 @@ public class RecipeCategoriesController(IAppUnitOfWork unitOfWork) : Controller
         {
             try
             {
-                unitOfWork.RecipeCategories.Update(recipeCategory);
-                await unitOfWork.SaveChangesAsync();
+                businessLogic.RecipeCategories.Update(recipeCategory);
+                await businessLogic.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await unitOfWork.RecipeCategories.ExistsAsync(recipeCategory.Id))
+                if (!await businessLogic.RecipeCategories.ExistsAsync(recipeCategory.Id))
                 {
                     return NotFound();
                 }
 
                 throw;
             }
+
             return RedirectToAction(nameof(Index));
         }
-        ViewData["CategoryId"] = new SelectList(await unitOfWork.Categories.FindAllAsync(), "Id", "Name", recipeCategory.CategoryId);
-        ViewData["RecipeId"] = new SelectList(await unitOfWork.Recipes.FindAllAsync(), "Id", "Description", recipeCategory.RecipeId);
-        return View(recipeCategory);
+
+        viewModel.CategorySelectList = new SelectList(await businessLogic.Categories.FindAllAsync(), nameof(Category.Id),
+            nameof(Category.Name), recipeCategory.CategoryId);
+        viewModel.RecipeSelectList = new SelectList(await businessLogic.Recipes.FindAllAsync(), nameof(RecipeResponse.Id),
+            nameof(RecipeResponse.Title), recipeCategory.RecipeId);
+        return View(viewModel);
     }
 
     // GET: RecipeCategory/Delete/5
@@ -123,13 +170,22 @@ public class RecipeCategoriesController(IAppUnitOfWork unitOfWork) : Controller
             return NotFound();
         }
 
-        RecipeCategory? recipeCategory = await unitOfWork.RecipeCategories.FindAsync(id.Value);
+        RecipeCategory? recipeCategory = await businessLogic.RecipeCategories.FindAsync(id.Value);
         if (recipeCategory == null)
         {
             return NotFound();
         }
+        
+        Category? category = await businessLogic.Categories.FindAsync(recipeCategory.CategoryId);
+        RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(recipeCategory.RecipeId);
+        var viewModel = new RecipeCategoryDetailsViewModel
+        {
+            RecipeCategory = recipeCategory,
+            CategoryName = category!.Name,
+            RecipeName = recipe!.Title
+        };
 
-        return View(recipeCategory);
+        return View(viewModel);
     }
 
     // POST: RecipeCategory/Delete/5
@@ -137,13 +193,13 @@ public class RecipeCategoriesController(IAppUnitOfWork unitOfWork) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        RecipeCategory? recipeCategory = await unitOfWork.RecipeCategories.FindAsync(id);
+        RecipeCategory? recipeCategory = await businessLogic.RecipeCategories.FindAsync(id);
         if (recipeCategory != null)
         {
-            await unitOfWork.RecipeCategories.RemoveAsync(recipeCategory);
+            await businessLogic.RecipeCategories.RemoveAsync(recipeCategory);
         }
 
-        await unitOfWork.SaveChangesAsync();
+        await businessLogic.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 }

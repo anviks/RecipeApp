@@ -1,6 +1,5 @@
-using App.Contracts.DAL;
-using App.DAL.EF;
-using App.Domain;
+using App.BLL.DTO;
+using App.Contracts.BLL;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,12 +8,13 @@ namespace RecipeApp.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Roles = "Admin")]
-public class IngredientsController(IAppUnitOfWork unitOfWork) : Controller
+public class IngredientsController(IAppBusinessLogic businessLogic) : Controller
 {
     // GET: Ingredient
     public async Task<IActionResult> Index()
     {
-        return View(await unitOfWork.Ingredients.FindAllAsync());
+        var ingredients = await businessLogic.Ingredients.FindAllAsync();
+        return View(ingredients);
     }
 
     // GET: Ingredient/Details/5
@@ -25,7 +25,7 @@ public class IngredientsController(IAppUnitOfWork unitOfWork) : Controller
             return NotFound();
         }
 
-        Ingredient? ingredient = await unitOfWork.Ingredients.FindAsync(id.Value);
+        Ingredient? ingredient = await businessLogic.Ingredients.FindAsync(id.Value);
         if (ingredient == null)
         {
             return NotFound();
@@ -48,10 +48,8 @@ public class IngredientsController(IAppUnitOfWork unitOfWork) : Controller
     public async Task<IActionResult> Create([Bind("Name,Id")] Ingredient ingredient)
     {
         if (!ModelState.IsValid) return View(ingredient);
-        
-        ingredient.Id = Guid.NewGuid();
-        unitOfWork.Ingredients.Add(ingredient);
-        await unitOfWork.SaveChangesAsync();
+        businessLogic.Ingredients.Add(ingredient);
+        await businessLogic.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 
@@ -63,7 +61,7 @@ public class IngredientsController(IAppUnitOfWork unitOfWork) : Controller
             return NotFound();
         }
 
-        Ingredient? ingredient = await unitOfWork.Ingredients.FindAsync(id.Value);
+        Ingredient? ingredient = await businessLogic.Ingredients.FindAsync(id.Value);
         if (ingredient == null)
         {
             return NotFound();
@@ -86,12 +84,12 @@ public class IngredientsController(IAppUnitOfWork unitOfWork) : Controller
         if (!ModelState.IsValid) return View(ingredient);
         try
         {
-            unitOfWork.Ingredients.Update(ingredient);
-            await unitOfWork.SaveChangesAsync();
+            businessLogic.Ingredients.Update(ingredient);
+            await businessLogic.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!await unitOfWork.Ingredients.ExistsAsync(id))
+            if (!await businessLogic.Ingredients.ExistsAsync(id))
             {
                 return NotFound();
             }
@@ -109,7 +107,7 @@ public class IngredientsController(IAppUnitOfWork unitOfWork) : Controller
             return NotFound();
         }
 
-        Ingredient? ingredient = await unitOfWork.Ingredients.FindAsync(id.Value);
+        Ingredient? ingredient = await businessLogic.Ingredients.FindAsync(id.Value);
         if (ingredient == null)
         {
             return NotFound();
@@ -123,13 +121,13 @@ public class IngredientsController(IAppUnitOfWork unitOfWork) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        Ingredient? ingredient = await unitOfWork.Ingredients.FindAsync(id);
+        Ingredient? ingredient = await businessLogic.Ingredients.FindAsync(id);
         if (ingredient != null)
         {
-            await unitOfWork.Ingredients.RemoveAsync(ingredient);
+            await businessLogic.Ingredients.RemoveAsync(ingredient);
         }
 
-        await unitOfWork.SaveChangesAsync();
+        await businessLogic.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 }

@@ -1,7 +1,10 @@
-using App.DAL.EF;
-using App.Domain;
-using App.DTO.v1_0;
+using System.Net;
+using App.Contracts.BLL;
+using BLL_DTO = App.BLL.DTO;
+using v1_0 = App.DTO.v1_0;
 using Asp.Versioning;
+using AutoMapper;
+using Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,34 +16,44 @@ namespace RecipeApp.ApiControllers;
 [Route("api/v{version:apiVersion}/[controller]")]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
 [ApiController]
-public class IngredientTypesController(AppDbContext context) : ControllerBase
+public class IngredientTypesController(
+    IAppBusinessLogic businessLogic, 
+    IMapper mapper) : ControllerBase
 {
+    private readonly EntityMapper<BLL_DTO.IngredientType, v1_0.IngredientType> _mapper = new(mapper);
+    
     // GET: api/v1/IngredientTypes
     [HttpGet]
     [AllowAnonymous]
     [Produces("application/json")]
-    [ProducesResponseType<IEnumerable<IngredientType>>(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<IngredientType>>> GetIngredientTypes()
+    [ProducesResponseType<IEnumerable<v1_0.IngredientType>>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<v1_0.IngredientType>>> GetIngredientTypes()
     {
-        return await context.IngredientTypes.ToListAsync();
+        var ingredientTypes = await businessLogic.IngredientTypes.FindAllAsync();
+        return Ok(ingredientTypes);
     }
 
     // GET: api/v1/IngredientTypes/5
     [HttpGet("{id:guid}")]
     [AllowAnonymous]
     [Produces("application/json")]
-    [ProducesResponseType<IngredientType>(StatusCodes.Status200OK)]
-    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<IngredientType>> GetIngredientType(Guid id)
+    [ProducesResponseType<v1_0.IngredientType>(StatusCodes.Status200OK)]
+    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<v1_0.IngredientType>> GetIngredientType(Guid id)
     {
-        IngredientType? ingredientType = await context.IngredientTypes.FindAsync(id);
+        BLL_DTO.IngredientType? ingredientType = await businessLogic.IngredientTypes.FindAsync(id);
 
         if (ingredientType == null)
         {
-            return NotFound();
+            return NotFound(
+                new v1_0.RestApiErrorResponse
+                {
+                    Status = HttpStatusCode.NotFound,
+                    Error = $"IngredientType with ID {id} not found."
+                });
         }
 
-        return ingredientType;
+        return Ok(_mapper.Map(ingredientType));
     }
 
     // PUT: api/v1/IngredientTypes/5
@@ -48,26 +61,35 @@ public class IngredientTypesController(AppDbContext context) : ControllerBase
     [HttpPut("{id:guid}")]
     [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> PutIngredientType(Guid id, IngredientType ingredientType)
+    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> PutIngredientType(Guid id, v1_0.IngredientType ingredientType)
     {
         if (id != ingredientType.Id)
         {
-            return BadRequest();
+            return BadRequest(
+                new v1_0.RestApiErrorResponse
+                {
+                    Status = HttpStatusCode.BadRequest,
+                    Error = "Id in the request body does not match the id in the URL."
+                });
         }
-
-        context.Entry(ingredientType).State = EntityState.Modified;
-
+        
         try
         {
-            await context.SaveChangesAsync();
+            businessLogic.IngredientTypes.Update(_mapper.Map(ingredientType)!);
+            await businessLogic.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!IngredientTypeExists(id))
+            if (!await businessLogic.IngredientTypes.ExistsAsync(id))
             {
-                return NotFound();
+                return NotFound(
+                    new v1_0.RestApiErrorResponse
+                    {
+                        Status = HttpStatusCode.NotFound,
+                        Error = $"IngredientType with ID {id} not found."
+                    });
             }
             else
             {
@@ -83,40 +105,41 @@ public class IngredientTypesController(AppDbContext context) : ControllerBase
     [HttpPost]
     [Consumes("application/json")]
     [Produces("application/json")]
-    [ProducesResponseType<IngredientType>(StatusCodes.Status201Created)]
-    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<IngredientType>> PostIngredientType(IngredientType ingredientType)
+    [ProducesResponseType<v1_0.IngredientType>(StatusCodes.Status201Created)]
+    public async Task<ActionResult<v1_0.IngredientType>> PostIngredientType(v1_0.IngredientType ingredientType)
     {
-        context.IngredientTypes.Add(ingredientType);
-        await context.SaveChangesAsync();
+        BLL_DTO.IngredientType type = _mapper.Map(ingredientType)!;
+        businessLogic.IngredientTypes.Add(type);
+        await businessLogic.SaveChangesAsync();
 
         return CreatedAtAction("GetIngredientType", new
         {
             version = HttpContext.GetRequestedApiVersion()?.ToString(),
-            id = ingredientType.Id
+            // TODO: Check if id is set in the DTO
+            id = type.Id
         }, ingredientType);
     }
 
     // DELETE: api/v1/IngredientTypes/5
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteIngredientType(Guid id)
     {
-        IngredientType? ingredientType = await context.IngredientTypes.FindAsync(id);
+        BLL_DTO.IngredientType? ingredientType = await businessLogic.IngredientTypes.FindAsync(id);
         if (ingredientType == null)
         {
-            return NotFound();
+            return NotFound(
+                new v1_0.RestApiErrorResponse
+                {
+                    Status = HttpStatusCode.NotFound,
+                    Error = $"IngredientType with ID {id} not found."
+                });
         }
 
-        context.IngredientTypes.Remove(ingredientType);
-        await context.SaveChangesAsync();
+        await businessLogic.IngredientTypes.RemoveAsync(ingredientType);
+        await businessLogic.SaveChangesAsync();
 
         return NoContent();
-    }
-
-    private bool IngredientTypeExists(Guid id)
-    {
-        return context.IngredientTypes.Any(e => e.Id == id);
     }
 }

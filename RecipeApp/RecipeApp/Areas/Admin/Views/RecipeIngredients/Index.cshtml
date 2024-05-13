@@ -1,4 +1,4 @@
-@model IEnumerable<App.Domain.RecipeIngredient>
+@model IEnumerable<RecipeApp.Areas.Admin.ViewModels.RecipeIngredientDetailsViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -11,55 +11,56 @@
 </p>
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Recipe)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Ingredient)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Unit)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CustomUnit)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Quantity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IngredientModifier)
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.RecipeName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IngredientName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UnitName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RecipeIngredient.CustomUnit)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RecipeIngredient.Quantity)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RecipeIngredient.IngredientModifier)
+        </th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model)
+    {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Recipe!.Description)
+                @Html.DisplayFor(modelItem => item.RecipeName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Ingredient!.Name)
+                @Html.DisplayFor(modelItem => item.IngredientName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Unit!.Name)
+                @Html.DisplayFor(modelItem => item.UnitName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CustomUnit)
+                @Html.DisplayFor(modelItem => item.RecipeIngredient.CustomUnit)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
+                @Html.DisplayFor(modelItem => item.RecipeIngredient.Quantity)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IngredientModifier)
+                @Html.DisplayFor(modelItem => item.RecipeIngredient.IngredientModifier)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.RecipeIngredient.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.RecipeIngredient.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.RecipeIngredient.Id">Delete</a>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>

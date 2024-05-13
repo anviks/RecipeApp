@@ -175,6 +175,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseCors("AllowCors");
+
 app.UseRequestLocalization(options: app.Services.GetService<IOptions<RequestLocalizationOptions>>()?.Value!);
 
 app.UseAuthorization();
@@ -204,7 +206,5 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
-
-app.UseCors("AllowCors");
 
 app.Run();

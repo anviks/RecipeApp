@@ -7,8 +7,6 @@ public class Ingredient : BaseEntityId
 {
     [MaxLength(64)]
     public string Name { get; set; } = default!;
-    
     public ICollection<IngredientTypeAssociation>? IngredientTypeAssociations { get; set; }
-    
     public ICollection<RecipeIngredient>? RecipeIngredients { get; set; }
 }

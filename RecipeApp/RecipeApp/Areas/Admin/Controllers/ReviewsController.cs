@@ -1,20 +1,33 @@
-using App.Contracts.DAL;
-using App.Domain;
+using App.BLL.DTO;
+using App.Contracts.BLL;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using RecipeApp.Areas.Admin.ViewModels;
 
 namespace RecipeApp.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Roles = "Admin")]
-public class ReviewsController(IAppUnitOfWork unitOfWork) : Controller
+public class ReviewsController(IAppBusinessLogic businessLogic) : Controller
 {
     // GET: Review
     public async Task<IActionResult> Index()
     {
-        return View(await unitOfWork.Reviews.FindAllAsync());
+        var reviews = await businessLogic.Reviews.FindAllAsync();
+        var reviewViewModels = new List<ReviewDetailsViewModel>();
+        foreach (Review review in reviews)
+        {
+            RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(review.RecipeId);
+            reviewViewModels.Add(new ReviewDetailsViewModel
+            {
+                Review = review,
+                RecipeTitle = recipe!.Title
+            });
+        }
+
+        return View(reviewViewModels);
     }
 
     // GET: Review/Details/5
@@ -25,21 +38,30 @@ public class ReviewsController(IAppUnitOfWork unitOfWork) : Controller
             return NotFound();
         }
 
-        Review? review = await unitOfWork.Reviews.FindAsync(id.Value);
+        Review? review = await businessLogic.Reviews.FindAsync(id.Value);
         if (review == null)
         {
             return NotFound();
         }
 
-        return View(review);
+        RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(review.RecipeId);
+        var reviewViewModel = new ReviewDetailsViewModel
+        {
+            Review = review,
+            RecipeTitle = recipe!.Title
+        };
+
+        return View(reviewViewModel);
     }
 
     // GET: Review/Create
-    public IActionResult Create()
+    public async Task<IActionResult> Create()
     {
-        ViewData["RecipeId"] = new SelectList(unitOfWork.Recipes.FindAll(), "Id", "Description");
-        ViewData["UserId"] = new SelectList(unitOfWork.Users.FindAll(), "Id", "FirstName");
-        return View();
+        var viewModel = new ReviewCreateEditViewModel
+        {
+            RecipeSelectList = new SelectList(await businessLogic.Recipes.FindAllAsync(), "Id", "Title")
+        };
+        return View(viewModel);
     }
 
     // POST: Review/Create
@@ -47,18 +69,23 @@ public class ReviewsController(IAppUnitOfWork unitOfWork) : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("UserId,RecipeId,Rating,Content,CreatedAt,Id")] Review review)
+    public async Task<IActionResult> Create(ReviewCreateEditViewModel viewModel)
     {
+        Review review = viewModel.Review;
+        
         if (ModelState.IsValid)
         {
             review.Id = Guid.NewGuid();
-            unitOfWork.Reviews.Add(review);
-            await unitOfWork.SaveChangesAsync();
+            businessLogic.Reviews.Add(review);
+            await businessLogic.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        ViewData["RecipeId"] = new SelectList(await unitOfWork.Recipes.FindAllAsync(), "Id", "Description", review.RecipeId);
-        ViewData["UserId"] = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "FirstName", review.UserId);
-        return View(review);
+
+        viewModel.RecipeSelectList = new SelectList(await businessLogic.Recipes.FindAllAsync(),
+            nameof(RecipeResponse.Id),
+            nameof(RecipeResponse.Title));
+        
+        return View(viewModel);
     }
 
     // GET: Review/Edit/5
@@ -69,14 +96,22 @@ public class ReviewsController(IAppUnitOfWork unitOfWork) : Controller
             return NotFound();
         }
 
-        Review? review = await unitOfWork.Reviews.FindAsync(id.Value);
+        Review? review = await businessLogic.Reviews.FindAsync(id.Value);
         if (review == null)
         {
             return NotFound();
         }
-        ViewData["RecipeId"] = new SelectList(await unitOfWork.Recipes.FindAllAsync(), "Id", "Description", review.RecipeId);
-        ViewData["UserId"] = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "FirstName", review.UserId);
-        return View(review);
+
+        // ViewData["RecipeId"] =
+        //     new SelectList(await businessLogic.Recipes.FindAllAsync(), "Id", "Description", review.RecipeId);
+        var viewModel = new ReviewCreateEditViewModel
+        {
+            Review = review,
+            RecipeSelectList = new SelectList(await businessLogic.Recipes.FindAllAsync(), nameof(RecipeResponse.Id),
+                nameof(RecipeResponse.Title))
+        };
+        
+        return View(viewModel);
     }
 
     // POST: Review/Edit/5
@@ -84,8 +119,10 @@ public class ReviewsController(IAppUnitOfWork unitOfWork) : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(Guid id, [Bind("UserId,RecipeId,Rating,Content,CreatedAt,Id")] Review review)
+    public async Task<IActionResult> Edit(Guid id, ReviewCreateEditViewModel viewModel)
     {
+        Review review = viewModel.Review;
+        
         if (id != review.Id)
         {
             return NotFound();
@@ -95,23 +132,26 @@ public class ReviewsController(IAppUnitOfWork unitOfWork) : Controller
         {
             try
             {
-                unitOfWork.Reviews.Update(review);
-                await unitOfWork.SaveChangesAsync();
+                businessLogic.Reviews.Update(review);
+                await businessLogic.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await unitOfWork.Reviews.ExistsAsync(review.Id))
+                if (!await businessLogic.Reviews.ExistsAsync(review.Id))
                 {
                     return NotFound();
                 }
 
                 throw;
             }
+
             return RedirectToAction(nameof(Index));
         }
-        ViewData["RecipeId"] = new SelectList(await unitOfWork.Recipes.FindAllAsync(), "Id", "Description", review.RecipeId);
-        ViewData["UserId"] = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "FirstName", review.UserId);
-        return View(review);
+
+        viewModel.RecipeSelectList = new SelectList(await businessLogic.Recipes.FindAllAsync(), nameof(RecipeResponse.Id),
+            nameof(RecipeResponse.Title));
+        
+        return View(viewModel);
     }
 
     // GET: Review/Delete/5
@@ -122,13 +162,20 @@ public class ReviewsController(IAppUnitOfWork unitOfWork) : Controller
             return NotFound();
         }
 
-        Review? review = await unitOfWork.Reviews.FindAsync(id.Value);
+        Review? review = await businessLogic.Reviews.FindAsync(id.Value);
         if (review == null)
         {
             return NotFound();
         }
+        
+        RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(review.RecipeId);
+        var reviewViewModel = new ReviewDetailsViewModel
+        {
+            Review = review,
+            RecipeTitle = recipe!.Title
+        };
 
-        return View(review);
+        return View(reviewViewModel);
     }
 
     // POST: Review/Delete/5
@@ -136,13 +183,13 @@ public class ReviewsController(IAppUnitOfWork unitOfWork) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        Review? review = await unitOfWork.Reviews.FindAsync(id);
+        Review? review = await businessLogic.Reviews.FindAsync(id);
         if (review != null)
         {
-            await unitOfWork.Reviews.RemoveAsync(review);
+            await businessLogic.Reviews.RemoveAsync(review);
         }
 
-        await unitOfWork.SaveChangesAsync();
+        await businessLogic.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 }

@@ -1,6 +1,5 @@
-using App.Contracts.DAL;
-using App.DAL.EF;
-using App.Domain;
+using App.BLL.DTO;
+using App.Contracts.BLL;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,12 +8,12 @@ namespace RecipeApp.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Roles = "Admin")]
-public class CategoriesController(IAppUnitOfWork unitOfWork) : Controller
+public class CategoriesController(IAppBusinessLogic businessLogic) : Controller
 {
     // GET: Categories
     public async Task<IActionResult> Index()
     {
-        return View(await unitOfWork.Categories.FindAllAsync());
+        return View(await businessLogic.Categories.FindAllAsync());
     }
 
     // GET: Categories/Details/5
@@ -25,7 +24,7 @@ public class CategoriesController(IAppUnitOfWork unitOfWork) : Controller
             return NotFound();
         }
 
-        Category? category = await unitOfWork.Categories.FindAsync(id.Value);
+        Category? category = await businessLogic.Categories.FindAsync(id.Value);
         if (category == null)
         {
             return NotFound();
@@ -50,8 +49,8 @@ public class CategoriesController(IAppUnitOfWork unitOfWork) : Controller
         if (!ModelState.IsValid) return View(category);
         
         category.Id = Guid.NewGuid();
-        unitOfWork.Categories.Add(category);
-        await unitOfWork.SaveChangesAsync();
+        businessLogic.Categories.Add(category);
+        await businessLogic.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 
@@ -63,7 +62,7 @@ public class CategoriesController(IAppUnitOfWork unitOfWork) : Controller
             return NotFound();
         }
 
-        Category? category = await unitOfWork.Categories.FindAsync(id.Value);
+        Category? category = await businessLogic.Categories.FindAsync(id.Value);
         if (category == null)
         {
             return NotFound();
@@ -87,12 +86,12 @@ public class CategoriesController(IAppUnitOfWork unitOfWork) : Controller
         
         try
         {
-            unitOfWork.Categories.Update(category);
-            await unitOfWork.SaveChangesAsync();
+            businessLogic.Categories.Update(category);
+            await businessLogic.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!await unitOfWork.Categories.ExistsAsync(category.Id))
+            if (!await businessLogic.Categories.ExistsAsync(category.Id))
             {
                 return NotFound();
             }
@@ -110,7 +109,7 @@ public class CategoriesController(IAppUnitOfWork unitOfWork) : Controller
             return NotFound();
         }
 
-        Category? category = await unitOfWork.Categories.FindAsync(id.Value);
+        Category? category = await businessLogic.Categories.FindAsync(id.Value);
         if (category == null)
         {
             return NotFound();
@@ -124,13 +123,13 @@ public class CategoriesController(IAppUnitOfWork unitOfWork) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        Category? category = await unitOfWork.Categories.FindAsync(id);
+        Category? category = await businessLogic.Categories.FindAsync(id);
         if (category != null)
         {
-            await unitOfWork.Categories.RemoveAsync(category);
+            await businessLogic.Categories.RemoveAsync(category);
         }
 
-        await unitOfWork.SaveChangesAsync();
+        await businessLogic.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 }

@@ -69,20 +69,17 @@ public static class DataSeeder
             new Category
             {
                 Name = "Breakfast",
-                Description = "Morning meal",
-                BroadnessIndex = 1
+                Description = "Morning meal"
             },
             new Category
             {
                 Name = "Lunch",
-                Description = "Midday meal",
-                BroadnessIndex = 1
+                Description = "Midday meal"
             },
             new Category
             {
                 Name = "Dinner",
-                Description = "Evening meal",
-                BroadnessIndex = 1
+                Description = "Evening meal"
             }
         };
 

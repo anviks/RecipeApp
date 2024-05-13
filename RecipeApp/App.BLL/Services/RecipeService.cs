@@ -1,16 +1,13 @@
 using App.BLL.Exceptions;
 using App.Contracts.BLL.Services;
 using App.Contracts.DAL.Repositories;
-using DAL_DTO = App.DAL.DTO;
-using BLL_DTO = App.BLL.DTO;
-using App.DAL.EF.Repositories;
 using AutoMapper;
 using Base.BLL;
-using Base.Contracts.BLL;
 using Base.Contracts.DAL;
-using Base.Resources;
 using Helpers;
 using Microsoft.AspNetCore.Http;
+using DAL_DTO = App.DAL.DTO;
+using BLL_DTO = App.BLL.DTO;
 
 namespace App.BLL.Services;
 

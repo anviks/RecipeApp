@@ -1,4 +1,4 @@
-using App.Domain;
+using App.BLL.DTO;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace RecipeApp.Areas.Admin.ViewModels;

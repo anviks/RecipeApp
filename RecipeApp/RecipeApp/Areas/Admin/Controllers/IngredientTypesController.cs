@@ -1,6 +1,7 @@
+using App.Contracts.BLL;
 using App.Contracts.DAL;
 using App.DAL.EF;
-using App.Domain;
+using BLL_DTO = App.BLL.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,12 +10,13 @@ namespace RecipeApp.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Roles = "Admin")]
-public class IngredientTypesController(IAppUnitOfWork unitOfWork) : Controller
+public class IngredientTypesController(IAppBusinessLogic businessLogic) : Controller
 {
     // GET: IngredientType
     public async Task<IActionResult> Index()
     {
-        return View(await unitOfWork.IngredientTypes.FindAllAsync());
+        var ingredientTypes = await businessLogic.IngredientTypes.FindAllAsync();
+        return View(ingredientTypes);
     }
 
     // GET: IngredientType/Details/5
@@ -25,7 +27,7 @@ public class IngredientTypesController(IAppUnitOfWork unitOfWork) : Controller
             return NotFound();
         }
 
-        IngredientType? ingredientType = await unitOfWork.IngredientTypes.FindAsync(id.Value);
+        BLL_DTO.IngredientType? ingredientType = await businessLogic.IngredientTypes.FindAsync(id.Value);
         if (ingredientType == null)
         {
             return NotFound();
@@ -45,13 +47,13 @@ public class IngredientTypesController(IAppUnitOfWork unitOfWork) : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Name,Description,Id")] IngredientType ingredientType)
+    public async Task<IActionResult> Create([Bind("Name,Description,Id")] BLL_DTO.IngredientType ingredientType)
     {
         if (!ModelState.IsValid) return View(ingredientType);
         
         ingredientType.Id = Guid.NewGuid();
-        unitOfWork.IngredientTypes.Add(ingredientType);
-        await unitOfWork.SaveChangesAsync();
+        businessLogic.IngredientTypes.Add(ingredientType);
+        await businessLogic.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 
@@ -63,7 +65,7 @@ public class IngredientTypesController(IAppUnitOfWork unitOfWork) : Controller
             return NotFound();
         }
 
-        IngredientType? ingredientType = await unitOfWork.IngredientTypes.FindAsync(id.Value);
+        BLL_DTO.IngredientType? ingredientType = await businessLogic.IngredientTypes.FindAsync(id.Value);
         if (ingredientType == null)
         {
             return NotFound();
@@ -76,7 +78,7 @@ public class IngredientTypesController(IAppUnitOfWork unitOfWork) : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(Guid id, [Bind("Name,Description,Id")] IngredientType ingredientType)
+    public async Task<IActionResult> Edit(Guid id, [Bind("Name,Description,Id")] BLL_DTO.IngredientType ingredientType)
     {
         if (id != ingredientType.Id)
         {
@@ -86,12 +88,12 @@ public class IngredientTypesController(IAppUnitOfWork unitOfWork) : Controller
         if (!ModelState.IsValid) return View(ingredientType);
         try
         {
-            unitOfWork.IngredientTypes.Update(ingredientType);
-            await unitOfWork.SaveChangesAsync();
+            businessLogic.IngredientTypes.Update(ingredientType);
+            await businessLogic.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!await unitOfWork.IngredientTypes.ExistsAsync(ingredientType.Id))
+            if (!await businessLogic.IngredientTypes.ExistsAsync(ingredientType.Id))
             {
                 return NotFound();
             }
@@ -109,7 +111,7 @@ public class IngredientTypesController(IAppUnitOfWork unitOfWork) : Controller
             return NotFound();
         }
 
-        IngredientType? ingredientType = await unitOfWork.IngredientTypes.FindAsync(id.Value);
+        BLL_DTO.IngredientType? ingredientType = await businessLogic.IngredientTypes.FindAsync(id.Value);
         if (ingredientType == null)
         {
             return NotFound();
@@ -123,13 +125,13 @@ public class IngredientTypesController(IAppUnitOfWork unitOfWork) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        IngredientType? ingredientType = await unitOfWork.IngredientTypes.FindAsync(id);
+        BLL_DTO.IngredientType? ingredientType = await businessLogic.IngredientTypes.FindAsync(id);
         if (ingredientType != null)
         {
-            await unitOfWork.IngredientTypes.RemoveAsync(ingredientType);
+            await businessLogic.IngredientTypes.RemoveAsync(ingredientType);
         }
 
-        await unitOfWork.SaveChangesAsync();
+        await businessLogic.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 }

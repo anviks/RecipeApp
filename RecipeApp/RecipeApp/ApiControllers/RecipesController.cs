@@ -1,19 +1,16 @@
 using System.Net;
 using App.BLL.Exceptions;
 using App.Contracts.BLL;
-using App.DAL.EF;
-using App.Domain;
 using App.Domain.Identity;
-using App.DTO.v1_0;
 using Asp.Versioning;
 using AutoMapper;
 using Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using v1_0 = App.DTO.v1_0;
 using BLL_DTO = App.BLL.DTO;
 
 namespace RecipeApp.ApiControllers;
@@ -29,15 +26,15 @@ public class RecipesController(
     IWebHostEnvironment environment)
     : ControllerBase
 {
-    private readonly EntityMapper<App.DTO.v1_0.RecipeResponse, BLL_DTO.RecipeResponse> _responseMapper = new(mapper);
-    private readonly EntityMapper<App.DTO.v1_0.RecipeRequest, BLL_DTO.RecipeRequest> _requestMapper = new(mapper);
+    private readonly EntityMapper<v1_0.RecipeResponse, BLL_DTO.RecipeResponse> _responseMapper = new(mapper);
+    private readonly EntityMapper<v1_0.RecipeRequest, BLL_DTO.RecipeRequest> _requestMapper = new(mapper);
 
     // GET: api/v1/Recipes
     [HttpGet]
     [AllowAnonymous]
     [Produces("application/json")]
-    [ProducesResponseType<IEnumerable<App.DTO.v1_0.RecipeResponse>>(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<App.DTO.v1_0.RecipeResponse>>> GetRecipes()
+    [ProducesResponseType<IEnumerable<v1_0.RecipeResponse>>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<v1_0.RecipeResponse>>> GetRecipes()
     {
         var allRecipes = await businessLogic.Recipes.FindAllAsync();
         return Ok(allRecipes.Select(_responseMapper.Map).ToList());
@@ -47,21 +44,20 @@ public class RecipesController(
     [HttpGet("{id:guid}")]
     [AllowAnonymous]
     [Produces("application/json")]
-    [ProducesResponseType<App.DTO.v1_0.RecipeResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<App.DTO.v1_0.RecipeResponse>> GetRecipe(Guid id)
+    [ProducesResponseType<v1_0.RecipeResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<v1_0.RecipeResponse>> GetRecipe(Guid id)
     {
         BLL_DTO.RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(id);
 
         if (recipe == null)
         {
             return NotFound(
-                new RestApiErrorResponse
+                new v1_0.RestApiErrorResponse
                 {
                     Status = HttpStatusCode.NotFound,
                     Error = $"Recipe with id {id} not found."
-                }
-            );
+                });
         }
 
         return Ok(_responseMapper.Map(recipe));
@@ -72,25 +68,29 @@ public class RecipesController(
     [HttpPut("{id:guid}")]
     [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> PutRecipe(Guid id, App.DTO.v1_0.RecipeRequest request)
+    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> PutRecipe(Guid id, v1_0.RecipeRequest request)
     {
         if (id != request.Id)
         {
-            return BadRequest();
+            return BadRequest(
+                new v1_0.RestApiErrorResponse
+                {
+                    Status = HttpStatusCode.BadRequest,
+                    Error = "Id in the request body does not match the id in the URL."
+                });
         }
 
         BLL_DTO.RecipeResponse? existingRecipe = await businessLogic.Recipes.FindAsync(id);
         if (existingRecipe == null)
         {
             return NotFound(
-                new RestApiErrorResponse
+                new v1_0.RestApiErrorResponse
                 {
                     Status = HttpStatusCode.NotFound,
                     Error = $"Recipe with id {id} not found."
-                }
-            );
+                });
         }
 
         try
@@ -104,12 +104,11 @@ public class RecipesController(
             if (!await businessLogic.Recipes.ExistsAsync(id))
             {
                 return NotFound(
-                    new RestApiErrorResponse
+                    new v1_0.RestApiErrorResponse
                     {
                         Status = HttpStatusCode.NotFound,
                         Error = $"Recipe with id {id} not found."
-                    }
-                );
+                    });
             }
 
             throw;
@@ -123,9 +122,10 @@ public class RecipesController(
     [HttpPost]
     [Consumes("multipart/form-data")]
     [Produces("application/json")]
-    [ProducesResponseType<App.DTO.v1_0.RecipeResponse>(StatusCodes.Status201Created)]
-    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<App.DTO.v1_0.RecipeResponse>> PostRecipe([FromForm] App.DTO.v1_0.RecipeRequest request)
+    [ProducesResponseType<v1_0.RecipeResponse>(StatusCodes.Status201Created)]
+    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<v1_0.RecipeResponse>> PostRecipe(
+        [FromForm] v1_0.RecipeRequest request)
     {
         try
         {
@@ -135,12 +135,11 @@ public class RecipesController(
         catch (MissingImageException)
         {
             return BadRequest(
-                new RestApiErrorResponse
+                new v1_0.RestApiErrorResponse
                 {
                     Status = HttpStatusCode.BadRequest,
                     Error = "Image file is required."
-                }
-            );
+                });
         }
 
         await businessLogic.SaveChangesAsync();
@@ -155,14 +154,19 @@ public class RecipesController(
     // DELETE: api/v1/Recipes/5
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteRecipe(Guid id)
     {
         BLL_DTO.RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(id);
 
         if (recipe == null)
         {
-            return NotFound();
+            return NotFound(
+                new v1_0.RestApiErrorResponse
+                {
+                    Status = HttpStatusCode.NotFound,
+                    Error = $"Recipe with id {id} not found."
+                });
         }
 
         await businessLogic.Recipes.RemoveAsync(recipe);

@@ -1,11 +1,14 @@
-using App.DAL.EF;
-using App.Domain;
-using App.DTO.v1_0;
+using System.Net;
+using App.Contracts.BLL;
 using Asp.Versioning;
+using AutoMapper;
+using Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using BLL_DTO = App.BLL.DTO;
+using v1_0 = App.DTO.v1_0;
 
 namespace RecipeApp.ApiControllers;
 
@@ -13,34 +16,44 @@ namespace RecipeApp.ApiControllers;
 [Route("api/v{version:apiVersion}/[controller]")]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
 [ApiController]
-public class UnitsController(AppDbContext context) : ControllerBase
+public class UnitsController(
+    IAppBusinessLogic businessLogic,
+    IMapper mapper) : ControllerBase
 {
+    private readonly EntityMapper<v1_0.Unit, BLL_DTO.Unit> _mapper = new(mapper);
+    
     // GET: api/v1/Units
     [HttpGet]
     [AllowAnonymous]
     [Produces("application/json")]
-    [ProducesResponseType<IEnumerable<Unit>>(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<Unit>>> GetUnits()
+    [ProducesResponseType<IEnumerable<v1_0.Unit>>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<v1_0.Unit>>> GetUnits()
     {
-        return await context.Units.ToListAsync();
+        var units = await businessLogic.Units.FindAllAsync();
+        return Ok(units.Select(_mapper.Map));
     }
 
     // GET: api/v1/Units/5
     [HttpGet("{id:guid}")]
     [AllowAnonymous]
     [Produces("application/json")]
-    [ProducesResponseType<Unit>(StatusCodes.Status200OK)]
-    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<Unit>> GetUnit(Guid id)
+    [ProducesResponseType<v1_0.Unit>(StatusCodes.Status200OK)]
+    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<v1_0.Unit>> GetUnit(Guid id)
     {
-        Unit? unit = await context.Units.FindAsync(id);
+        BLL_DTO.Unit? unit = await businessLogic.Units.FindAsync(id);
 
         if (unit == null)
         {
-            return NotFound();
+            return NotFound(
+                new v1_0.RestApiErrorResponse
+                {
+                    Status = HttpStatusCode.NotFound,
+                    Error = $"Unit with id {id} not found."
+                });
         }
 
-        return unit;
+        return Ok(_mapper.Map(unit));
     }
 
     // PUT: api/v1/Units/5
@@ -48,26 +61,35 @@ public class UnitsController(AppDbContext context) : ControllerBase
     [HttpPut("{id:guid}")]
     [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> PutUnit(Guid id, Unit unit)
+    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> PutUnit(Guid id, v1_0.Unit unit)
     {
         if (id != unit.Id)
         {
-            return BadRequest();
+            return BadRequest(
+                new v1_0.RestApiErrorResponse
+                {
+                    Status = HttpStatusCode.BadRequest,
+                    Error = "Id in the request body does not match the id in the URL."
+                });
         }
-
-        context.Entry(unit).State = EntityState.Modified;
 
         try
         {
-            await context.SaveChangesAsync();
+            businessLogic.Units.Update(_mapper.Map(unit)!);
+            await businessLogic.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!UnitExists(id))
+            if (!await businessLogic.Units.ExistsAsync(id))
             {
-                return NotFound();
+                return NotFound(
+                    new v1_0.RestApiErrorResponse
+                    {
+                        Status = HttpStatusCode.NotFound,
+                        Error = $"Unit with id {id} not found."
+                    });
             }
             else
             {
@@ -83,12 +105,11 @@ public class UnitsController(AppDbContext context) : ControllerBase
     [HttpPost]
     [Consumes("application/json")]
     [Produces("application/json")]
-    [ProducesResponseType<Unit>(StatusCodes.Status201Created)]
-    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<Unit>> PostUnit(Unit unit)
+    [ProducesResponseType<v1_0.Unit>(StatusCodes.Status201Created)]
+    public async Task<ActionResult<v1_0.Unit>> PostUnit(v1_0.Unit unit)
     {
-        context.Units.Add(unit);
-        await context.SaveChangesAsync();
+        businessLogic.Units.Add(_mapper.Map(unit)!);
+        await businessLogic.SaveChangesAsync();
 
         return CreatedAtAction("GetUnit", new
         {
@@ -100,23 +121,23 @@ public class UnitsController(AppDbContext context) : ControllerBase
     // DELETE: api/v1/Units/5
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteUnit(Guid id)
     {
-        Unit? unit = await context.Units.FindAsync(id);
+        BLL_DTO.Unit? unit = await businessLogic.Units.FindAsync(id);
         if (unit == null)
         {
-            return NotFound();
+            return NotFound(
+                new v1_0.RestApiErrorResponse
+                {
+                    Status = HttpStatusCode.NotFound,
+                    Error = $"Unit with id {id} not found."
+                });
         }
 
-        context.Units.Remove(unit);
-        await context.SaveChangesAsync();
+        await businessLogic.Units.RemoveAsync(unit);
+        await businessLogic.SaveChangesAsync();
 
         return NoContent();
-    }
-
-    private bool UnitExists(Guid id)
-    {
-        return context.Units.Any(e => e.Id == id);
     }
 }

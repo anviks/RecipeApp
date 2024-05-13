@@ -5,16 +5,6 @@ namespace App.Domain;
 
 public class RecipeIngredient : BaseEntityId
 {
-    public Guid RecipeId { get; set; }
-    public Recipe? Recipe { get; set; }
-    
-    public Guid IngredientId { get; set; }
-    public Ingredient? Ingredient { get; set; }
-    
-    // TODO: update in ERD schema
-    public Guid UnitId { get; set; }
-    public Unit? Unit { get; set; }
-    
     // e.g. "slice" in "1 slice of bread" 
     public string? CustomUnit { get; set; }
     
@@ -25,4 +15,14 @@ public class RecipeIngredient : BaseEntityId
     [MaxLength(128)]
     // TODO: update in ERD schema
     public string? IngredientModifier { get; set; } = default!;
+    
+    // TODO: update in ERD schema
+    public Guid UnitId { get; set; }
+    public Unit? Unit { get; set; }
+    
+    public Guid RecipeId { get; set; }
+    public Recipe? Recipe { get; set; }
+    
+    public Guid IngredientId { get; set; }
+    public Ingredient? Ingredient { get; set; }
 }

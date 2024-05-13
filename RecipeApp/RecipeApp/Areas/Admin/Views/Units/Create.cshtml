@@ -1,4 +1,4 @@
-@model App.Domain.Unit
+@model RecipeApp.Areas.Admin.ViewModels.UnitCreateEditViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -11,26 +11,7 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="IngredientTypeId" class="control-label"></label>
-                <select asp-for="IngredientTypeId" class ="form-control" asp-items="ViewBag.IngredientTypeId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Abbreviation" class="control-label"></label>
-                <input asp-for="Abbreviation" class="form-control" />
-                <span asp-validation-for="Abbreviation" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UnitMultiplier" class="control-label"></label>
-                <input asp-for="UnitMultiplier" class="form-control" />
-                <span asp-validation-for="UnitMultiplier" class="text-danger"></span>
-            </div>
+            <partial name="_CreateEdit" model="Model"/>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

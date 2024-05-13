@@ -1,6 +1,5 @@
-using App.Contracts.DAL;
-using App.DAL.EF;
-using App.Domain;
+using App.BLL.DTO;
+using App.Contracts.BLL;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,12 +10,25 @@ namespace RecipeApp.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Roles = "Admin")]
-public class IngredientTypeAssociationsController(IAppUnitOfWork unitOfWork) : Controller
+public class IngredientTypeAssociationsController(IAppBusinessLogic businessLogic) : Controller
 {
     // GET: IngredientTypeAssociation
     public async Task<IActionResult> Index()
     {
-        return View(await unitOfWork.IngredientTypeAssociations.FindAllAsync());
+        var associations = await businessLogic.IngredientTypeAssociations.FindAllAsync();
+        var associationsViewModels = new List<IngredientTypeAssociationDetailsViewModel>();
+        foreach (IngredientTypeAssociation typeAssociation in associations)
+        {
+            Ingredient? ingredient = await businessLogic.Ingredients.FindAsync(typeAssociation.IngredientId);
+            IngredientType? ingredientType = await businessLogic.IngredientTypes.FindAsync(typeAssociation.IngredientTypeId);
+            associationsViewModels.Add(new IngredientTypeAssociationDetailsViewModel
+            {
+                IngredientTypeAssociation = typeAssociation,
+                IngredientName = ingredient!.Name,
+                IngredientTypeName = ingredientType!.Description
+            });
+        }
+        return View(associationsViewModels);
     }
 
     // GET: IngredientTypeAssociation/Details/5
@@ -27,25 +39,33 @@ public class IngredientTypeAssociationsController(IAppUnitOfWork unitOfWork) : C
             return NotFound();
         }
 
-        IngredientTypeAssociation? ingredientTypeAssociation =
-            await unitOfWork.IngredientTypeAssociations.FindAsync(id.Value);
+        IngredientTypeAssociation? ingredientTypeAssociation = await businessLogic.IngredientTypeAssociations.FindAsync(id.Value);
         if (ingredientTypeAssociation == null)
         {
             return NotFound();
         }
+        
+        Ingredient? ingredient = await businessLogic.Ingredients.FindAsync(ingredientTypeAssociation.IngredientId);
+        IngredientType? ingredientType = await businessLogic.IngredientTypes.FindAsync(ingredientTypeAssociation.IngredientTypeId);
+        var associationViewModel = new IngredientTypeAssociationDetailsViewModel
+        {
+            IngredientTypeAssociation = ingredientTypeAssociation,
+            IngredientName = ingredient!.Name,
+            IngredientTypeName = ingredientType!.Description
+        };
 
-        return View(ingredientTypeAssociation);
+        return View(associationViewModel);
     }
 
     // GET: IngredientTypeAssociation/Create
-    public IActionResult Create()
+    public async Task<IActionResult> Create()
     {
         var viewModel = new IngredientTypeAssociationCreateEditViewModel
         {
-            IngredientSelectList = new SelectList(unitOfWork.Ingredients.FindAll(), nameof(Ingredient.Id),
+            IngredientSelectList = new SelectList(await businessLogic.Ingredients.FindAllAsync(), nameof(Ingredient.Id),
                 nameof(Ingredient.Name)),
-            IngredientTypeSelectList = new SelectList(unitOfWork.IngredientTypes.FindAll(), nameof(IngredientType.Id),
-                nameof(IngredientType.Description))
+            IngredientTypeSelectList = new SelectList(await businessLogic.IngredientTypes.FindAllAsync(), nameof(IngredientType.Id),
+                nameof(IngredientType.Name))
         };
         return View(viewModel);
     }
@@ -59,15 +79,17 @@ public class IngredientTypeAssociationsController(IAppUnitOfWork unitOfWork) : C
     {
         if (ModelState.IsValid)
         {
-            unitOfWork.IngredientTypeAssociations.Add(viewModel.IngredientTypeAssociation);
-            await unitOfWork.SaveChangesAsync();
+            IngredientTypeAssociation association = viewModel.IngredientTypeAssociation;
+            association.Id = Guid.NewGuid();
+            businessLogic.IngredientTypeAssociations.Add(association);
+            await businessLogic.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        viewModel.IngredientSelectList = new SelectList(await unitOfWork.Ingredients.FindAllAsync(),
+        viewModel.IngredientSelectList = new SelectList(await businessLogic.Ingredients.FindAllAsync(),
             nameof(Ingredient.Id), nameof(Ingredient.Name), viewModel.IngredientTypeAssociation.IngredientId);
-        viewModel.IngredientTypeSelectList = new SelectList(await unitOfWork.IngredientTypes.FindAllAsync(),
-            nameof(IngredientType.Id), nameof(IngredientType.Description),
+        viewModel.IngredientTypeSelectList = new SelectList(await businessLogic.IngredientTypes.FindAllAsync(),
+            nameof(IngredientType.Id), nameof(IngredientType.Name),
             viewModel.IngredientTypeAssociation.IngredientTypeId);
         return View(viewModel);
     }
@@ -81,7 +103,7 @@ public class IngredientTypeAssociationsController(IAppUnitOfWork unitOfWork) : C
         }
 
         IngredientTypeAssociation? ingredientTypeAssociation =
-            await unitOfWork.IngredientTypeAssociations.FindAsync(id.Value);
+            await businessLogic.IngredientTypeAssociations.FindAsync(id.Value);
         if (ingredientTypeAssociation == null)
         {
             return NotFound();
@@ -90,9 +112,9 @@ public class IngredientTypeAssociationsController(IAppUnitOfWork unitOfWork) : C
         var viewModel = new IngredientTypeAssociationCreateEditViewModel
         {
             IngredientTypeAssociation = ingredientTypeAssociation,
-            IngredientSelectList = new SelectList(await unitOfWork.Ingredients.FindAllAsync(), nameof(Ingredient.Id),
+            IngredientSelectList = new SelectList(await businessLogic.Ingredients.FindAllAsync(), nameof(Ingredient.Id),
                 nameof(Ingredient.Name), ingredientTypeAssociation.IngredientId),
-            IngredientTypeSelectList = new SelectList(await unitOfWork.IngredientTypes.FindAllAsync(),
+            IngredientTypeSelectList = new SelectList(await businessLogic.IngredientTypes.FindAllAsync(),
                 nameof(IngredientType.Id), nameof(IngredientType.Description),
                 ingredientTypeAssociation.IngredientTypeId)
         };
@@ -116,12 +138,12 @@ public class IngredientTypeAssociationsController(IAppUnitOfWork unitOfWork) : C
         {
             try
             {
-                unitOfWork.IngredientTypeAssociations.Update(viewModel.IngredientTypeAssociation);
-                await unitOfWork.SaveChangesAsync();
+                businessLogic.IngredientTypeAssociations.Update(viewModel.IngredientTypeAssociation);
+                await businessLogic.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await unitOfWork.IngredientTypeAssociations.ExistsAsync(id))
+                if (!await businessLogic.IngredientTypeAssociations.ExistsAsync(id))
                 {
                     return NotFound();
                 }
@@ -132,15 +154,15 @@ public class IngredientTypeAssociationsController(IAppUnitOfWork unitOfWork) : C
             return RedirectToAction(nameof(Index));
         }
 
-        viewModel.IngredientSelectList = new SelectList(await unitOfWork.Ingredients.FindAllAsync(), 
-            nameof(Ingredient.Id), 
-            nameof(Ingredient.Name), 
+        viewModel.IngredientSelectList = new SelectList(await businessLogic.Ingredients.FindAllAsync(),
+            nameof(Ingredient.Id),
+            nameof(Ingredient.Name),
             viewModel.IngredientTypeAssociation.IngredientId);
-        viewModel.IngredientTypeSelectList = new SelectList(await unitOfWork.IngredientTypes.FindAllAsync(), 
-            nameof(IngredientType.Id), 
-            nameof(IngredientType.Description), 
+        viewModel.IngredientTypeSelectList = new SelectList(await businessLogic.IngredientTypes.FindAllAsync(),
+            nameof(IngredientType.Id),
+            nameof(IngredientType.Description),
             viewModel.IngredientTypeAssociation.IngredientTypeId);
-        
+
         return View(viewModel);
     }
 
@@ -153,13 +175,22 @@ public class IngredientTypeAssociationsController(IAppUnitOfWork unitOfWork) : C
         }
 
         IngredientTypeAssociation? ingredientTypeAssociation =
-            await unitOfWork.IngredientTypeAssociations.FindAsync(id.Value);
+            await businessLogic.IngredientTypeAssociations.FindAsync(id.Value);
         if (ingredientTypeAssociation == null)
         {
             return NotFound();
         }
+        
+        Ingredient? ingredient = await businessLogic.Ingredients.FindAsync(ingredientTypeAssociation.IngredientId);
+        IngredientType? ingredientType = await businessLogic.IngredientTypes.FindAsync(ingredientTypeAssociation.IngredientTypeId);
+        var associationViewModel = new IngredientTypeAssociationDetailsViewModel
+        {
+            IngredientTypeAssociation = ingredientTypeAssociation,
+            IngredientName = ingredient!.Name,
+            IngredientTypeName = ingredientType!.Description
+        };
 
-        return View(ingredientTypeAssociation);
+        return View(associationViewModel);
     }
 
     // POST: IngredientTypeAssociation/Delete/5
@@ -168,13 +199,13 @@ public class IngredientTypeAssociationsController(IAppUnitOfWork unitOfWork) : C
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
         IngredientTypeAssociation? ingredientTypeAssociation =
-            await unitOfWork.IngredientTypeAssociations.FindAsync(id);
+            await businessLogic.IngredientTypeAssociations.FindAsync(id);
         if (ingredientTypeAssociation != null)
         {
-            await unitOfWork.IngredientTypeAssociations.RemoveAsync(ingredientTypeAssociation);
+            await businessLogic.IngredientTypeAssociations.RemoveAsync(ingredientTypeAssociation);
         }
 
-        await unitOfWork.SaveChangesAsync();
+        await businessLogic.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 }

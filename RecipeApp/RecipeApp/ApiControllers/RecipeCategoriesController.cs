@@ -1,11 +1,14 @@
-using App.DAL.EF;
-using App.Domain;
-using App.DTO.v1_0;
+using System.Net;
+using App.Contracts.BLL;
 using Asp.Versioning;
+using AutoMapper;
+using Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using BLL_DTO = App.BLL.DTO;
+using v1_0 = App.DTO.v1_0;
 
 namespace RecipeApp.ApiControllers;
 
@@ -13,34 +16,44 @@ namespace RecipeApp.ApiControllers;
 [Route("api/v{version:apiVersion}/[controller]")]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 [ApiController]
-public class RecipeCategoriesController(AppDbContext context) : ControllerBase
+public class RecipeCategoriesController(
+    IAppBusinessLogic businessLogic,
+    IMapper mapper) : ControllerBase
 {
+    private readonly EntityMapper<v1_0.RecipeCategory, BLL_DTO.RecipeCategory> _mapper = new(mapper);
+
     // GET: api/v1/RecipeCategories
     [HttpGet]
     [AllowAnonymous]
     [Produces("application/json")]
-    [ProducesResponseType<IEnumerable<RecipeCategory>>(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<RecipeCategory>>> GetRecipeCategories()
+    [ProducesResponseType<IEnumerable<v1_0.RecipeCategory>>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<v1_0.RecipeCategory>>> GetRecipeCategories()
     {
-        return await context.RecipeCategories.ToListAsync();
+        var recipeCategories = await businessLogic.RecipeCategories.FindAllAsync();
+        return Ok(recipeCategories.Select(_mapper.Map));
     }
 
     // GET: api/v1/RecipeCategories/5
     [HttpGet("{id:guid}")]
     [AllowAnonymous]
     [Produces("application/json")]
-    [ProducesResponseType<RecipeCategory>(StatusCodes.Status200OK)]
-    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<RecipeCategory>> GetRecipeCategory(Guid id)
+    [ProducesResponseType<v1_0.RecipeCategory>(StatusCodes.Status200OK)]
+    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<v1_0.RecipeCategory>> GetRecipeCategory(Guid id)
     {
-        RecipeCategory? recipeCategory = await context.RecipeCategories.FindAsync(id);
+        BLL_DTO.RecipeCategory? recipeCategory = await businessLogic.RecipeCategories.FindAsync(id);
 
         if (recipeCategory == null)
         {
-            return NotFound();
+            return NotFound(
+                new v1_0.RestApiErrorResponse
+                {
+                    Status = HttpStatusCode.NotFound,
+                    Error = $"RecipeCategory with id {id} not found."
+                });
         }
 
-        return recipeCategory;
+        return Ok(_mapper.Map(recipeCategory));
     }
 
     // PUT: api/v1/RecipeCategories/5
@@ -48,26 +61,35 @@ public class RecipeCategoriesController(AppDbContext context) : ControllerBase
     [HttpPut("{id:guid}")]
     [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> PutRecipeCategory(Guid id, RecipeCategory recipeCategory)
+    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> PutRecipeCategory(Guid id, v1_0.RecipeCategory recipeCategory)
     {
         if (id != recipeCategory.Id)
         {
-            return BadRequest();
+            return BadRequest(
+                new v1_0.RestApiErrorResponse
+                {
+                    Status = HttpStatusCode.BadRequest,
+                    Error = "Id in the request body does not match the id in the URL."
+                });
         }
-
-        context.Entry(recipeCategory).State = EntityState.Modified;
 
         try
         {
-            await context.SaveChangesAsync();
+            businessLogic.RecipeCategories.Update(_mapper.Map(recipeCategory)!);
+            await businessLogic.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!RecipeCategoryExists(id))
+            if (!await businessLogic.RecipeCategories.ExistsAsync(id))
             {
-                return NotFound();
+                return NotFound(
+                    new v1_0.RestApiErrorResponse
+                    {
+                        Status = HttpStatusCode.NotFound,
+                        Error = $"RecipeCategory with id {id} not found."
+                    });
             }
             else
             {
@@ -83,12 +105,11 @@ public class RecipeCategoriesController(AppDbContext context) : ControllerBase
     [HttpPost]
     [Consumes("application/json")]
     [Produces("application/json")]
-    [ProducesResponseType<RecipeCategory>(StatusCodes.Status201Created)]
-    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<RecipeCategory>> PostRecipeCategory(RecipeCategory recipeCategory)
+    [ProducesResponseType<v1_0.RecipeCategory>(StatusCodes.Status201Created)]
+    public async Task<ActionResult<v1_0.RecipeCategory>> PostRecipeCategory(v1_0.RecipeCategory recipeCategory)
     {
-        context.RecipeCategories.Add(recipeCategory);
-        await context.SaveChangesAsync();
+        businessLogic.RecipeCategories.Add(_mapper.Map(recipeCategory)!);
+        await businessLogic.SaveChangesAsync();
 
         return CreatedAtAction("GetRecipeCategory", new
         {
@@ -100,23 +121,23 @@ public class RecipeCategoriesController(AppDbContext context) : ControllerBase
     // DELETE: api/v1/RecipeCategories/5
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType<RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteRecipeCategory(Guid id)
     {
-        RecipeCategory? recipeCategory = await context.RecipeCategories.FindAsync(id);
+        BLL_DTO.RecipeCategory? recipeCategory = await businessLogic.RecipeCategories.FindAsync(id);
         if (recipeCategory == null)
         {
-            return NotFound();
+            return NotFound(
+                new v1_0.RestApiErrorResponse
+                {
+                    Status = HttpStatusCode.NotFound,
+                    Error = $"RecipeCategory with id {id} not found."
+                });
         }
 
-        context.RecipeCategories.Remove(recipeCategory);
-        await context.SaveChangesAsync();
+        await businessLogic.RecipeCategories.RemoveAsync(recipeCategory);
+        await businessLogic.SaveChangesAsync();
 
         return NoContent();
-    }
-
-    private bool RecipeCategoryExists(Guid id)
-    {
-        return context.RecipeCategories.Any(e => e.Id == id);
     }
 }

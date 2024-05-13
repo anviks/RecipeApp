@@ -1,4 +1,4 @@
-@model App.Domain.RecipeCategory
+@model RecipeApp.Areas.Admin.ViewModels.RecipeCategoryDetailsViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -9,22 +9,9 @@
 <div>
     <h4>RecipeCategory</h4>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Category)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Category!.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Recipe)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Recipe!.Description)
-        </dd>
-    </dl>
+    <partial name="_DetailsDelete" model="Model"/>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model.RecipeCategory.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

@@ -1,4 +1,4 @@
-@model IEnumerable<App.Domain.Category>
+@model IEnumerable<App.BLL.DTO.Category>
 
 @{
     ViewData["Title"] = "Index";
@@ -18,9 +18,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Description)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BroadnessIndex)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -32,9 +29,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BroadnessIndex)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

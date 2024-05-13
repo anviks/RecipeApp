@@ -13,7 +13,7 @@ public class Category : BaseEntityId
     public string? Description { get; set; }
     
     // TODO: update in ERD schema
-    public short BroadnessIndex { get; set; }
+    // public short BroadnessIndex { get; set; }
     
     public ICollection<RecipeCategory>? RecipeCategories { get; set; }
 }

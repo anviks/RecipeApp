@@ -194,7 +194,8 @@ public class AccountController(
     [ProducesResponseType<LoginResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<v1_0_DTO.RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<v1_0_DTO.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<LoginResponse>> RefreshToken(
+    [ProducesResponseType<v1_0_DTO.RestApiErrorResponse>(StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<LoginResponse>> Refresh(
         [FromBody] RefreshTokenRequest request,
         [FromQuery] int expiresInSeconds
     )
@@ -240,7 +241,13 @@ public class AccountController(
         AppDomain.AppUser? user = await userManager.FindByEmailAsync(userEmail);
         if (user == null)
         {
-            return NotFound($"User with email {userEmail} not found");
+            return NotFound(
+                new v1_0_DTO.RestApiErrorResponse
+                {
+                    Status = HttpStatusCode.NotFound,
+                    Error = $"User with email {userEmail} not found"
+                }
+            );
         }
 
         // load and compare refresh tokens
@@ -266,10 +273,10 @@ public class AccountController(
 
         if (user.RefreshTokens.Count != 1)
         {
-            return BadRequest(
+            return Conflict(
                 new v1_0_DTO.RestApiErrorResponse
                 {
-                    Status = HttpStatusCode.BadRequest,
+                    Status = HttpStatusCode.Conflict,
                     Error = "More than one valid refresh token found"
                 }
             );

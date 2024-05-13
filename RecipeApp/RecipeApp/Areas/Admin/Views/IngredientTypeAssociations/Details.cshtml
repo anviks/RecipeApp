@@ -1,4 +1,4 @@
-@model App.Domain.IngredientTypeAssociation
+@model RecipeApp.Areas.Admin.ViewModels.IngredientTypeAssociationDetailsViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -12,6 +12,6 @@
     <partial name="_DetailsDelete" model="Model"/>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model.IngredientTypeAssociation.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

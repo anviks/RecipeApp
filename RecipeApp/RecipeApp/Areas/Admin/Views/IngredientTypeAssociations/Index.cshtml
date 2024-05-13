@@ -1,5 +1,5 @@
-@using App.Domain
-@model IEnumerable<App.Domain.IngredientTypeAssociation>
+@using RecipeApp.Areas.Admin.ViewModels
+@model IEnumerable<RecipeApp.Areas.Admin.ViewModels.IngredientTypeAssociationDetailsViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -14,28 +14,28 @@
     <thead>
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Ingredient)
+            @Html.DisplayNameFor(model => model.IngredientName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.IngredientType)
+            @Html.DisplayNameFor(model => model.IngredientTypeName)
         </th>
         <th></th>
     </tr>
     </thead>
     <tbody>
-    @foreach (IngredientTypeAssociation item in Model)
+    @foreach (IngredientTypeAssociationDetailsViewModel item in Model)
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Ingredient!.Name)
+                @Html.DisplayFor(modelItem => item.IngredientName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IngredientType!.Description)
+                @Html.DisplayFor(modelItem => item.IngredientTypeName)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.IngredientTypeAssociation.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.IngredientTypeAssociation.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.IngredientTypeAssociation.Id">Delete</a>
             </td>
         </tr>
     }

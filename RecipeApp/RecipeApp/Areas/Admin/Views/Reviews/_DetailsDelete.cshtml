@@ -1,0 +1,34 @@
+@model RecipeApp.Areas.Admin.ViewModels.ReviewDetailsViewModel
+
+<dl class="row">
+    <dt class = "col-sm-2">
+        @Html.DisplayNameFor(model => model.UserName)
+    </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.UserName)
+    </dd>
+    <dt class = "col-sm-2">
+        @Html.DisplayNameFor(model => model.RecipeTitle)
+    </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.RecipeTitle)
+    </dd>
+    <dt class = "col-sm-2">
+        @Html.DisplayNameFor(model => model.Review.Rating)
+    </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.Review.Rating)
+    </dd>
+    <dt class = "col-sm-2">
+        @Html.DisplayNameFor(model => model.Review.Content)
+    </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.Review.Content)
+    </dd>
+    <dt class = "col-sm-2">
+        @Html.DisplayNameFor(model => model.Review.CreatedAt)
+    </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.Review.CreatedAt)
+    </dd>
+</dl>

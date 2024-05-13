@@ -5,9 +5,6 @@ namespace App.Domain;
 
 public class Unit : BaseEntityId
 {
-    public Guid IngredientTypeId { get; set; }
-    public IngredientType? IngredientType { get; set; }
-    
     [MaxLength(64)]
     public string Name { get; set; } = default!;
     
@@ -16,6 +13,9 @@ public class Unit : BaseEntityId
     
     // TODO: update in ERD schema
     public float? UnitMultiplier { get; set; }
+    
+    public Guid IngredientTypeId { get; set; }
+    public IngredientType? IngredientType { get; set; }
     
     public ICollection<RecipeIngredient>? RecipeIngredients { get; set; }
 }
