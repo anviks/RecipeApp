@@ -3,17 +3,17 @@
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <div class="form-group">
     <label asp-for="RecipeIngredient.RecipeId" class="control-label"></label>
-    <select asp-for="RecipeIngredient.RecipeId" class="form-control" asp-items="ViewBag.RecipeId"></select>
+    <select asp-for="RecipeIngredient.RecipeId" class="form-control" asp-items="Model.RecipeSelectList"></select>
     <span asp-validation-for="RecipeIngredient.RecipeId" class="text-danger"></span>
 </div>
 <div class="form-group">
     <label asp-for="RecipeIngredient.IngredientId" class="control-label"></label>
-    <select asp-for="RecipeIngredient.IngredientId" class="form-control" asp-items="ViewBag.IngredientId"></select>
+    <select asp-for="RecipeIngredient.IngredientId" class="form-control" asp-items="Model.IngredientSelectList"></select>
     <span asp-validation-for="RecipeIngredient.IngredientId" class="text-danger"></span>
 </div>
 <div class="form-group">
     <label asp-for="RecipeIngredient.UnitId" class="control-label"></label>
-    <select asp-for="RecipeIngredient.UnitId" class="form-control" asp-items="ViewBag.UnitId"></select>
+    <select asp-for="RecipeIngredient.UnitId" class="form-control" asp-items="Model.UnitSelectList"></select>
     <span asp-validation-for="RecipeIngredient.UnitId" class="text-danger"></span>
 </div>
 <div class="form-group">

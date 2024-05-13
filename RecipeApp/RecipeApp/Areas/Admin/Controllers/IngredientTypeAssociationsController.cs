@@ -25,7 +25,7 @@ public class IngredientTypeAssociationsController(IAppBusinessLogic businessLogi
             {
                 IngredientTypeAssociation = typeAssociation,
                 IngredientName = ingredient!.Name,
-                IngredientTypeName = ingredientType!.Description
+                IngredientTypeName = ingredientType!.Name
             });
         }
         return View(associationsViewModels);
@@ -51,7 +51,7 @@ public class IngredientTypeAssociationsController(IAppBusinessLogic businessLogi
         {
             IngredientTypeAssociation = ingredientTypeAssociation,
             IngredientName = ingredient!.Name,
-            IngredientTypeName = ingredientType!.Description
+            IngredientTypeName = ingredientType!.Name
         };
 
         return View(associationViewModel);
@@ -115,7 +115,7 @@ public class IngredientTypeAssociationsController(IAppBusinessLogic businessLogi
             IngredientSelectList = new SelectList(await businessLogic.Ingredients.FindAllAsync(), nameof(Ingredient.Id),
                 nameof(Ingredient.Name), ingredientTypeAssociation.IngredientId),
             IngredientTypeSelectList = new SelectList(await businessLogic.IngredientTypes.FindAllAsync(),
-                nameof(IngredientType.Id), nameof(IngredientType.Description),
+                nameof(IngredientType.Id), nameof(IngredientType.Name),
                 ingredientTypeAssociation.IngredientTypeId)
         };
 
@@ -160,7 +160,7 @@ public class IngredientTypeAssociationsController(IAppBusinessLogic businessLogi
             viewModel.IngredientTypeAssociation.IngredientId);
         viewModel.IngredientTypeSelectList = new SelectList(await businessLogic.IngredientTypes.FindAllAsync(),
             nameof(IngredientType.Id),
-            nameof(IngredientType.Description),
+            nameof(IngredientType.Name),
             viewModel.IngredientTypeAssociation.IngredientTypeId);
 
         return View(viewModel);
@@ -187,7 +187,7 @@ public class IngredientTypeAssociationsController(IAppBusinessLogic businessLogi
         {
             IngredientTypeAssociation = ingredientTypeAssociation,
             IngredientName = ingredient!.Name,
-            IngredientTypeName = ingredientType!.Description
+            IngredientTypeName = ingredientType!.Name
         };
 
         return View(associationViewModel);
