@@ -5,6 +5,7 @@ import { useRoute, useRouter } from 'vue-router';
 import IngredientTypesService from '@/services/ingredientTypesService';
 import { handleApiResult } from '@/helpers/apiUtils';
 import ConditionalContent from '@/components/ConditionalContent.vue';
+import FormInput from '@/components/FormInput.vue';
 
 const ingredientTypesService = inject('ingredientTypesService') as IngredientTypesService;
 const ingredientType = ref<Optional<IngredientType>>(null);
@@ -44,16 +45,8 @@ const submitEdit = async () => {
         <ConditionalContent :errors="errors" :expected-content="ingredientType">
             <div class="col-md-4">
                 <form method="post">
-                    <div class="form-group">
-                        <label class="control-label" for="Name">Name</label>
-                        <input class="form-control" type="text" id="Name" v-model="ingredientType!.name">
-                        <span class="text-danger field-validation-valid"></span>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="Description">Description</label>
-                        <input class="form-control" type="text" id="Description" v-model="ingredientType!.description">
-                        <span class="text-danger field-validation-valid"></span>
-                    </div>
+                    <FormInput id="Name" label="Name" v-model="ingredientType!.name"/>
+                    <FormInput id="Description" label="Description" v-model="ingredientType!.description"/>
                     <div class="form-group">
                         <button @click.prevent="submitEdit" type="submit" class="btn btn-primary">Save</button>
                     </div>

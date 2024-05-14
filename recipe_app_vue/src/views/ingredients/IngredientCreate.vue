@@ -6,6 +6,7 @@ import { useRouter } from 'vue-router';
 import { handleApiResult } from '@/helpers/apiUtils';
 import type IngredientTypesService from '@/services/ingredientTypesService';
 import type IngredientTypeAssociationsService from '@/services/ingredientTypeAssociationsService';
+import FormInput from '@/components/FormInput.vue';
 
 const ingredientsService = inject('ingredientsService') as IngredientsService;
 const ingredientTypesService = inject('ingredientTypesService') as IngredientTypesService;
@@ -64,11 +65,7 @@ const removeType = () => {
     <div class="row">
         <div class="col-md-4">
             <form method="post">
-                <div class="form-group">
-                    <label class="control-label" for="Name">Name</label>
-                    <input class="form-control valid" type="text" v-model="ingredient.name" />
-                    <span class="text-danger field-validation-valid"></span>
-                </div>
+                <FormInput id="Name" label="Name" v-model="ingredient.name"/>
                 <div v-for="(association, index) in ingredient.ingredientTypeAssociations" :key="index"
                      class="form-group">
                     <label class="control-label" :for="'IngredientType' + index">Type</label>

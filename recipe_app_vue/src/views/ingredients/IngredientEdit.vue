@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { inject, onMounted, ref } from 'vue';
-import { type IngredientTypeAssociation, Ingredient, type IngredientType, type Optional } from '@/types';
+import type { Ingredient, IngredientType, Optional } from '@/types';
 import { useRoute, useRouter } from 'vue-router';
 import IngredientsService from '@/services/ingredientsService';
 import { handleApiResult } from '@/helpers/apiUtils';
 import ConditionalContent from '@/components/ConditionalContent.vue';
 import type IngredientTypesService from '@/services/ingredientTypesService';
 import type IngredientTypeAssociationsService from '@/services/ingredientTypeAssociationsService';
+import FormInput from '@/components/FormInput.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -99,11 +100,7 @@ const removeType = () => {
         <ConditionalContent :errors="errors" :expected-content="ingredient">
             <div class="col-md-4">
                 <form method="post">
-                    <div class="form-group">
-                        <label class="control-label" for="Name">Name</label>
-                        <input class="form-control valid" type="text" v-model="ingredient!.name" />
-                        <span class="text-danger field-validation-valid"></span>
-                    </div>
+                    <FormInput id="Name" label="Name" v-model="ingredient!.name"/>
                     <div v-for="(association, index) in ingredient!.ingredientTypeAssociations" :key="index"
                          class="form-group">
                         <label class="control-label" :for="'IngredientType' + index">Type</label>

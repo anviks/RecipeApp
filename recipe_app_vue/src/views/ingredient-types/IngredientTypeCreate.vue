@@ -4,6 +4,7 @@ import type { IngredientType } from '@/types';
 import IngredientTypesService from '@/services/ingredientTypesService';
 import { useRouter } from 'vue-router';
 import { handleApiResult } from '@/helpers/apiUtils';
+import FormInput from '@/components/FormInput.vue';
 
 const ingredientTypesService = inject('ingredientTypesService') as IngredientTypesService;
 const router = useRouter();
@@ -30,16 +31,8 @@ const submitCreate = async () => {
     <div class="row">
         <div class="col-md-4">
             <form method="post">
-                <div class="form-group">
-                    <label class="control-label" for="Name">Name</label>
-                    <input class="form-control valid" type="text" v-model="ingredientType.name">
-                    <span class="text-danger field-validation-valid"></span>
-                </div>
-                <div class="form-group">
-                    <label class="control-label" for="Description">Description</label>
-                    <input class="form-control" type="text" id="Description" v-model="ingredientType.description">
-                    <span class="text-danger field-validation-valid"></span>
-                </div>
+                <FormInput id="Name" label="Name" v-model="ingredientType.name"/>
+                <FormInput id="Description" label="Description" v-model="ingredientType.description"/>
                 <div class="form-group">
                     <button @click.prevent="submitCreate" type="submit" class="btn btn-primary">Create</button>
                 </div>
