@@ -48,7 +48,7 @@ public class UnitsController(IAppBusinessLogic businessLogic) : Controller
         var viewModel = new UnitDetailsViewModel
         {
             Unit = unit,
-            IngredientTypeName = ingredientType!.Description
+            IngredientTypeName = ingredientType!.Name
         };
 
         return View(viewModel);

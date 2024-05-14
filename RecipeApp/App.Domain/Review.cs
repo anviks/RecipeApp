@@ -10,7 +10,8 @@ public class Review : BaseEntityId
     public bool Edited { get; set; }
     [Range(1, 10)]
     public short Rating { get; set; }
-    public string Content { get; set; } = default!;
+    // TODO: update in ERD schema
+    public string Comment { get; set; } = default!;
     public DateTime CreatedAt { get; set; }
     
     public Guid UserId { get; set; }

@@ -7,6 +7,6 @@ public class ReviewRequest : BaseEntityId
 {
     [Range(1, 10)]
     public short Rating { get; set; }
-    public string Content { get; set; } = default!;
+    public string Comment { get; set; } = default!;
     public Guid RecipeId { get; set; }
 }
