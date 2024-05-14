@@ -56,6 +56,11 @@ const logout = async () => {
                                         Ingredient types
                                     </RouterLink>
                                 </li>
+                                <li>
+                                    <RouterLink class="dropdown-item" :to="{name: 'Units'}">
+                                        Units
+                                    </RouterLink>
+                                </li>
                             </ul>
                         </li>
                     </ul>

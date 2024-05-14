@@ -38,7 +38,7 @@ const submitEdit = async () => {
 <template>
     <h1>Edit</h1>
 
-    <h4>IngredientType</h4>
+    <h4>Ingredient type</h4>
     <hr>
     <div class="row">
         <ConditionalContent :errors="errors" :expected-content="ingredientType">

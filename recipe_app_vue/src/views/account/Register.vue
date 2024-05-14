@@ -47,7 +47,7 @@ const submitRegister = async () => {
                 <div class="text-danger">{{ errors.join('\n') }}</div>
                 <div class="form-floating mb-3">
                     <input class="form-control" autocomplete="username" placeholder="" type="text"
-                           id="Input_Username" maxlength="64"
+                           id="Input_Username" :maxlength="64"
                            name="Input.Username" v-model="registerData.username">
                     <label for="Input_Username">Username</label>
                 </div>
@@ -58,7 +58,7 @@ const submitRegister = async () => {
                 </div>
                 <div class="form-floating mb-3">
                     <input class="form-control" autocomplete="new-password" placeholder=""
-                           type="password" id="Input_Password" maxlength="100"
+                           type="password" id="Input_Password" :maxlength="100"
                            name="Input.Password" v-model="registerData.password">
                     <label for="Input_Password">Password</label>
                 </div>

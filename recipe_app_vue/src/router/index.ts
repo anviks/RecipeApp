@@ -12,6 +12,11 @@ import IngredientTypes from '@/views/ingredient-types/IngredientTypes.vue';
 import IngredientTypeDetails from '@/views/ingredient-types/IngredientTypeDetails.vue';
 import IngredientTypeEdit from '@/views/ingredient-types/IngredientTypeEdit.vue';
 import Register from '@/views/account/Register.vue';
+import Units from '@/views/units/Units.vue';
+import UnitDetails from '@/views/units/UnitDetails.vue';
+import UnitEdit from '@/views/units/UnitEdit.vue';
+import UnitDelete from '@/views/units/UnitDelete.vue';
+import UnitCreate from '@/views/units/UnitCreate.vue';
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,6 +36,12 @@ const router = createRouter({
         { path: '/ingredient-types/:id/edit', name: 'IngredientTypeEdit', component: IngredientTypeEdit },
         { path: '/ingredient-types/:id/delete', name: 'IngredientTypeDelete', component: IngredientTypeDelete },
         { path: '/ingredient-types/create', name: 'IngredientTypeCreate', component: IngredientTypeCreate },
+
+        { path: '/units', name: 'Units', component: Units },
+        { path: '/units/:id', name: 'UnitDetails', component: UnitDetails },
+        { path: '/units/:id/edit', name: 'UnitEdit', component: UnitEdit },
+        { path: '/units/:id/delete', name: 'UnitDelete', component: UnitDelete },
+        { path: '/units/create', name: 'UnitCreate', component: UnitCreate },
     ]
 });
 

@@ -1,0 +1,76 @@
+<script setup lang="ts">
+import type { Optional, Unit } from '@/types';
+import { inject, onMounted, ref } from 'vue';
+import UnitsService from '@/services/unitsService';
+import { useRoute, useRouter } from 'vue-router';
+import { handleApiResult } from '@/helpers/apiUtils';
+import ConditionalContent from '@/components/ConditionalContent.vue';
+import type IngredientTypesService from '@/services/ingredientTypesService';
+
+const unitsService = inject('unitsService') as UnitsService;
+const ingredientTypesService = inject('ingredientTypesService') as IngredientTypesService;
+
+const unit = ref<Optional<Unit>>(null);
+const errors = ref<string[]>([]);
+
+const route = useRoute();
+const router = useRouter();
+const id = route.params.id.toString();
+
+onMounted(async () => {
+    await handleApiResult<Unit>({
+        result: unitsService.findById(id),
+        dataRef: unit,
+        errorsRef: errors,
+        router,
+        fallbackRedirect: 'Units'
+    });
+
+    if (unit.value?.ingredientTypeId) {
+        unit.value.ingredientType = (await ingredientTypesService.findById(unit.value.ingredientTypeId)).data!;
+    }
+});
+</script>
+
+<template>
+    <h1>Details</h1>
+    <div>
+        <h4>Unit</h4>
+        <hr>
+        <ConditionalContent :errors="errors" :expected-content="unit">
+            <dl class="row">
+                <dt class="col-sm-2">
+                    Name
+                </dt>
+                <dd class="col-sm-10">
+                    {{ unit!.name }}
+                </dd>
+                <dt class="col-sm-2">
+                    Abbreviation
+                </dt>
+                <dd class="col-sm-10">
+                    {{ unit!.abbreviation }}
+                </dd>
+                <dt class="col-sm-2">
+                    Unit multiplier
+                </dt>
+                <dd class="col-sm-10">
+                    {{ unit!.unitMultiplier }}
+                </dd>
+                <dt class="col-sm-2">
+                    Ingredient type
+                </dt>
+                <dd class="col-sm-10">
+                    {{ unit!.ingredientType?.name }}
+                </dd>
+            </dl>
+        </ConditionalContent>
+    </div>
+    <div>
+        <RouterLink :to="{name: 'UnitEdit', params: {id}}">Edit</RouterLink>
+        |
+        <RouterLink :to="{name: 'Units'}">Back to List</RouterLink>
+    </div>
+</template>
+
+<style scoped></style>

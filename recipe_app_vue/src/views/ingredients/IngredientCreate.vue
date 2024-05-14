@@ -22,7 +22,7 @@ onMounted(async () => {
 
 const submitCreate = async () => {
     const associations = ingredient.value.ingredientTypeAssociations!;
-    
+
     await handleApiResult({
         result: ingredientsService.create(ingredient.value),
         dataRef: ingredient,
@@ -66,7 +66,7 @@ const removeType = () => {
             <form method="post">
                 <div class="form-group">
                     <label class="control-label" for="Name">Name</label>
-                    <input class="form-control valid" type="text" v-model="ingredient.name">
+                    <input class="form-control valid" type="text" v-model="ingredient.name" />
                     <span class="text-danger field-validation-valid"></span>
                 </div>
                 <div v-for="(association, index) in ingredient.ingredientTypeAssociations" :key="index"

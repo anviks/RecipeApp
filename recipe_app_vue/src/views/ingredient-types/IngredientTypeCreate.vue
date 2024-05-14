@@ -25,7 +25,7 @@ const submitCreate = async () => {
 <template>
     <h1>Create</h1>
 
-    <h4>Ingredient</h4>
+    <h4>Ingredient type</h4>
     <hr>
     <div class="row">
         <div class="col-md-4">

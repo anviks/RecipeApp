@@ -47,3 +47,12 @@ export interface IngredientTypeAssociation {
     ingredientId: string;
     ingredientTypeId: string;
 }
+
+export interface Unit {
+    id?: string;
+    name: string;
+    abbreviation: string;
+    unitMultiplier: number;
+    ingredientTypeId: string;
+    ingredientType?: IngredientType;
+}

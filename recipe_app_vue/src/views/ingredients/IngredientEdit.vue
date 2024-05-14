@@ -27,16 +27,16 @@ onMounted(async () => {
         router,
         fallbackRedirect: 'Ingredients'
     });
-    
+
     existingAssociationIds.value = ingredient.value!.ingredientTypeAssociations!.map(a => a.id!);
-    
+
     const types = await ingredientTypesService.findAll();
     ingredientTypes.value = types.data!;
 });
 
 const submitEdit = async () => {
     const associations = ingredient.value!.ingredientTypeAssociations!;
-    
+
     await handleApiResult<Ingredient>({
         result: ingredientsService.update(id, ingredient.value!),
         dataRef: ingredient,
@@ -44,7 +44,7 @@ const submitEdit = async () => {
         router,
         fallbackRedirect: 'Ingredients'
     });
-    
+
     for (const associationId of existingAssociationIds.value) {
         if (!associations.some(a => a.id === associationId)) {
             await handleApiResult({
@@ -101,7 +101,7 @@ const removeType = () => {
                 <form method="post">
                     <div class="form-group">
                         <label class="control-label" for="Name">Name</label>
-                        <input class="form-control valid" type="text" v-model="ingredient!.name">
+                        <input class="form-control valid" type="text" v-model="ingredient!.name" />
                         <span class="text-danger field-validation-valid"></span>
                     </div>
                     <div v-for="(association, index) in ingredient!.ingredientTypeAssociations" :key="index"
@@ -109,7 +109,8 @@ const removeType = () => {
                         <label class="control-label" :for="'IngredientType' + index">Type</label>
                         <select class="form-control" :id="'IngredientType' + index"
                                 v-model="ingredient!.ingredientTypeAssociations![index].ingredientTypeId">
-                            <option v-for="type in ingredientTypes" :key="type.id" :value="type.id">{{ type.name }}</option>
+                            <option v-for="type in ingredientTypes" :key="type.id" :value="type.id">{{ type.name }}
+                            </option>
                         </select>
                     </div>
                     <div class="form-group">
