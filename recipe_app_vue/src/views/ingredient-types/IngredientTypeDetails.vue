@@ -32,20 +32,7 @@ onMounted(async () => {
         <h4>Ingredient type</h4>
         <hr>
         <ConditionalContent :errors="errors" :expected-content="ingredientType">
-            <dl class="row">
-                <dt class="col-sm-2">
-                    Name
-                </dt>
-                <dd class="col-sm-10">
-                    {{ ingredientType!.name }}
-                </dd>
-                <dt class="col-sm-2">
-                    Description
-                </dt>
-                <dd class="col-sm-10">
-                    {{ ingredientType!.description }}
-                </dd>
-            </dl>
+            <Details :ingredient-type="ingredientType" />
         </ConditionalContent>
     </div>
     <div>

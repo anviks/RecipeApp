@@ -5,6 +5,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { handleApiResult } from '@/helpers/apiUtils';
 import ConditionalContent from '@/components/ConditionalContent.vue';
 import useServices from '@/helpers/useServices';
+import Details from '@/views/units/partials/Details.vue';
 
 const { unitsService, ingredientTypesService } = useServices();
 
@@ -36,32 +37,7 @@ onMounted(async () => {
         <h4>Unit</h4>
         <hr>
         <ConditionalContent :errors="errors" :expected-content="unit">
-            <dl class="row">
-                <dt class="col-sm-2">
-                    Name
-                </dt>
-                <dd class="col-sm-10">
-                    {{ unit!.name }}
-                </dd>
-                <dt class="col-sm-2">
-                    Abbreviation
-                </dt>
-                <dd class="col-sm-10">
-                    {{ unit!.abbreviation }}
-                </dd>
-                <dt class="col-sm-2">
-                    Unit multiplier
-                </dt>
-                <dd class="col-sm-10">
-                    {{ unit!.unitMultiplier }}
-                </dd>
-                <dt class="col-sm-2">
-                    Ingredient type
-                </dt>
-                <dd class="col-sm-10">
-                    {{ unit!.ingredientType?.name }}
-                </dd>
-            </dl>
+            <Details :unit="unit!" />
         </ConditionalContent>
     </div>
     <div>

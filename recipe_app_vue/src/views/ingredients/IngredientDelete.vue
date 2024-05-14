@@ -5,6 +5,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { handleApiResult } from '@/helpers/apiUtils';
 import ConditionalContent from '@/components/ConditionalContent.vue';
 import useServices from '@/helpers/useServices';
+import Details from '@/views/ingredients/partials/Details.vue';
 
 const { ingredientsService, ingredientTypesService } = useServices();
 
@@ -51,26 +52,10 @@ const deleteIngredient = async () => {
         <div>
             <h4>Ingredient</h4>
             <hr>
-
-            <dl class="row">
-                <dt class="col-sm-2">
-                    Name
-                </dt>
-                <dd class="col-sm-10">
-                    {{ ingredient!.name }}
-                </dd>
-            </dl>
-            <dl v-for="type in ingredientTypes" :key="type.id" class="row">
-                <dt class="col-sm-2">
-                    Type
-                </dt>
-                <dd class="col-sm-10">
-                    {{ type.name }}
-                </dd>
-            </dl>
-
+            <Details :ingredient-types="ingredientTypes" :ingredient="ingredient!" />
             <form method="post">
-                <button @click.prevent="deleteIngredient" type="submit" class="btn btn-danger">Delete</button> |
+                <button @click.prevent="deleteIngredient" type="submit" class="btn btn-danger">Delete</button>
+                |
                 <RouterLink :to="{name: 'Ingredients'}">Back to List</RouterLink>
             </form>
         </div>

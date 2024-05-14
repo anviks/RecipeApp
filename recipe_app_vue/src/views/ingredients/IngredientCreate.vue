@@ -3,8 +3,8 @@ import { onMounted, ref } from 'vue';
 import type { Ingredient, IngredientType } from '@/types';
 import { useRouter } from 'vue-router';
 import { handleApiResult } from '@/helpers/apiUtils';
-import FormInput from '@/components/FormInput.vue';
 import useServices from '@/helpers/useServices';
+import CreateEdit from '@/views/ingredients/partials/CreateEdit.vue';
 
 const { ingredientsService, ingredientTypesService, ingredientTypeAssociationsService } = useServices();
 
@@ -44,15 +44,6 @@ const submitCreate = async () => {
         await router.push({ name: 'Ingredients' });
     }
 };
-
-const addType = () => {
-    ingredient.value.ingredientTypeAssociations!.push({ ingredientTypeId: '', ingredientId: '' });
-};
-
-const removeType = () => {
-    const length = ingredient.value.ingredientTypeAssociations!.length;
-    ingredient.value.ingredientTypeAssociations!.splice(length - 1, 1);
-};
 </script>
 
 <template>
@@ -63,21 +54,7 @@ const removeType = () => {
     <div class="row">
         <div class="col-md-4">
             <form method="post">
-                <FormInput id="Name" label="Name" v-model="ingredient.name"/>
-                <div v-for="(association, index) in ingredient.ingredientTypeAssociations" :key="index"
-                     class="form-group">
-                    <label class="control-label" :for="'IngredientType' + index">Type</label>
-                    <select class="form-control" :id="'IngredientType' + index"
-                            v-model="ingredient.ingredientTypeAssociations![index].ingredientTypeId">
-                        <option v-for="type in ingredientTypes" :key="type.id" :value="type.id">{{ type.name }}</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <button @click="addType" type="button" class="btn btn-primary">Add Type</button>
-                    <button @click="removeType" type="button" class="btn btn-danger"
-                            :disabled="ingredient.ingredientTypeAssociations?.length === 0">Remove Type
-                    </button>
-                </div>
+                <CreateEdit :ingredient-types="ingredientTypes" v-model="ingredient" />
                 <div class="form-group">
                     <button @click.prevent="submitCreate" type="submit" class="btn btn-primary">Create</button>
                 </div>

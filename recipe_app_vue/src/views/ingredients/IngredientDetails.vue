@@ -5,6 +5,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { handleApiResult } from '@/helpers/apiUtils';
 import ConditionalContent from '@/components/ConditionalContent.vue';
 import useServices from '@/helpers/useServices';
+import Details from '@/views/ingredients/partials/Details.vue';
 
 const { ingredientsService, ingredientTypesService } = useServices();
 
@@ -39,22 +40,7 @@ onMounted(async () => {
         <hr>
 
         <ConditionalContent :errors="errors" :expected-content="ingredient">
-            <dl class="row">
-                <dt class="col-sm-2">
-                    Name
-                </dt>
-                <dd class="col-sm-10">
-                    {{ ingredient!.name }}
-                </dd>
-            </dl>
-            <dl v-for="type in ingredientTypes" :key="type.id" class="row">
-                <dt class="col-sm-2">
-                    Type
-                </dt>
-                <dd class="col-sm-10">
-                    {{ type.name }}
-                </dd>
-            </dl>
+            <Details :ingredient-types="ingredientTypes" :ingredient="ingredient!" />
         </ConditionalContent>
     </div>
     <div>

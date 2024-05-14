@@ -6,6 +6,7 @@ import { handleApiResult } from '@/helpers/apiUtils';
 import ConditionalContent from '@/components/ConditionalContent.vue';
 import FormInput from '@/components/FormInput.vue';
 import useServices from '@/helpers/useServices';
+import CreateEdit from '@/views/ingredient-types/partials/CreateEdit.vue';
 
 const { ingredientTypesService } = useServices();
 
@@ -47,8 +48,7 @@ const submitEdit = async () => {
         <ConditionalContent :errors="errors" :expected-content="ingredientType">
             <div class="col-md-4">
                 <form method="post">
-                    <FormInput id="Name" label="Name" v-model="ingredientType!.name"/>
-                    <FormInput id="Description" label="Description" v-model="ingredientType!.description"/>
+                    <CreateEdit v-model="ingredientType" />
                     <div class="form-group">
                         <button @click.prevent="submitEdit" type="submit" class="btn btn-primary">Save</button>
                     </div>

@@ -45,22 +45,7 @@ const deleteIngredientType = async () => {
             <div>
                 <h4>Ingredient type</h4>
                 <hr>
-
-                <dl class="row">
-                    <dt class="col-sm-2">
-                        Name
-                    </dt>
-                    <dd class="col-sm-10">
-                        {{ ingredientType!.name }}
-                    </dd>
-                    <dt class="col-sm-2">
-                        Description
-                    </dt>
-                    <dd class="col-sm-10">
-                        {{ ingredientType!.description }}
-                    </dd>
-                </dl>
-
+                <Details :ingredient-type="ingredientType" />
                 <form method="post">
                     <input @click.prevent="deleteIngredientType" type="submit" value="Delete" class="btn btn-danger"> |
                     <RouterLink :to="{name: 'IngredientTypes'}">Back to List</RouterLink>

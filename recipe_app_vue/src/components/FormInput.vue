@@ -1,7 +1,13 @@
 <script setup lang="ts">
 defineProps({
-    id: String,
-    label: String,
+    id: {
+        type: String,
+        required: true,
+    },
+    label: {
+        type: String,
+        required: true,
+    },
     type: {
         type: String,
         default: 'text',

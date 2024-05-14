@@ -5,6 +5,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { handleApiResult } from '@/helpers/apiUtils';
 import ConditionalContent from '@/components/ConditionalContent.vue';
 import useServices from '@/helpers/useServices';
+import Details from '@/views/units/partials/Details.vue';
 
 const { unitsService, ingredientTypesService } = useServices();
 
@@ -23,7 +24,7 @@ onMounted(async () => {
         router,
         fallbackRedirect: 'Units'
     });
-    
+
     if (unit.value?.ingredientTypeId) {
         unit.value.ingredientType = (await ingredientTypesService.findById(unit.value.ingredientTypeId)).data!;
     }
@@ -49,34 +50,7 @@ const deleteUnit = async () => {
             <div>
                 <h4>Ingredient type</h4>
                 <hr>
-
-                <dl class="row">
-                    <dt class="col-sm-2">
-                        Name
-                    </dt>
-                    <dd class="col-sm-10">
-                        {{ unit!.name }}
-                    </dd>
-                    <dt class="col-sm-2">
-                        Abbreviation
-                    </dt>
-                    <dd class="col-sm-10">
-                        {{ unit!.abbreviation }}
-                    </dd>
-                    <dt class="col-sm-2">
-                        Unit multiplier
-                    </dt>
-                    <dd class="col-sm-10">
-                        {{ unit!.unitMultiplier }}
-                    </dd>
-                    <dt class="col-sm-2">
-                        Ingredient type
-                    </dt>
-                    <dd class="col-sm-10">
-                        {{ unit!.ingredientType?.name }}
-                    </dd>
-                </dl>
-
+                <Details :unit="unit!" />
                 <form method="post">
                     <input @click.prevent="deleteUnit" type="submit" value="Delete" class="btn btn-danger"> |
                     <RouterLink :to="{name: 'Units'}">Back to List</RouterLink>

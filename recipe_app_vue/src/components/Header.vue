@@ -18,7 +18,7 @@ watch(() => route.path, (newVal) => {
 
 const logout = async () => {
     await accountService.logout();
-    await router.push({ od: 'Login', query: { returnUrl: returnPath.value } });
+    await router.push({ name: 'Login', query: { returnUrl: returnPath.value } });
 };
 </script>
 

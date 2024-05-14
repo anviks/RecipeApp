@@ -4,8 +4,8 @@ import type { IngredientType, Optional, Unit } from '@/types';
 import { useRoute, useRouter } from 'vue-router';
 import { handleApiResult } from '@/helpers/apiUtils';
 import ConditionalContent from '@/components/ConditionalContent.vue';
-import FormInput from '@/components/FormInput.vue';
 import useServices from '@/helpers/useServices';
+import CreateEdit from '@/views/units/partials/CreateEdit.vue';
 
 const { unitsService, ingredientTypesService } = useServices();
 
@@ -51,17 +51,7 @@ const submitEdit = async () => {
         <ConditionalContent :errors="errors" :expected-content="unit">
             <div class="col-md-4">
                 <form method="post">
-                    <FormInput id="Name" label="Name" v-model="unit!.name" />
-                    <FormInput id="Abbreviation" label="Abbreviation" v-model="unit!.abbreviation" />
-                    <FormInput id="UnitMultiplier" label="Unit multiplier" v-model="unit!.unitMultiplier" />
-                    <div class="form-group">
-                        <label class="control-label" for="Ingredient type">Ingredient type</label>
-                        <select class="form-control" id="Ingredient type" v-model="unit!.ingredientTypeId">
-                            <option v-for="type in ingredientTypes" :key="type.id" :value="type.id">{{ type.name }}
-                            </option>
-                        </select>
-                        <span class="text-danger field-validation-valid"></span>
-                    </div>
+                    <CreateEdit :ingredient-types="ingredientTypes" v-model="unit!" />
                     <div class="form-group">
                         <button @click.prevent="submitEdit" type="submit" class="btn btn-primary">Save</button>
                     </div>
