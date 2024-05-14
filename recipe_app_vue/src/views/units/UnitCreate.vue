@@ -6,6 +6,7 @@ import { useRouter } from 'vue-router';
 import { handleApiResult } from '@/helpers/apiUtils';
 import type IngredientTypesService from '@/services/ingredientTypesService';
 import ConditionalContent from '@/components/ConditionalContent.vue';
+import FormInput from '@/components/FormInput.vue';
 
 const unitsService = inject('unitsService') as UnitsService;
 const ingredientTypesService = inject('ingredientTypesService') as IngredientTypesService;
@@ -43,24 +44,12 @@ const submitCreate = async () => {
         <ConditionalContent :errors="errors" :expected-content="unit">
             <div class="col-md-4">
                 <form method="post">
-                    <div class="form-group">
-                        <label class="control-label" for="Name">Name</label>
-                        <input class="form-control" type="text" id="Name" v-model="unit!.name">
-                        <span class="text-danger field-validation-valid"></span>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="Abbreviation">Abbreviation</label>
-                        <input class="form-control" type="text" id="Abbreviation" v-model="unit!.abbreviation">
-                        <span class="text-danger field-validation-valid"></span>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="Unit multiplier">Unit multiplier</label>
-                        <input class="form-control" type="text" id="Unit multiplier" v-model="unit!.unitMultiplier">
-                        <span class="text-danger field-validation-valid"></span>
-                    </div>
+                    <FormInput id="Name" label="Name" v-model="unit.name"/>
+                    <FormInput id="Abbreviation" label="Abbreviation" v-model="unit.abbreviation"/>
+                    <FormInput id="UnitMultiplier" label="Unit multiplier" v-model="unit.unitMultiplier"/>
                     <div class="form-group">
                         <label class="control-label" for="Ingredient type">Ingredient type</label>
-                        <select class="form-control" id="Ingredient type" v-model="unit!.ingredientTypeId">
+                        <select class="form-control" id="Ingredient type" v-model="unit.ingredientTypeId">
                             <option v-for="type in ingredientTypes" :key="type.id" :value="type.id">{{ type.name }}
                             </option>
                         </select>
