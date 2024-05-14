@@ -30,6 +30,11 @@ export interface UserInfo {
     email: string;
 }
 
+export interface User {
+    id?: string;
+    username: string;
+}
+
 export interface Ingredient {
     id?: string;
     name: string;
@@ -55,4 +60,32 @@ export interface Unit {
     unitMultiplier: number;
     ingredientTypeId: string;
     ingredientType?: IngredientType;
+}
+
+export interface Recipe {
+    id?: string;
+    title: string;
+    description: string;
+    imageFileUrl: string;
+    instructions: string[];
+    preparationTime: number;
+    cookingTime: number;
+    servings: number;
+    isVegetarian: boolean;
+    isVegan: boolean;
+    isGlutenFree: boolean;
+    createdAt: Date;
+    authorUser: User;
+    updatedAt: Date;
+    updatingUser: User;
+}
+
+export interface Review {
+    id?: string;
+    rating: number;
+    comment: string;
+    createdAt?: Date;
+    recipeId: string;
+    recipe?: Recipe;
+    user?: User;
 }

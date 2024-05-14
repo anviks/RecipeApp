@@ -31,6 +31,6 @@ export default class AccountService extends Service {
     }
 
     protected override getServiceUrl(): string {
-        return 'account/';
+        return 'Account/';
     }
 }

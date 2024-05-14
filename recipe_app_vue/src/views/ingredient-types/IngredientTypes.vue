@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import type { IngredientType, ResultObject } from '@/types';
+import type { IngredientType } from '@/types';
 import { onMounted, ref } from 'vue';
 import useServices from '@/helpers/useServices';
 
 const { ingredientTypesService } = useServices();
 
-const ingredientTypes = ref<ResultObject<IngredientType[]>>({});
+const ingredientTypes = ref<IngredientType[]>([]);
 
 onMounted(async () => {
-    ingredientTypes.value = await ingredientTypesService.findAll();
+    const result = await ingredientTypesService.findAll();
+    ingredientTypes.value = result.data!;
 });
 </script>
 
@@ -17,7 +18,7 @@ onMounted(async () => {
     <p>
         <RouterLink :to="{name: 'IngredientTypeCreate'}">Create New</RouterLink>
     </p>
-    <table v-if="ingredientTypes.data" class="table">
+    <table v-if="ingredientTypes.length" class="table">
         <thead>
         <tr>
             <th>
@@ -30,17 +31,17 @@ onMounted(async () => {
         </tr>
         </thead>
         <tbody>
-        <tr v-for="element in ingredientTypes.data" :key="element.id">
+        <tr v-for="type in ingredientTypes" :key="type.id">
             <td>
-                {{ element.name }}
+                {{ type.name }}
             </td>
             <td>
-                {{ element.description }}
+                {{ type.description }}
             </td>
             <td>
-                <RouterLink :to="{name: 'IngredientTypeEdit', params: {id: element.id}}">Edit</RouterLink> |
-                <RouterLink :to="{name: 'IngredientTypeDetails', params: {id: element.id}}">Details</RouterLink> |
-                <RouterLink :to="{name: 'IngredientTypeDelete', params: {id: element.id}}">Delete</RouterLink>
+                <RouterLink :to="{name: 'IngredientTypeEdit', params: {id: type.id}}">Edit</RouterLink> |
+                <RouterLink :to="{name: 'IngredientTypeDetails', params: {id: type.id}}">Details</RouterLink> |
+                <RouterLink :to="{name: 'IngredientTypeDelete', params: {id: type.id}}">Delete</RouterLink>
             </td>
         </tr>
         </tbody>

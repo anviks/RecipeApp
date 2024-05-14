@@ -17,6 +17,11 @@ import UnitDetails from '@/views/units/UnitDetails.vue';
 import UnitEdit from '@/views/units/UnitEdit.vue';
 import UnitDelete from '@/views/units/UnitDelete.vue';
 import UnitCreate from '@/views/units/UnitCreate.vue';
+import Reviews from '@/views/reviews/Reviews.vue';
+import ReviewDetails from '@/views/reviews/ReviewDetails.vue';
+import ReviewEdit from '@/views/reviews/ReviewEdit.vue';
+import ReviewDelete from '@/views/reviews/ReviewDelete.vue';
+import ReviewCreate from '@/views/reviews/ReviewCreate.vue';
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -42,6 +47,12 @@ const router = createRouter({
         { path: '/units/:id/edit', name: 'UnitEdit', component: UnitEdit },
         { path: '/units/:id/delete', name: 'UnitDelete', component: UnitDelete },
         { path: '/units/create', name: 'UnitCreate', component: UnitCreate },
+
+        { path: '/reviews', name: 'Reviews', component: Reviews },
+        { path: '/reviews/:id', name: 'ReviewDetails', component: ReviewDetails },
+        { path: '/reviews/:id/edit', name: 'ReviewEdit', component: ReviewEdit },
+        { path: '/reviews/:id/delete', name: 'ReviewDelete', component: ReviewDelete },
+        { path: '/reviews/create', name: 'ReviewCreate', component: ReviewCreate },
     ]
 });
 

@@ -20,7 +20,7 @@ onMounted(async () => {
     <p>
         <RouterLink :to="{name: 'UnitCreate'}">Create New</RouterLink>
     </p>
-    <table v-if="units" class="table">
+    <table v-if="units.length" class="table">
         <thead>
         <tr>
             <th>

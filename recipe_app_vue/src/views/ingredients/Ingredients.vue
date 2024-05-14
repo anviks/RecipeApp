@@ -4,10 +4,11 @@ import { onMounted, ref } from 'vue';
 import useServices from '@/helpers/useServices';
 
 const { ingredientsService } = useServices();
-const ingredients = ref<ResultObject<Ingredient[]>>({});
+const ingredients = ref<Ingredient[]>([]);
 
 onMounted(async () => {
-    ingredients.value = await ingredientsService.findAll();
+    const result = await ingredientsService.findAll();
+    ingredients.value = result.data!;
 });
 </script>
 
@@ -16,7 +17,7 @@ onMounted(async () => {
     <p>
         <RouterLink :to="{name: 'IngredientCreate'}">Create New</RouterLink>
     </p>
-    <table v-if="ingredients.data" class="table">
+    <table v-if="ingredients.length" class="table">
         <thead>
         <tr>
             <th>
@@ -29,7 +30,7 @@ onMounted(async () => {
         </tr>
         </thead>
         <tbody>
-        <tr v-for="ingredient in ingredients.data" :key="ingredient.id">
+        <tr v-for="ingredient in ingredients" :key="ingredient.id">
             <td>
                 {{ ingredient.name }}
             </td>

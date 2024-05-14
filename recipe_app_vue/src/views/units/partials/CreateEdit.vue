@@ -21,8 +21,8 @@ const unit = defineModel({
     <FormInput id="Abbreviation" label="Abbreviation" v-model="unit.abbreviation" />
     <FormInput id="UnitMultiplier" label="Unit multiplier" v-model="unit.unitMultiplier" />
     <div class="form-group">
-        <label class="control-label" for="Ingredient type">Ingredient type</label>
-        <select class="form-control" id="Ingredient type" v-model="unit.ingredientTypeId">
+        <label class="control-label" for="IngredientType">Ingredient type</label>
+        <select class="form-control" id="IngredientType" v-model="unit.ingredientTypeId">
             <option v-for="type in ingredientTypes" :key="type.id" :value="type.id">{{ type.name }}
             </option>
         </select>

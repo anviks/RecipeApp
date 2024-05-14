@@ -61,6 +61,11 @@ const logout = async () => {
                                         Units
                                     </RouterLink>
                                 </li>
+                                <li>
+                                    <RouterLink class="dropdown-item" :to="{name: 'Reviews'}">
+                                        Reviews
+                                    </RouterLink>
+                                </li>
                             </ul>
                         </li>
                     </ul>
