@@ -11,9 +11,14 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
+            <div class="form-group">
+                <label asp-for="ReviewRequest.RecipeId" class="control-label"></label>
+                <select asp-for="ReviewRequest.RecipeId" class="form-control" asp-items="Model.RecipeSelectList"></select>
+                <span asp-validation-for="ReviewRequest.RecipeId" class="text-danger"></span>
+            </div>
             <partial name="_CreateEdit" model="Model"/>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary"/>
             </div>
         </form>
     </div>

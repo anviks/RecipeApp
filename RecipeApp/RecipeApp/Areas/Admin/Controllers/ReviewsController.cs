@@ -1,6 +1,10 @@
 using App.BLL.DTO;
 using App.Contracts.BLL;
+using App.Domain.Identity;
+using AutoMapper;
+using Helpers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,19 +14,24 @@ namespace RecipeApp.Areas.Admin.Controllers;
 
 [Area("Admin")]
 [Authorize(Roles = "Admin")]
-public class ReviewsController(IAppBusinessLogic businessLogic) : Controller
+public class ReviewsController(
+    IAppBusinessLogic businessLogic, 
+    UserManager<AppUser> userManager,
+    IMapper mapper) : Controller
 {
+    private readonly EntityMapper<ReviewRequest, ReviewResponse> _mapper = new(mapper);
+    
     // GET: Review
     public async Task<IActionResult> Index()
     {
         var reviews = await businessLogic.Reviews.FindAllAsync();
         var reviewViewModels = new List<ReviewDetailsViewModel>();
-        foreach (Review review in reviews)
+        foreach (ReviewResponse review in reviews)
         {
             RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(review.RecipeId);
             reviewViewModels.Add(new ReviewDetailsViewModel
             {
-                Review = review,
+                ReviewResponse = review,
                 RecipeTitle = recipe!.Title
             });
         }
@@ -38,7 +47,7 @@ public class ReviewsController(IAppBusinessLogic businessLogic) : Controller
             return NotFound();
         }
 
-        Review? review = await businessLogic.Reviews.FindAsync(id.Value);
+        ReviewResponse? review = await businessLogic.Reviews.FindAsync(id.Value);
         if (review == null)
         {
             return NotFound();
@@ -47,7 +56,7 @@ public class ReviewsController(IAppBusinessLogic businessLogic) : Controller
         RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(review.RecipeId);
         var reviewViewModel = new ReviewDetailsViewModel
         {
-            Review = review,
+            ReviewResponse = review,
             RecipeTitle = recipe!.Title
         };
 
@@ -71,12 +80,12 @@ public class ReviewsController(IAppBusinessLogic businessLogic) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(ReviewCreateEditViewModel viewModel)
     {
-        Review review = viewModel.Review;
+        ReviewRequest reviewRequest = viewModel.ReviewRequest;
         
         if (ModelState.IsValid)
         {
-            review.Id = Guid.NewGuid();
-            businessLogic.Reviews.Add(review);
+            reviewRequest.Id = Guid.NewGuid();
+            businessLogic.Reviews.Add(reviewRequest, Guid.Parse(userManager.GetUserId(User)!));
             await businessLogic.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -96,17 +105,15 @@ public class ReviewsController(IAppBusinessLogic businessLogic) : Controller
             return NotFound();
         }
 
-        Review? review = await businessLogic.Reviews.FindAsync(id.Value);
+        ReviewResponse? review = await businessLogic.Reviews.FindAsync(id.Value);
         if (review == null)
         {
             return NotFound();
         }
 
-        // ViewData["RecipeId"] =
-        //     new SelectList(await businessLogic.Recipes.FindAllAsync(), "Id", "Description", review.RecipeId);
         var viewModel = new ReviewCreateEditViewModel
         {
-            Review = review,
+            ReviewRequest = _mapper.Map(review)!,
             RecipeSelectList = new SelectList(await businessLogic.Recipes.FindAllAsync(), nameof(RecipeResponse.Id),
                 nameof(RecipeResponse.Title))
         };
@@ -121,9 +128,9 @@ public class ReviewsController(IAppBusinessLogic businessLogic) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(Guid id, ReviewCreateEditViewModel viewModel)
     {
-        Review review = viewModel.Review;
+        ReviewRequest reviewRequest = viewModel.ReviewRequest;
         
-        if (id != review.Id)
+        if (id != reviewRequest.Id)
         {
             return NotFound();
         }
@@ -132,12 +139,12 @@ public class ReviewsController(IAppBusinessLogic businessLogic) : Controller
         {
             try
             {
-                businessLogic.Reviews.Update(review);
+                await businessLogic.Reviews.UpdateAsync(reviewRequest);
                 await businessLogic.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await businessLogic.Reviews.ExistsAsync(review.Id))
+                if (!await businessLogic.Reviews.ExistsAsync(reviewRequest.Id))
                 {
                     return NotFound();
                 }
@@ -162,7 +169,7 @@ public class ReviewsController(IAppBusinessLogic businessLogic) : Controller
             return NotFound();
         }
 
-        Review? review = await businessLogic.Reviews.FindAsync(id.Value);
+        ReviewResponse? review = await businessLogic.Reviews.FindAsync(id.Value);
         if (review == null)
         {
             return NotFound();
@@ -171,7 +178,7 @@ public class ReviewsController(IAppBusinessLogic businessLogic) : Controller
         RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(review.RecipeId);
         var reviewViewModel = new ReviewDetailsViewModel
         {
-            Review = review,
+            ReviewResponse = review,
             RecipeTitle = recipe!.Title
         };
 
@@ -183,7 +190,7 @@ public class ReviewsController(IAppBusinessLogic businessLogic) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        Review? review = await businessLogic.Reviews.FindAsync(id);
+        ReviewResponse? review = await businessLogic.Reviews.FindAsync(id);
         if (review != null)
         {
             await businessLogic.Reviews.RemoveAsync(review);

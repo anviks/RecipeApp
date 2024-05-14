@@ -13,19 +13,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.UserName)
+                @Html.DisplayNameFor(model => model.ReviewResponse.User.Username)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.RecipeTitle)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Review.Rating)
+                @Html.DisplayNameFor(model => model.ReviewResponse.Rating)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Review.Content)
+                @Html.DisplayNameFor(model => model.ReviewResponse.Content)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Review.CreatedAt)
+                @Html.DisplayNameFor(model => model.ReviewResponse.CreatedAt)
             </th>
             <th></th>
         </tr>
@@ -34,24 +34,33 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.UserName)
+                @Html.DisplayFor(modelItem => item.ReviewResponse.User.Username)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.RecipeTitle)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Review.Rating)
+                @{
+                    for (var i = 0; i < item.ReviewResponse.Rating / 2; i++)
+                    {
+                        <i class="rating__icon rating__icon--star fa fa-star"></i>
+                    }
+                    if (item.ReviewResponse.Rating % 2 != 0)
+                    {
+                        <i class="rating__icon rating__icon--star fa fa-star-half"></i>
+                    }
+                }
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Review.Content)
+                @Html.DisplayFor(modelItem => item.ReviewResponse.Content)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Review.CreatedAt)
+                @Html.DisplayFor(modelItem => item.ReviewResponse.CreatedAt)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Review.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Review.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Review.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.ReviewResponse.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ReviewResponse.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ReviewResponse.Id">Delete</a>
             </td>
         </tr>
 }

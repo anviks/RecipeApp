@@ -20,14 +20,14 @@ public class ReviewsController(
     IAppBusinessLogic businessLogic,
     IMapper mapper) : ControllerBase
 {
-    private readonly EntityMapper<v1_0.Review, BLL_DTO.Review> _mapper = new(mapper);   
+    private readonly EntityMapper<v1_0.ReviewResponse, BLL_DTO.ReviewResponse> _mapper = new(mapper);   
     
     // GET: api/v1/Reviews
     [HttpGet]
     [AllowAnonymous]
     [Produces("application/json")]
-    [ProducesResponseType<IEnumerable<v1_0.Review>>(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<v1_0.Review>>> GetReviews()
+    [ProducesResponseType<IEnumerable<v1_0.ReviewResponse>>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<v1_0.ReviewResponse>>> GetReviews()
     {
         var reviews = await businessLogic.Reviews.FindAllAsync();
         return Ok(reviews.Select(_mapper.Map));
@@ -37,11 +37,11 @@ public class ReviewsController(
     [HttpGet("{id:guid}")]
     [AllowAnonymous]
     [Produces("application/json")]
-    [ProducesResponseType<v1_0.Review>(StatusCodes.Status200OK)]
+    [ProducesResponseType<v1_0.ReviewResponse>(StatusCodes.Status200OK)]
     [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<v1_0.Review>> GetReview(Guid id)
+    public async Task<ActionResult<v1_0.ReviewResponse>> GetReview(Guid id)
     {
-        BLL_DTO.Review? review = await businessLogic.Reviews.FindAsync(id);
+        BLL_DTO.ReviewResponse? review = await businessLogic.Reviews.FindAsync(id);
 
         if (review == null)
         {
@@ -63,9 +63,9 @@ public class ReviewsController(
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> PutReview(Guid id, v1_0.Review review)
+    public async Task<IActionResult> PutReview(Guid id, v1_0.ReviewResponse reviewResponse)
     {
-        if (id != review.Id)
+        if (id != reviewResponse.Id)
         {
             return BadRequest(
                 new v1_0.RestApiErrorResponse
@@ -77,7 +77,7 @@ public class ReviewsController(
         
         try
         {
-            businessLogic.Reviews.Update(_mapper.Map(review)!);
+            businessLogic.Reviews.Update(_mapper.Map(reviewResponse)!);
             await businessLogic.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
@@ -105,17 +105,17 @@ public class ReviewsController(
     [HttpPost]
     [Consumes("application/json")]
     [Produces("application/json")]
-    [ProducesResponseType<v1_0.Review>(StatusCodes.Status201Created)]
-    public async Task<ActionResult<v1_0.Review>> PostReview(v1_0.Review review)
+    [ProducesResponseType<v1_0.ReviewResponse>(StatusCodes.Status201Created)]
+    public async Task<ActionResult<v1_0.ReviewResponse>> PostReview(v1_0.ReviewResponse reviewResponse)
     {
-        businessLogic.Reviews.Add(_mapper.Map(review)!);
+        businessLogic.Reviews.Add(_mapper.Map(reviewResponse)!);
         await businessLogic.SaveChangesAsync();
 
         return CreatedAtAction("GetReview", new
         {
             version = HttpContext.GetRequestedApiVersion()?.ToString(),
-            id = review.Id
-        }, review);
+            id = reviewResponse.Id
+        }, reviewResponse);
     }
 
     // DELETE: api/v1/Reviews/5
@@ -124,7 +124,7 @@ public class ReviewsController(
     [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteReview(Guid id)
     {
-        BLL_DTO.Review? review = await businessLogic.Reviews.FindAsync(id);
+        BLL_DTO.ReviewResponse? review = await businessLogic.Reviews.FindAsync(id);
         if (review == null)
         {
             return NotFound(

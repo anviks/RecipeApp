@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using App.Domain.Identity;
 using Base.Domain;
 
@@ -7,6 +8,7 @@ public class Review : BaseEntityId
 {
     // TODO: add in ERD schema
     public bool Edited { get; set; }
+    [Range(1, 10)]
     public short Rating { get; set; }
     public string Content { get; set; } = default!;
     public DateTime CreatedAt { get; set; }

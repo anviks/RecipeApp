@@ -29,7 +29,10 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 NpgsqlConnection.GlobalTypeMapper.EnableDynamicJson();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString));
+{
+    options.EnableSensitiveDataLogging();
+    options.UseNpgsql(connectionString);
+});
 
 builder.Services.AddScoped<IAppUnitOfWork, AppUnitOfWork>();
 builder.Services.AddScoped<IAppBusinessLogic, AppBusinessLogic>();

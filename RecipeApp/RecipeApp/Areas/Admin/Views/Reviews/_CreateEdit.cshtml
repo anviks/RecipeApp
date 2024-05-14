@@ -2,22 +2,31 @@
 
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <div class="form-group">
-    <label asp-for="Review.RecipeId" class="control-label"></label>
-    <select asp-for="Review.RecipeId" class="form-control" asp-items="Model.RecipeSelectList"></select>
-    <span asp-validation-for="Review.RecipeId" class="text-danger"></span>
+    <label asp-for="ReviewRequest.Rating" class="control-label"></label>
+    <br/>
+    <div class="rating-group">
+        <input class="rating__input rating__input--none" asp-for="ReviewRequest.Rating" title="hidden-value" id="rating2-0" value="0" type="radio" checked>
+        @{
+            const int numberOfStars = 5;
+            for (var i = 1; i < numberOfStars * 2 + 1; i++)
+            {
+                var value = i / 2.0;
+                var isHalfStar = i % 2 != 0;
+                var label = $"{value} star" + (Math.Abs(value - 1) < 0.001 ? "" : "s");
+                var iconName = isHalfStar ? "fa-star-half" : "fa-star";
+                var inputId = $"rating2-{i * 5}";
+                <label aria-label="@label" class="rating__label @(isHalfStar ? "rating__label--half" : "")" for="@inputId">
+                    <i class="rating__icon rating__icon--star fa @iconName"></i>
+                </label>
+                <input asp-for="ReviewRequest.Rating" class="rating__input" id="@inputId" value="@i" type="radio">
+            }
+        }
+    </div>
+    <br/>
+    <span asp-validation-for="ReviewRequest.Rating" class="text-danger"></span>
 </div>
 <div class="form-group">
-    <label asp-for="Review.Rating" class="control-label"></label>
-    <input asp-for="Review.Rating" class="form-control" />
-    <span asp-validation-for="Review.Rating" class="text-danger"></span>
-</div>
-<div class="form-group">
-    <label asp-for="Review.Content" class="control-label"></label>
-    <input asp-for="Review.Content" class="form-control" />
-    <span asp-validation-for="Review.Content" class="text-danger"></span>
-</div>
-<div class="form-group">
-    <label asp-for="Review.CreatedAt" class="control-label"></label>
-    <input asp-for="Review.CreatedAt" class="form-control" />
-    <span asp-validation-for="Review.CreatedAt" class="text-danger"></span>
+    <label asp-for="ReviewRequest.Content" class="control-label"></label>
+    <input asp-for="ReviewRequest.Content" class="form-control"/>
+    <span asp-validation-for="ReviewRequest.Content" class="text-danger"></span>
 </div>

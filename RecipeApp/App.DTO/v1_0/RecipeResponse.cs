@@ -1,4 +1,5 @@
 using Base.Domain;
+using App.DTO.v1_0.Identity;
 
 namespace App.DTO.v1_0;
 
@@ -15,7 +16,7 @@ public class RecipeResponse : BaseEntityId
     public bool IsVegan { get; set; }
     public bool IsGlutenFree { get; set; }
     public DateTime CreatedAt { get; set; }
-    public Identity.AppUser AuthorUser { get; set; } = default!;
+    public AppUser AuthorUser { get; set; } = default!;
     public DateTime? UpdatedAt { get; set; }
-    public Identity.AppUser? UpdatingUser { get; set; }
+    public AppUser? UpdatingUser { get; set; }
 }

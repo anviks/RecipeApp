@@ -8,7 +8,7 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
-        CreateMap<App.Domain.Identity.AppUser, BLL_DTO.Identity.AppUser>();
+        CreateMap<App.Domain.Identity.AppUser, BLL_DTO.Identity.AppUser>().ReverseMap();
         
         CreateMap<DAL_DTO.Category, BLL_DTO.Category>().ReverseMap();
         
@@ -26,7 +26,9 @@ public class AutoMapperProfile : Profile
         CreateMap<DAL_DTO.Recipe, BLL_DTO.RecipeRequest>().ReverseMap();
         CreateMap<BLL_DTO.RecipeRequest, BLL_DTO.RecipeResponse>().ReverseMap();
         
-        CreateMap<DAL_DTO.Review, BLL_DTO.Review>().ReverseMap();
+        CreateMap<DAL_DTO.Review, BLL_DTO.ReviewResponse>().ReverseMap();
+        CreateMap<DAL_DTO.Review, BLL_DTO.ReviewRequest>().ReverseMap();
+        CreateMap<BLL_DTO.ReviewRequest, BLL_DTO.ReviewResponse>().ReverseMap();
         
         CreateMap<DAL_DTO.Unit, BLL_DTO.Unit>().ReverseMap();
     }

@@ -1,3 +1,4 @@
+using App.Domain.Identity;
 using Base.Domain;
 
 namespace App.DAL.DTO;
@@ -8,6 +9,7 @@ public class Review : BaseEntityId
     public short Rating { get; set; }
     public string Content { get; set; } = default!;
     public DateTime CreatedAt { get; set; }
-    public Guid UserId { get; set; }
     public Guid RecipeId { get; set; }
+    public Guid UserId { get; set; }
+    public AppUser User { get; set; } = default!;
 }

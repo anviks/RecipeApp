@@ -5,6 +5,6 @@ namespace RecipeApp.Areas.Admin.ViewModels;
 
 public class ReviewCreateEditViewModel
 {
-    public Review Review { get; set; } = default!;
-    public SelectList RecipeSelectList { get; set; } = default!;
+    public ReviewRequest ReviewRequest { get; set; } = default!;
+    public SelectList? RecipeSelectList { get; set; } = default!;
 }

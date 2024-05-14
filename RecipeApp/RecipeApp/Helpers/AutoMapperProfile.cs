@@ -25,7 +25,7 @@ public class AutoMapperProfile: Profile
         CreateMap<BLL_DTO.RecipeResponse, v1_0.RecipeResponse>().ReverseMap();
         CreateMap<BLL_DTO.RecipeRequest, v1_0.RecipeRequest>().ReverseMap();
         
-        CreateMap<BLL_DTO.Review, v1_0.Review>().ReverseMap();
+        CreateMap<BLL_DTO.ReviewResponse, v1_0.ReviewResponse>().ReverseMap();
         
         CreateMap<BLL_DTO.Unit, v1_0.Unit>().ReverseMap();
     }

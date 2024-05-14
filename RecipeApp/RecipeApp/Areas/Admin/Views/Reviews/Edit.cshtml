@@ -12,7 +12,8 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <partial name="_CreateEdit" model="Model"/>
-            <input type="hidden" asp-for="Review.Id" />
+            <input type="hidden" asp-for="ReviewRequest.Id" />
+            <input type="hidden" asp-for="ReviewRequest.RecipeId" />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
