@@ -1,21 +1,23 @@
 <script setup lang="ts">
-import { inject, ref } from 'vue';
+import { ref } from 'vue';
 import { useAuthStore } from '@/stores/auth';
-import AccountService from '@/services/accountService';
 import type { LoginData, ResultObject, UserInfo } from '@/types';
 import { useRoute, useRouter } from 'vue-router';
+import useServices from '@/helpers/useServices';
 
-const accountService = inject('accountService') as AccountService;
-const authStore = useAuthStore();
-const router = useRouter();
-const route = useRoute();
-const returnUrl = route.query.returnUrl as string | undefined;
+const { accountService } = useServices();
+
 const loginData = ref<LoginData>({
     usernameOrEmail: '',
     password: ''
 });
 const loginIsOngoing = ref(false);
 const errors = ref<string[]>([]);
+
+const authStore = useAuthStore();
+const router = useRouter();
+const route = useRoute();
+const returnUrl = route.query.returnUrl as string | undefined;
 
 const submitLogin = async () => {
     loginIsOngoing.value = true;

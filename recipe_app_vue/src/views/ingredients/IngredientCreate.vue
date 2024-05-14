@@ -1,20 +1,18 @@
 <script setup lang="ts">
-import { inject, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import type { Ingredient, IngredientType } from '@/types';
-import IngredientsService from '@/services/ingredientsService';
 import { useRouter } from 'vue-router';
 import { handleApiResult } from '@/helpers/apiUtils';
-import type IngredientTypesService from '@/services/ingredientTypesService';
-import type IngredientTypeAssociationsService from '@/services/ingredientTypeAssociationsService';
 import FormInput from '@/components/FormInput.vue';
+import useServices from '@/helpers/useServices';
 
-const ingredientsService = inject('ingredientsService') as IngredientsService;
-const ingredientTypesService = inject('ingredientTypesService') as IngredientTypesService;
-const ingredientTypeAssociationsService = inject('ingredientTypeAssociationsService') as IngredientTypeAssociationsService;
-const router = useRouter();
+const { ingredientsService, ingredientTypesService, ingredientTypeAssociationsService } = useServices();
+
 const ingredient = ref<Ingredient>({ name: '', ingredientTypeAssociations: [] });
 const ingredientTypes = ref<IngredientType[]>([]);
 const errors = ref<string[]>([]);
+
+const router = useRouter();
 
 onMounted(async () => {
     const types = await ingredientTypesService.findAll();

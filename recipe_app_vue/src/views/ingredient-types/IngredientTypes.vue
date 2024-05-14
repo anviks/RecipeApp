@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import IngredientTypesService from '@/services/ingredientTypesService';
 import type { IngredientType, ResultObject } from '@/types';
-import { inject, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import useServices from '@/helpers/useServices';
 
-const ingredientTypesService = inject('ingredientTypesService') as IngredientTypesService;
+const { ingredientTypesService } = useServices();
+
 const ingredientTypes = ref<ResultObject<IngredientType[]>>({});
 
 onMounted(async () => {

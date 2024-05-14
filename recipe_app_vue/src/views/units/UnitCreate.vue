@@ -1,15 +1,13 @@
 <script setup lang="ts">
-import { inject, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import type { IngredientType, Unit } from '@/types';
-import UnitsService from '@/services/unitsService';
 import { useRouter } from 'vue-router';
 import { handleApiResult } from '@/helpers/apiUtils';
-import type IngredientTypesService from '@/services/ingredientTypesService';
 import ConditionalContent from '@/components/ConditionalContent.vue';
 import FormInput from '@/components/FormInput.vue';
+import useServices from '@/helpers/useServices';
 
-const unitsService = inject('unitsService') as UnitsService;
-const ingredientTypesService = inject('ingredientTypesService') as IngredientTypesService;
+const { unitsService, ingredientTypesService } = useServices();
 
 const unit = ref<Unit>({ name: '', abbreviation: '', ingredientTypeId: '', unitMultiplier: 0 });
 const ingredientTypes = ref<IngredientType[]>([]);

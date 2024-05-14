@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { inject, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import type { IngredientType, Optional } from '@/types';
 import { useRoute, useRouter } from 'vue-router';
-import IngredientTypesService from '@/services/ingredientTypesService';
 import { handleApiResult } from '@/helpers/apiUtils';
 import ConditionalContent from '@/components/ConditionalContent.vue';
 import FormInput from '@/components/FormInput.vue';
+import useServices from '@/helpers/useServices';
 
-const ingredientTypesService = inject('ingredientTypesService') as IngredientTypesService;
+const { ingredientTypesService } = useServices();
+
 const ingredientType = ref<Optional<IngredientType>>(null);
 const errors = ref<string[]>([]);
+
 const route = useRoute();
 const router = useRouter();
 const id = route.params.id.toString();

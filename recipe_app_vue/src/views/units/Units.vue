@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { inject, onMounted, ref } from 'vue';
-import UnitsService from '@/services/unitsService';
+import { onMounted, ref } from 'vue';
 import type { Unit } from '@/types';
-import type IngredientTypesService from '@/services/ingredientTypesService';
+import useServices from '@/helpers/useServices';
 
-const unitsService = inject('unitsService') as UnitsService;
-const ingredientTypesService = inject('ingredientTypesService') as IngredientTypesService;
+const { unitsService, ingredientTypesService } = useServices();
 const units = ref<Unit[]>([]);
 
 onMounted(async () => {

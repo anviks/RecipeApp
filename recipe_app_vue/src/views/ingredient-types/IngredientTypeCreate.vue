@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { inject, ref } from 'vue';
+import { ref } from 'vue';
 import type { IngredientType } from '@/types';
-import IngredientTypesService from '@/services/ingredientTypesService';
 import { useRouter } from 'vue-router';
 import { handleApiResult } from '@/helpers/apiUtils';
 import FormInput from '@/components/FormInput.vue';
+import useServices from '@/helpers/useServices';
 
-const ingredientTypesService = inject('ingredientTypesService') as IngredientTypesService;
-const router = useRouter();
+const { ingredientTypesService } = useServices();
+
 const ingredientType = ref<IngredientType>({ name: '', description: '' });
 const errors = ref<string[]>([]);
+
+const router = useRouter();
 
 const submitCreate = async () => {
     await handleApiResult<IngredientType>({

@@ -1,24 +1,22 @@
 <script setup lang="ts">
-import { inject, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import type { Ingredient, IngredientType, Optional } from '@/types';
 import { useRoute, useRouter } from 'vue-router';
-import IngredientsService from '@/services/ingredientsService';
 import { handleApiResult } from '@/helpers/apiUtils';
 import ConditionalContent from '@/components/ConditionalContent.vue';
-import type IngredientTypesService from '@/services/ingredientTypesService';
-import type IngredientTypeAssociationsService from '@/services/ingredientTypeAssociationsService';
 import FormInput from '@/components/FormInput.vue';
+import useServices from '@/helpers/useServices';
 
-const route = useRoute();
-const router = useRouter();
-const id = route.params.id.toString();
-const ingredientsService = inject('ingredientsService') as IngredientsService;
-const ingredientTypesService = inject('ingredientTypesService') as IngredientTypesService;
-const ingredientTypeAssociationsService = inject('ingredientTypeAssociationsService') as IngredientTypeAssociationsService;
+const { ingredientsService, ingredientTypesService, ingredientTypeAssociationsService } = useServices();
+
 const ingredient = ref<Optional<Ingredient>>(null);
 const ingredientTypes = ref<IngredientType[]>([]);
 const existingAssociationIds = ref<string[]>([]);
 const errors = ref<string[]>([]);
+
+const route = useRoute();
+const router = useRouter();
+const id = route.params.id.toString();
 
 onMounted(async () => {
     await handleApiResult<Ingredient>({

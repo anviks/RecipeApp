@@ -1,14 +1,11 @@
 <script setup lang="ts">
-import { inject, ref } from 'vue';
-import AccountService from '@/services/accountService';
+import { ref } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useRoute, useRouter } from 'vue-router';
+import useServices from '@/helpers/useServices';
 
-const accountService = inject('accountService') as AccountService;
-const authStore = useAuthStore();
-const route = useRoute();
-const router = useRouter();
-const returnUrl = route.query.returnUrl as string | undefined;
+const { accountService } = useServices();
+
 const registerData = ref({
     username: '',
     email: '',
@@ -17,6 +14,11 @@ const registerData = ref({
 });
 const registerIsOngoing = ref(false);
 const errors = ref<string[]>([]);
+
+const authStore = useAuthStore();
+const route = useRoute();
+const router = useRouter();
+const returnUrl = route.query.returnUrl as string | undefined;
 
 const submitRegister = async () => {
     registerIsOngoing.value = true;
