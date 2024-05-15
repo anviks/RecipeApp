@@ -15,10 +15,12 @@ import IngredientTypeAssociationsService from '@/services/ingredientTypeAssociat
 import UnitsService from '@/services/unitsService';
 import ReviewsService from '@/services/reviewsService';
 import RecipesService from '@/services/recipesService';
+import CategoriesService from '@/services/categoriesService';
 
 const app = createApp(App);
 
 app.provide('accountService', new AccountService());
+app.provide('categoriesService', new CategoriesService());
 app.provide('ingredientsService', new IngredientsService());
 app.provide('ingredientTypesService', new IngredientTypesService());
 app.provide('ingredientTypeAssociationsService', new IngredientTypeAssociationsService());

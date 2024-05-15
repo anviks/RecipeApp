@@ -48,7 +48,7 @@ const deleteUnit = async () => {
         <div>
             <h3>Are you sure you want to delete this?</h3>
             <div>
-                <h4>Ingredient type</h4>
+                <h4>Unit</h4>
                 <hr>
                 <Details :unit="unit!" />
                 <form method="post">

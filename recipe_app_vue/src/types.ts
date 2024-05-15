@@ -35,6 +35,12 @@ export interface User {
     username: string;
 }
 
+export interface Category {
+    id?: string;
+    name: string;
+    description?: string;
+}
+
 export interface Ingredient {
     id?: string;
     name: string;

@@ -43,3 +43,5 @@ node_modules/
 /temp/
 
 
+/src/views/recipes
+

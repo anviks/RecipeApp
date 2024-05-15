@@ -48,7 +48,7 @@ const deleteReview = async () => {
         <div>
             <h3>Are you sure you want to delete this?</h3>
             <div>
-                <h4>Ingredient type</h4>
+                <h4>Review</h4>
                 <hr>
                 <Details :review="review!" />
                 <form method="post">

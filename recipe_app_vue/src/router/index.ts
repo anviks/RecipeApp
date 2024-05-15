@@ -22,6 +22,16 @@ import ReviewDetails from '@/views/reviews/ReviewDetails.vue';
 import ReviewEdit from '@/views/reviews/ReviewEdit.vue';
 import ReviewDelete from '@/views/reviews/ReviewDelete.vue';
 import ReviewCreate from '@/views/reviews/ReviewCreate.vue';
+import Recipes from '@/views/recipes/Recipes.vue';
+import RecipeDetails from '@/views/recipes/RecipeDetails.vue';
+import RecipeEdit from '@/views/recipes/RecipeEdit.vue';
+import RecipeDelete from '@/views/recipes/RecipeDelete.vue';
+import RecipeCreate from '@/views/recipes/RecipeCreate.vue';
+import CategoryDetails from '@/views/categories/CategoryDetails.vue';
+import CategoryEdit from '@/views/categories/CategoryEdit.vue';
+import CategoryDelete from '@/views/categories/CategoryDelete.vue';
+import CategoryCreate from '@/views/categories/CategoryCreate.vue';
+import Categories from '@/views/categories/Categories.vue';
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,6 +39,12 @@ const router = createRouter({
         { path: '/', name: 'Home', component: Home },
         { path: '/account/login', name: 'Login', component: Login },
         { path: '/account/register', name: 'Register', component: Register },
+
+        { path: '/categories', name: 'Categories', component: Categories },
+        { path: '/categories/:id', name: 'CategoryDetails', component: CategoryDetails },
+        { path: '/categories/:id/edit', name: 'CategoryEdit', component: CategoryEdit },
+        { path: '/categories/:id/delete', name: 'CategoryDelete', component: CategoryDelete },
+        { path: '/categories/create', name: 'CategoryCreate', component: CategoryCreate },
         
         { path: '/ingredients', name: 'Ingredients', component: Ingredients },
         { path: '/ingredients/:id', name: 'IngredientDetails', component: IngredientDetails },
@@ -42,17 +58,23 @@ const router = createRouter({
         { path: '/ingredient-types/:id/delete', name: 'IngredientTypeDelete', component: IngredientTypeDelete },
         { path: '/ingredient-types/create', name: 'IngredientTypeCreate', component: IngredientTypeCreate },
 
-        { path: '/units', name: 'Units', component: Units },
-        { path: '/units/:id', name: 'UnitDetails', component: UnitDetails },
-        { path: '/units/:id/edit', name: 'UnitEdit', component: UnitEdit },
-        { path: '/units/:id/delete', name: 'UnitDelete', component: UnitDelete },
-        { path: '/units/create', name: 'UnitCreate', component: UnitCreate },
+        { path: '/recipes', name: 'Recipes', component: Recipes },
+        { path: '/recipes/:id', name: 'RecipeDetails', component: RecipeDetails },
+        { path: '/recipes/:id/edit', name: 'RecipeEdit', component: RecipeEdit },
+        { path: '/recipes/:id/delete', name: 'RecipeDelete', component: RecipeDelete },
+        { path: '/recipes/create', name: 'RecipeCreate', component: RecipeCreate },
 
         { path: '/reviews', name: 'Reviews', component: Reviews },
         { path: '/reviews/:id', name: 'ReviewDetails', component: ReviewDetails },
         { path: '/reviews/:id/edit', name: 'ReviewEdit', component: ReviewEdit },
         { path: '/reviews/:id/delete', name: 'ReviewDelete', component: ReviewDelete },
         { path: '/reviews/create', name: 'ReviewCreate', component: ReviewCreate },
+
+        { path: '/units', name: 'Units', component: Units },
+        { path: '/units/:id', name: 'UnitDetails', component: UnitDetails },
+        { path: '/units/:id/edit', name: 'UnitEdit', component: UnitEdit },
+        { path: '/units/:id/delete', name: 'UnitDelete', component: UnitDelete },
+        { path: '/units/create', name: 'UnitCreate', component: UnitCreate },
     ]
 });
 

@@ -3,6 +3,7 @@ import { useAuthStore } from '@/stores/auth';
 import AccountService from '@/services/accountService';
 import { useRoute, useRouter } from 'vue-router';
 import { inject, ref, watch } from 'vue';
+import Categories from '@/views/categories/Categories.vue';
 
 const accountService = inject('accountService') as AccountService;
 const authStore = useAuthStore();
@@ -47,6 +48,11 @@ const logout = async () => {
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
+                                    <RouterLink class="dropdown-item" :to="{name: 'Categories'}">
+                                        Categories
+                                    </RouterLink>
+                                </li>
+                                <li>
                                     <RouterLink class="dropdown-item" :to="{name: 'Ingredients'}">
                                         Ingredients
                                     </RouterLink>
@@ -57,13 +63,18 @@ const logout = async () => {
                                     </RouterLink>
                                 </li>
                                 <li>
-                                    <RouterLink class="dropdown-item" :to="{name: 'Units'}">
-                                        Units
+                                    <RouterLink class="dropdown-item" :to="{name: 'Recipes'}">
+                                        Recipes
                                     </RouterLink>
                                 </li>
                                 <li>
                                     <RouterLink class="dropdown-item" :to="{name: 'Reviews'}">
                                         Reviews
+                                    </RouterLink>
+                                </li>
+                                <li>
+                                    <RouterLink class="dropdown-item" :to="{name: 'Units'}">
+                                        Units
                                     </RouterLink>
                                 </li>
                             </ul>
