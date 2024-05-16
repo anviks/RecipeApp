@@ -49,7 +49,7 @@ const isHalfStar = (i: number) => i % 2 !== 0;
         <br/>
         <span class="text-danger"></span>
     </div>
-    <FormInput id="Comment" label="Comment" v-model="review.comment" />
+    <FormInput id="Comment" label="Comment" v-model="review.comment" type="textarea" />
 </template>
 
 <style scoped></style>

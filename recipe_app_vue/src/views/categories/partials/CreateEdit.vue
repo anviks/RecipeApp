@@ -11,7 +11,7 @@ const category = defineModel({
 
 <template>
     <FormInput id="Name" label="Name" v-model="category.name" />
-    <FormInput id="Description" label="Description" v-model="category.description" />
+    <FormInput id="Description" label="Description" v-model="category.description" type="textarea" />
 </template>
 
 <style scoped></style>

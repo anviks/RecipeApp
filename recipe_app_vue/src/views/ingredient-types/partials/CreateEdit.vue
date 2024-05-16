@@ -10,8 +10,8 @@ const ingredientType = defineModel({
 </script>
 
 <template>
-    <FormInput id="Name" label="Name" v-model="ingredientType!.name"/>
-    <FormInput id="Description" label="Description" v-model="ingredientType!.description"/>
+    <FormInput id="Name" label="Name" v-model="ingredientType!.name" />
+    <FormInput id="Description" label="Description" v-model="ingredientType!.description" type="textarea" />
 </template>
 
 <style scoped></style>

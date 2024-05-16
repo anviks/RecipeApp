@@ -74,7 +74,7 @@ const checkUnitPlurality = (unit: Unit, index: number) => {
 
 <template>
     <FormInput id="Title" label="Title" v-model="recipeRequest.title" />
-    <FormInput id="Description" label="Description" v-model="recipeRequest.description" />
+    <FormInput id="Description" label="Description" v-model="recipeRequest.description" type="textarea" />
     <div class="form-group">
         <label class="control-label" for="Image">Image</label>
         <input type="file" class="form-control" id="Image" @change="handleImageUpload">

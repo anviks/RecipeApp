@@ -128,9 +128,6 @@ const submitEdit = async () => {
                     </div>
                 </form>
             </div>
-            <div class="col-md-4">
-                <pre>{{ JSON.stringify(recipeRequest, null, 2) }}</pre>
-            </div>
         </ConditionalContent>
     </div>
 

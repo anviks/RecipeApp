@@ -18,7 +18,7 @@ const props = defineProps({
     }
 });
 
-const model = defineModel();
+const model = defineModel<any>();
 </script>
 
 <template>
@@ -30,7 +30,10 @@ const model = defineModel();
     </div>
     <div v-else class="form-group">
         <label v-if="label" :for="id" class="control-label">{{ label }}</label>
-        <input :id="id" v-model="model" class="form-control" :type="type">
+        
+        <textarea v-if="type === 'textarea'" :id="id" v-model="model" class="form-control"></textarea>
+        <input v-else :id="id" v-model="model" class="form-control" :type="type">
+        
         <span class="text-danger">{{ error }}</span>
     </div>
 </template>
