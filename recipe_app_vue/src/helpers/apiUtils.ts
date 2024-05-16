@@ -3,7 +3,7 @@ import type { Ref } from 'vue';
 import type { Optional, ResultObject } from '@/types';
 
 export interface ApiResultHandlerOptions<T> {
-    result: Promise<ResultObject<T>>,
+    result: Promise<ResultObject<any>>,
     dataRef?: Ref<Optional<T>>,
     errorsRef: Ref<string[]>,
     router: Router,
@@ -47,3 +47,17 @@ export async function handleApiResult<T>(
         await router.push({ name: fallbackRedirect });
     }
 }
+
+export function objectToFormData(obj: Record<string, any>) {
+    const formData = new FormData();
+    Object.entries(obj).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+            value.forEach((v, index) => {
+                formData.append(`${key}[${index}]`, v);
+            });
+        } else {
+            formData.append(key, value);
+        }
+    });
+    return formData;
+};

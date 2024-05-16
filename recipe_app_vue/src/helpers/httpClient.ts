@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
 import type { ResultObject, UserInfo } from '@/types';
-
+import { backendDomain } from '@/config';
 
 const httpClient = axios.create({
-    baseURL: 'http://localhost:5211/api/v1/'
+    baseURL: `${backendDomain}/api/v1/`
 });
 
 // Add a request interceptor to attach JWT token to outgoing requests
@@ -12,7 +12,7 @@ httpClient.interceptors.request.use(async (config) => {
     const authStore = useAuthStore();
     if (authStore.expiresAt && authStore.expiresAt < Date.now() / 1000) {
         console.log('JWT expired, refreshing...');
-        const result: ResultObject<UserInfo> = await axios.post('http://localhost:5211/api/v1/account/refresh', {
+        const result: ResultObject<UserInfo> = await axios.post(`${backendDomain}/api/v1/account/refresh`, {
             jsonWebToken: authStore.jsonWebToken,
             refreshToken: authStore.refreshToken
         });

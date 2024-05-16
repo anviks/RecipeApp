@@ -37,9 +37,9 @@ const removeType = () => {
         </select>
     </div>
     <div class="form-group">
-        <button @click="addType" type="button" class="btn btn-primary">Add Type</button>
+        <button @click="addType" type="button" class="btn btn-primary">Add type</button>
         <button @click="removeType" type="button" class="btn btn-danger"
-                :disabled="ingredient.ingredientTypeAssociations?.length === 0">Remove Type
+                :disabled="ingredient.ingredientTypeAssociations?.length === 0">Remove type
         </button>
     </div>
 </template>

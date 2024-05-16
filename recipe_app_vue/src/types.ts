@@ -68,6 +68,27 @@ export interface Unit {
     ingredientType?: IngredientType;
 }
 
+export interface RecipeIngredient {
+    id?: string;
+    customUnit?: string;
+    quantity: number;
+    ingredientModifier?: string;
+    unitId?: string;
+    unit?: Unit;
+    recipeId: string;
+    recipe?: Recipe;
+    ingredientId: string;
+    ingredient?: Ingredient;
+}
+
+export interface RecipeCategory {
+    id?: string;
+    recipeId: string;
+    recipe?: Recipe;
+    categoryId: string;
+    category?: Category;
+}
+
 export interface Recipe {
     id?: string;
     title: string;
@@ -82,8 +103,25 @@ export interface Recipe {
     isGlutenFree: boolean;
     createdAt: Date;
     authorUser: User;
-    updatedAt: Date;
-    updatingUser: User;
+    updatedAt?: Date;
+    updatingUser?: User;
+    recipeIngredients?: RecipeIngredient[];
+    recipeCategories?: RecipeCategory[];
+}
+
+export interface RecipeRequest {
+    title: string;
+    description: string;
+    imageFile?: File;
+    instructions: string[];
+    preparationTime: number;
+    cookingTime: number;
+    servings: number;
+    isVegetarian: boolean;
+    isVegan: boolean;
+    isGlutenFree: boolean;
+    recipeIngredients?: RecipeIngredient[];
+    categoryIds?: string[];
 }
 
 export interface Review {

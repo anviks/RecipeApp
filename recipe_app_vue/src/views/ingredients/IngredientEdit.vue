@@ -56,8 +56,7 @@ const submitEdit = async () => {
     }
 
     for (const association of associations) {
-        association.ingredientId = ingredient.value!.id!;
-        if (existingAssociationIds.value.includes(association.id!)) {
+        if (association.id) {
             await handleApiResult({
                 result: ingredientTypeAssociationsService.update(association.id!, association),
                 errorsRef: errors,
@@ -65,6 +64,7 @@ const submitEdit = async () => {
                 fallbackRedirect: 'Ingredients'
             });
         } else {
+            association.ingredientId = id;
             await handleApiResult({
                 result: ingredientTypeAssociationsService.create(association),
                 errorsRef: errors,

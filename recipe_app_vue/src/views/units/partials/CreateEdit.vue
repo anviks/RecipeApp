@@ -19,7 +19,7 @@ const unit = defineModel({
 <template>
     <FormInput id="Name" label="Name" v-model="unit.name" />
     <FormInput id="Abbreviation" label="Abbreviation" v-model="unit.abbreviation" />
-    <FormInput id="UnitMultiplier" label="Unit multiplier" v-model="unit.unitMultiplier" />
+    <FormInput id="UnitMultiplier" label="Unit multiplier" v-model="unit.unitMultiplier" type="number" />
     <div class="form-group">
         <label class="control-label" for="IngredientType">Ingredient type</label>
         <select class="form-control" id="IngredientType" v-model="unit.ingredientTypeId">
