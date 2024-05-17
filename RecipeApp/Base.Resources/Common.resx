@@ -27,7 +27,58 @@
     <data name="CreateAccountTitle" xml:space="preserve">
         <value>Create a new account.</value>
     </data>
-    <data name="Login" xml:space="preserve">
-        <value>Login</value>
+    <data name="LoginLink" xml:space="preserve">
+        <value>Log in</value>
+    </data>
+    <data name="LoginTitle" xml:space="preserve">
+        <value>Log in</value>
+    </data>
+    <data name="ForgotPasswordHyperLink" xml:space="preserve">
+        <value>Forgot your password?</value>
+    </data>
+    <data name="RegisterHyperLink" xml:space="preserve">
+        <value>Register as a new user</value>
+    </data>
+    <data name="WelcomeTitle" xml:space="preserve">
+        <value>Welcome</value>
+    </data>
+    <data name="EditLink" xml:space="preserve">
+        <value>Edit</value>
+    </data>
+    <data name="DetailsLink" xml:space="preserve">
+        <value>Details</value>
+    </data>
+    <data name="DeleteLink" xml:space="preserve">
+        <value>Delete</value>
+    </data>
+    <data name="DetailsTitle" xml:space="preserve">
+        <value>Details</value>
+    </data>
+    <data name="BackToListLink" xml:space="preserve">
+        <value>Back to list</value>
+    </data>
+    <data name="EditTitle" xml:space="preserve">
+        <value>Edit</value>
+    </data>
+    <data name="DeleteTitle" xml:space="preserve">
+        <value>Delete</value>
+    </data>
+    <data name="CreateNewLink" xml:space="preserve">
+        <value>Create new</value>
+    </data>
+    <data name="CreateTitle" xml:space="preserve">
+        <value>Create</value>
+    </data>
+    <data name="DeleteButton" xml:space="preserve">
+        <value>Delete</value>
+    </data>
+    <data name="DeleteConfirmQuestion" xml:space="preserve">
+        <value>Are you sure you want to delete this?</value>
+    </data>
+    <data name="CreateButton" xml:space="preserve">
+        <value>Create</value>
+    </data>
+    <data name="SaveButton" xml:space="preserve">
+        <value>Save</value>
     </data>
 </root>

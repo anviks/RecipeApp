@@ -18,6 +18,8 @@ public class RecipeRepository(AppDbContext dbContext, IMapper mapper)
         var query = base.GetQuery(tracking);
         return query
             .Include(recipe => recipe.AuthorUser)
-            .Include(recipe => recipe.UpdatingUser);
+            .Include(recipe => recipe.UpdatingUser)
+            .Include(recipe => recipe.RecipeCategories)
+            .Include(recipe => recipe.RecipeIngredients);
     }
 }

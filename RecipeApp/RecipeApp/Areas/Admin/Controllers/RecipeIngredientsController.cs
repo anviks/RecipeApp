@@ -21,16 +21,17 @@ public class RecipeIngredientsController(IAppBusinessLogic businessLogic) : Cont
         {
             Ingredient? ingredient = await businessLogic.Ingredients.FindAsync(recipeIngredient.IngredientId);
             RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(recipeIngredient.RecipeId);
-            Unit? unit = await businessLogic.Units.FindAsync(recipeIngredient.UnitId);
-            
+            Unit? unit = await businessLogic.Units.FindAsync(recipeIngredient.UnitId ?? Guid.Empty);
+
             recipeIngredientsViewModels.Add(new RecipeIngredientDetailsViewModel
             {
                 RecipeIngredient = recipeIngredient,
                 IngredientName = ingredient!.Name,
                 RecipeName = recipe!.Title,
-                UnitName = unit!.Name
+                UnitName = unit?.Name ?? recipeIngredient.CustomUnit!
             });
         }
+
         return View(recipeIngredientsViewModels);
     }
 
@@ -47,16 +48,17 @@ public class RecipeIngredientsController(IAppBusinessLogic businessLogic) : Cont
         {
             return NotFound();
         }
-        
+
         Ingredient? ingredient = await businessLogic.Ingredients.FindAsync(recipeIngredient.IngredientId);
         RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(recipeIngredient.RecipeId);
-        Unit? unit = await businessLogic.Units.FindAsync(recipeIngredient.UnitId);
+        Unit? unit = await businessLogic.Units.FindAsync(recipeIngredient.UnitId ?? Guid.Empty);
+
         var recipeIngredientViewModel = new RecipeIngredientDetailsViewModel
         {
             RecipeIngredient = recipeIngredient,
             IngredientName = ingredient!.Name,
             RecipeName = recipe!.Title,
-            UnitName = unit!.Name
+            UnitName = unit?.Name ?? recipeIngredient.CustomUnit!
         };
 
         return View(recipeIngredientViewModel);
@@ -74,6 +76,7 @@ public class RecipeIngredientsController(IAppBusinessLogic businessLogic) : Cont
             UnitSelectList = new SelectList(await businessLogic.Units.FindAllAsync(), nameof(Unit.Id),
                 nameof(Unit.Name))
         };
+        
         return View(viewModel);
     }
 
@@ -92,12 +95,17 @@ public class RecipeIngredientsController(IAppBusinessLogic businessLogic) : Cont
             await businessLogic.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        viewModel.IngredientSelectList = new SelectList(await businessLogic.Ingredients.FindAllAsync(), nameof(Ingredient.Id),
+
+        viewModel.IngredientSelectList = new SelectList(await businessLogic.Ingredients.FindAllAsync(),
+            nameof(Ingredient.Id),
             nameof(Ingredient.Name));
-        viewModel.RecipeSelectList = new SelectList(await businessLogic.Recipes.FindAllAsync(), nameof(RecipeResponse.Id),
+        viewModel.RecipeSelectList = new SelectList(await businessLogic.Recipes.FindAllAsync(),
+            nameof(RecipeResponse.Id),
             nameof(RecipeResponse.Title));
-        viewModel.UnitSelectList = new SelectList(await businessLogic.Units.FindAllAsync(), nameof(Unit.Id),
+        viewModel.UnitSelectList = new SelectList(await businessLogic.Units.FindAllAsync(), 
+            nameof(Unit.Id),
             nameof(Unit.Name));
+
         return View(viewModel);
     }
 
@@ -114,6 +122,7 @@ public class RecipeIngredientsController(IAppBusinessLogic businessLogic) : Cont
         {
             return NotFound();
         }
+
         var viewModel = new RecipeIngredientCreateEditViewModel
         {
             RecipeIngredient = recipeIngredient,
@@ -156,16 +165,19 @@ public class RecipeIngredientsController(IAppBusinessLogic businessLogic) : Cont
 
                 throw;
             }
+
             return RedirectToAction(nameof(Index));
         }
-        
-        viewModel.IngredientSelectList = new SelectList(await businessLogic.Ingredients.FindAllAsync(), nameof(Ingredient.Id),
+
+        viewModel.IngredientSelectList = new SelectList(await businessLogic.Ingredients.FindAllAsync(),
+            nameof(Ingredient.Id),
             nameof(Ingredient.Name), recipeIngredient.IngredientId);
-        viewModel.RecipeSelectList = new SelectList(await businessLogic.Recipes.FindAllAsync(), nameof(RecipeResponse.Id),
+        viewModel.RecipeSelectList = new SelectList(await businessLogic.Recipes.FindAllAsync(),
+            nameof(RecipeResponse.Id),
             nameof(RecipeResponse.Title), recipeIngredient.RecipeId);
         viewModel.UnitSelectList = new SelectList(await businessLogic.Units.FindAllAsync(), nameof(Unit.Id),
             nameof(Unit.Name), recipeIngredient.UnitId);
-        
+
         return View(viewModel);
     }
 
@@ -182,16 +194,17 @@ public class RecipeIngredientsController(IAppBusinessLogic businessLogic) : Cont
         {
             return NotFound();
         }
-        
+
         Ingredient? ingredient = await businessLogic.Ingredients.FindAsync(recipeIngredient.IngredientId);
         RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(recipeIngredient.RecipeId);
-        Unit? unit = await businessLogic.Units.FindAsync(recipeIngredient.UnitId);
+        Unit? unit = await businessLogic.Units.FindAsync(recipeIngredient.UnitId ?? Guid.Empty);
+
         var viewModel = new RecipeIngredientDetailsViewModel
         {
             RecipeIngredient = recipeIngredient,
             IngredientName = ingredient!.Name,
             RecipeName = recipe!.Title,
-            UnitName = unit!.Name
+            UnitName = unit?.Name ?? recipeIngredient.CustomUnit!
         };
 
         return View(viewModel);

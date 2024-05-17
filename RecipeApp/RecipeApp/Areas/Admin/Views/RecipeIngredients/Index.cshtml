@@ -1,13 +1,16 @@
 @model IEnumerable<RecipeApp.Areas.Admin.ViewModels.RecipeIngredientDetailsViewModel>
+@using RecipeApp.Areas.Admin.ViewModels
+@using CommonResource = Base.Resources.Common
+@using RecipeIngredientResource = App.Resources.App.BLL.DTO.RecipeIngredient;
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>@RecipeIngredientResource.RecipeIngredients</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">@CommonResource.CreateNewLink</a>
 </p>
 <table class="table">
     <thead>
@@ -16,49 +19,43 @@
             @Html.DisplayNameFor(model => model.RecipeName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.IngredientName)
+            @Html.DisplayNameFor(model => model.RecipeIngredient.Quantity)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.UnitName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.RecipeIngredient.CustomUnit)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.RecipeIngredient.Quantity)
-        </th>
-        <th>
             @Html.DisplayNameFor(model => model.RecipeIngredient.IngredientModifier)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IngredientName)
         </th>
         <th></th>
     </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model)
+    @foreach (RecipeIngredientDetailsViewModel item in Model)
     {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.RecipeName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IngredientName)
+                @Html.DisplayFor(modelItem => item.RecipeIngredient.Quantity)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.UnitName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.RecipeIngredient.CustomUnit)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RecipeIngredient.Quantity)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.RecipeIngredient.IngredientModifier)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.RecipeIngredient.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.RecipeIngredient.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.RecipeIngredient.Id">Delete</a>
+                @Html.DisplayFor(modelItem => item.IngredientName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.RecipeIngredient.Id">@CommonResource.EditLink</a> |
+                <a asp-action="Details" asp-route-id="@item.RecipeIngredient.Id">@CommonResource.DetailsLink</a> |
+                <a asp-action="Delete" asp-route-id="@item.RecipeIngredient.Id">@CommonResource.DeleteLink</a>
             </td>
         </tr>
     }

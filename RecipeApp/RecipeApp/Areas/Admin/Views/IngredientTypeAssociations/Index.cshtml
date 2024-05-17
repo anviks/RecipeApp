@@ -1,14 +1,16 @@
-@using RecipeApp.Areas.Admin.ViewModels
 @model IEnumerable<RecipeApp.Areas.Admin.ViewModels.IngredientTypeAssociationDetailsViewModel>
+@using CommonResource = Base.Resources.Common
+@using RecipeApp.Areas.Admin.ViewModels
+@using AssociationResource = App.Resources.App.BLL.DTO.IngredientTypeAssociation
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>@AssociationResource.IngredientTypeAssociations</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">@CommonResource.CreateNewLink</a>
 </p>
 <table class="table">
     <thead>
@@ -33,9 +35,9 @@
                 @Html.DisplayFor(modelItem => item.IngredientTypeName)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.IngredientTypeAssociation.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IngredientTypeAssociation.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IngredientTypeAssociation.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.IngredientTypeAssociation.Id">@CommonResource.EditLink</a> |
+                <a asp-action="Details" asp-route-id="@item.IngredientTypeAssociation.Id">@CommonResource.DetailsLink</a> |
+                <a asp-action="Delete" asp-route-id="@item.IngredientTypeAssociation.Id">@CommonResource.DeleteLink</a>
             </td>
         </tr>
     }

@@ -23,4 +23,10 @@
     <data name="Email" xml:space="preserve">
         <value>E-mailem</value>
     </data>
+    <data name="UsernameOrEmail" xml:space="preserve">
+        <value>Uživatelské jméno nebo e-mailem</value>
+    </data>
+    <data name="RememberMe" xml:space="preserve">
+        <value>Zapamatovat si mě?</value>
+    </data>
 </root>

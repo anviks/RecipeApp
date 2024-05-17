@@ -20,7 +20,58 @@
     <data name="CreateAccountTitle" xml:space="preserve">
         <value>Vytvořit nový účet.</value>
     </data>
-    <data name="Login" xml:space="preserve">
+    <data name="LoginLink" xml:space="preserve">
         <value>Přihlásit se</value>
+    </data>
+    <data name="LoginTitle" xml:space="preserve">
+        <value>Přihlásit se</value>
+    </data>
+    <data name="ForgotPasswordHyperLink" xml:space="preserve">
+        <value>Zapomněli jste heslo?</value>
+    </data>
+    <data name="RegisterHyperLink" xml:space="preserve">
+        <value>Zaregistrovat se jako nový uživatel</value>
+    </data>
+    <data name="WelcomeTitle" xml:space="preserve">
+        <value>Vítejte</value>
+    </data>
+    <data name="EditLink" xml:space="preserve">
+        <value>Upravit</value>
+    </data>
+    <data name="DetailsLink" xml:space="preserve">
+        <value>Podrobnosti</value>
+    </data>
+    <data name="DeleteLink" xml:space="preserve">
+        <value>Vymazat</value>
+    </data>
+    <data name="DetailsTitle" xml:space="preserve">
+        <value>Podrobnosti</value>
+    </data>
+    <data name="BackToListLink" xml:space="preserve">
+        <value>Zpět na seznam</value>
+    </data>
+    <data name="EditTitle" xml:space="preserve">
+        <value>Upravit</value>
+    </data>
+    <data name="DeleteTitle" xml:space="preserve">
+        <value>Vymazat</value>
+    </data>
+    <data name="CreateNewLink" xml:space="preserve">
+        <value>Vytvořit nový</value>
+    </data>
+    <data name="CreateTitle" xml:space="preserve">
+        <value>Vytvořit</value>
+    </data>
+    <data name="DeleteButton" xml:space="preserve">
+        <value>Vymazat</value>
+    </data>
+    <data name="DeleteConfirmQuestion" xml:space="preserve">
+        <value>Opravdu to chcete smazat?</value>
+    </data>
+    <data name="CreateButton" xml:space="preserve">
+        <value>Vytvořit</value>
+    </data>
+    <data name="SaveButton" xml:space="preserve">
+        <value>Uložit</value>
     </data>
 </root>

@@ -1,12 +1,14 @@
 @model RecipeApp.Areas.Admin.ViewModels.RecipeCategoryCreateEditViewModel
+@using CommonResource = Base.Resources.Common
+@using RecipeCategoryResource = App.Resources.App.BLL.DTO.RecipeCategory;
 
 @{
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h1>@CommonResource.EditTitle</h1>
 
-<h4>RecipeCategory</h4>
+<h4>@RecipeCategoryResource.RecipeCategorySingular</h4>
 <hr/>
 <div class="row">
     <div class="col-md-4">
@@ -14,14 +16,16 @@
             <partial name="_CreateEdit" model="Model"/>
             <input type="hidden" asp-for="RecipeCategory.Id"/>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary"/>
+                <button type="submit" value="Save" class="btn btn-primary">
+                    @CommonResource.SaveButton
+                </button>
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">@CommonResource.BackToListLink</a>
 </div>
 
 @section Scripts {

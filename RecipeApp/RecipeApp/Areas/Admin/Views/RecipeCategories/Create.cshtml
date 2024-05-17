@@ -1,28 +1,32 @@
 @model RecipeApp.Areas.Admin.ViewModels.RecipeCategoryCreateEditViewModel
+@using CommonResource = Base.Resources.Common
+@using RecipeCategoryResource = App.Resources.App.BLL.DTO.RecipeCategory;
 
 @{
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>@CommonResource.CreateTitle</h1>
 
-<h4>RecipeCategory</h4>
-<hr />
+<h4>@RecipeCategoryResource.RecipeCategorySingular</h4>
+<hr/>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <partial name="_CreateEdit" model="Model"/>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <button type="submit" value="Create" class="btn btn-primary">
+                    @CommonResource.CreateButton
+                </button>
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">@CommonResource.BackToListLink</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

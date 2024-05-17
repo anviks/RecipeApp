@@ -1,17 +1,19 @@
 @model App.BLL.DTO.Ingredient
+@using CommonResource = Base.Resources.Common
+@using IngredientResources = App.Resources.App.BLL.DTO.Ingredient;
 
 @{
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>@CommonResource.DetailsTitle</h1>
 
 <div>
-    <h4>Ingredient</h4>
+    <h4>@IngredientResources.IngredientSingular</h4>
     <hr />
     <partial name="_DetailsDelete" model="Model"/>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">@CommonResource.EditLink</a> |
+    <a asp-action="Index">@CommonResource.BackToListLink</a>
 </div>

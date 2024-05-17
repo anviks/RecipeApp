@@ -1,29 +1,33 @@
 @model RecipeApp.Areas.Admin.ViewModels.UnitCreateEditViewModel
+@using CommonResource = Base.Resources.Common
+@using UnitResource = App.Resources.App.BLL.DTO.Unit
 
 @{
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h1>@CommonResource.EditTitle</h1>
 
-<h4>Unit</h4>
-<hr />
+<h4>@UnitResource.UnitSingular</h4>
+<hr/>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <partial name="_CreateEdit" model="Model"/>
-            <input type="hidden" asp-for="Unit.Id" />
+            <input type="hidden" asp-for="Unit.Id"/>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <button type="submit" value="Save" class="btn btn-primary">
+                    @CommonResource.SaveButton
+                </button>
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">@CommonResource.BackToListLink</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

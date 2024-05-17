@@ -23,4 +23,10 @@
     <data name="Email" xml:space="preserve">
         <value>E-post</value>
     </data>
+    <data name="UsernameOrEmail" xml:space="preserve">
+        <value>Kasutajanimi või e-post</value>
+    </data>
+    <data name="RememberMe" xml:space="preserve">
+        <value>Jäta mind meelde?</value>
+    </data>
 </root>

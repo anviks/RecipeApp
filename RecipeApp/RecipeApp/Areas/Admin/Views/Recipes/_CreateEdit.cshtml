@@ -1,3 +1,4 @@
+@using App.Resources.App.BLL.DTO
 @model App.BLL.DTO.RecipeRequest
 
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -13,7 +14,11 @@
 </div>
 <div class="form-group">
     <label asp-for="ImageFile" class="control-label"></label>
-    <input asp-for="ImageFile" class="form-control"/>
+    <label id="fileInputLabel" class="btn btn-primary d-block">
+        <i class="fa fa-image"></i> @Recipe.ChooseImageButton
+        <input type="file" asp-for="ImageFile" class="form-control" style="display: none;" name="image" onchange="displayImage(this)" accept="image/*"/>
+    </label>
+    <img id="previewImage" src="#" alt="Preview Image" style="display: none; max-width: 150px; max-height: 150px;"/>
     <span asp-validation-for="ImageFile" class="text-danger"></span>
 </div>
 <div class="form-group">
@@ -51,15 +56,15 @@
     <div id="steps">
         @for (var i = 0; i < (Model?.Instructions.Count ?? 1); i++)
         {
-            <label asp-for="@Model!.Instructions[i]" class="control-label">Step @(i + 1)</label>
-            <input asp-for="@Model!.Instructions[i]" class="form-control"/>
+            var i1 = i;
+            <label asp-for="@Model!.Instructions[i]" class="control-label"><span id="localizedStepLabel">@Recipe.Step</span> @(i1 + 1)</label>
+            <textarea asp-for="@Model!.Instructions[i]" class="form-control"></textarea>
         }
     </div>
     <button id="add-step" type="button" class="btn btn-success">
-        Add Step
+        @Recipe.AddStepButton
     </button>
     <button id="remove-step" type="button" class="btn btn-danger" disabled="@((Model?.Instructions.Count ?? 1) == 1)">
-        Remove Step
+        @Recipe.RemoveStepButton
     </button>
 </div>
-<script src="~/js/recipeInstructionSteps.js"></script>

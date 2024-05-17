@@ -21,4 +21,6 @@ public class Recipe : BaseEntityId
     public DateTime? UpdatedAt { get; set; }
     public Guid? UpdatingUserId { get; set; }
     public AppUser? UpdatingUser { get; set; }
+    public ICollection<RecipeIngredient>? RecipeIngredients { get; set; }
+    public ICollection<RecipeCategory>? RecipeCategories { get; set; }
 }

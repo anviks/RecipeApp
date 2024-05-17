@@ -66,7 +66,7 @@ public class RecipesController(
     // PUT: api/v1/Recipes/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id:guid}")]
-    [Consumes("application/json")]
+    [Consumes("multipart/form-data")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
@@ -127,9 +127,12 @@ public class RecipesController(
     public async Task<ActionResult<v1_0.RecipeResponse>> PostRecipe(
         [FromForm] v1_0.RecipeRequest request)
     {
+        BLL_DTO.RecipeResponse savedRecipe;
         try
         {
-            await businessLogic.Recipes.AddAsync(_requestMapper.Map(request)!, Guid.Parse(userManager.GetUserId(User)!),
+            savedRecipe = await businessLogic.Recipes.AddAsync(
+                _requestMapper.Map(request)!,
+                Guid.Parse(userManager.GetUserId(User)!),
                 environment.WebRootPath);
         }
         catch (MissingImageException)
@@ -147,8 +150,8 @@ public class RecipesController(
         return CreatedAtAction("GetRecipe", new
         {
             version = HttpContext.GetRequestedApiVersion()?.ToString(),
-            id = request.Id
-        }, request);
+            id = savedRecipe.Id
+        }, savedRecipe);
     }
 
     // DELETE: api/v1/Recipes/5

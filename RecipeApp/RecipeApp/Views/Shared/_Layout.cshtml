@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using App.BLL.DTO
+@using AppResource = App.Resources.App.BLL.DTO;
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -21,9 +23,6 @@
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">@App.Resources.WebApp.Views.Shared._Layout.Privacy</a>
                     </li>
                     <li class="nav-item dropdown">
@@ -31,19 +30,45 @@
                             Admin
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" asp-area="Admin" asp-controller="Categories" asp-action="Index">Categories</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" asp-area="Admin" asp-controller="Ingredients" asp-action="Index">Ingredients</a></li>
-                            <li><a class="dropdown-item" asp-area="Admin" asp-controller="IngredientTypes" asp-action="Index">Ingredient Types</a></li>
-                            <li><a class="dropdown-item" asp-area="Admin" asp-controller="IngredientTypeAssociations" asp-action="Index">Ingredient Type Associations</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" asp-area="Admin" asp-controller="Recipes" asp-action="Index">Recipes</a></li>
-                            <li><a class="dropdown-item" asp-area="Admin" asp-controller="RecipeCategories" asp-action="Index">Recipe Categories</a></li>
-                            <li><a class="dropdown-item" asp-area="Admin" asp-controller="RecipeIngredients" asp-action="Index">Recipe Ingredients</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" asp-area="Admin" asp-controller="Reviews" asp-action="Index">Reviews</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" asp-area="Admin" asp-controller="Units" asp-action="Index">Units</a></li>
+                            <li>
+                                <a class="dropdown-item" asp-area="Admin" asp-controller="Categories" asp-action="Index">@AppResource.Category.Categories</a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-area="Admin" asp-controller="Ingredients" asp-action="Index">@AppResource.Ingredient.Ingredients</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-area="Admin" asp-controller="IngredientTypes" asp-action="Index">@AppResource.IngredientType.IngredientTypes</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-area="Admin" asp-controller="IngredientTypeAssociations" asp-action="Index">@AppResource.IngredientTypeAssociation.IngredientTypeAssociations</a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-area="Admin" asp-controller="Recipes" asp-action="Index">@AppResource.Recipe.Recipes</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-area="Admin" asp-controller="RecipeCategories" asp-action="Index">@AppResource.RecipeCategory.RecipeCategories</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-area="Admin" asp-controller="RecipeIngredients" asp-action="Index">@AppResource.RecipeIngredient.RecipeIngredients</a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-area="Admin" asp-controller="Reviews" asp-action="Index">@AppResource.Review.Reviews</a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-area="Admin" asp-controller="Units" asp-action="Index">@AppResource.Unit.Units</a>
+                            </li>
                         </ul>
                     </li>
                     <partial name="_LanguageSelectionPartial"/>

@@ -1,20 +1,24 @@
-@using BLL_DTO = App.BLL.DTO
 @model BLL_DTO.RecipeResponse
+@using CommonResource = Base.Resources.Common
+@using RecipeResource = App.Resources.App.BLL.DTO.Recipe
+@using BLL_DTO = App.BLL.DTO
 
 @{
     ViewData["Title"] = "Delete";
 }
 
-<h1>Delete</h1>
+<h1>@CommonResource.DeleteTitle</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>@CommonResource.DeleteConfirmQuestion</h3>
 <div>
-    <h4>Recipe</h4>
+    <h4>@RecipeResource.RecipeSingular</h4>
     <hr />
     <partial name="_DetailsDelete" model="Model"/>
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+                <button type="submit" value="Delete" class="btn btn-danger">
+            @CommonResource.DeleteButton
+        </button> |
+        <a asp-action="Index">@CommonResource.BackToListLink</a>
     </form>
 </div>

@@ -1,28 +1,34 @@
 @model App.BLL.DTO.RecipeRequest
+@using CommonResource = Base.Resources.Common
+@using RecipeResource = App.Resources.App.BLL.DTO.Recipe
 
 @{
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>@CommonResource.CreateTitle</h1>
 
-<h4>Recipe</h4>
+<h4>@RecipeResource.RecipeSingular</h4>
 <hr/>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create" enctype="multipart/form-data">
             <partial name="_CreateEdit" model="Model"/>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary"/>
+                <button type="submit" value="Create" class="btn btn-primary">
+                    @CommonResource.CreateButton
+                </button>
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">@CommonResource.BackToListLink</a>
 </div>
 
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script src="~/js/recipeInstructionSteps.js"></script>
+    <script src="~/js/imageFileDisplay.js"></script>
 }

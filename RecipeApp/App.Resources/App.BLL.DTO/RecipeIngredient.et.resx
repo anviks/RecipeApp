@@ -1,0 +1,38 @@
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="RecipeIngredientSingular" xml:space="preserve">
+        <value>Retsepti koostisosa</value>
+    </data>
+    <data name="RecipeIngredients" xml:space="preserve">
+        <value>Retsepti koostisosad</value>
+    </data>
+    <data name="Quantity" xml:space="preserve">
+        <value>Kogus</value>
+    </data>
+    <data name="IngredientModifier" xml:space="preserve">
+        <value>Koostisosa modifikaator</value>
+    </data>
+    <data name="CustomUnit" xml:space="preserve">
+        <value>Kohandatud mõõtühik</value>
+    </data>
+    <data name="SelectIngredient" xml:space="preserve">
+        <value>Valige koostisosa</value>
+    </data>
+    <data name="SelectRecipe" xml:space="preserve">
+        <value>Valige retsept</value>
+    </data>
+    <data name="SelectUnit" xml:space="preserve">
+        <value>Valige mõõtühik</value>
+    </data>
+</root>

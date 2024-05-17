@@ -1,0 +1,74 @@
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="Recipes" xml:space="preserve">
+        <value>Retseptid</value>
+    </data>
+    <data name="Title" xml:space="preserve">
+        <value>Pealkiri</value>
+    </data>
+    <data name="Description" xml:space="preserve">
+        <value>Kirjeldus</value>
+    </data>
+    <data name="Instructions" xml:space="preserve">
+        <value>Juhised</value>
+    </data>
+    <data name="PreparationTime" xml:space="preserve">
+        <value>Ettevalmistusaeg</value>
+    </data>
+    <data name="CookingTime" xml:space="preserve">
+        <value>Küpsetusaeg</value>
+    </data>
+    <data name="Servings" xml:space="preserve">
+        <value>Portsjonid</value>
+    </data>
+    <data name="UpdatingUser" xml:space="preserve">
+        <value>Uuendas</value>
+    </data>
+    <data name="AuthorUser" xml:space="preserve">
+        <value>Autor</value>
+    </data>
+    <data name="UpdatedAt" xml:space="preserve">
+        <value>Uuendatud</value>
+    </data>
+    <data name="CreatedAt" xml:space="preserve">
+        <value>Loodud</value>
+    </data>
+    <data name="IsGlutenFree" xml:space="preserve">
+        <value>Gluteenivaba</value>
+    </data>
+    <data name="IsVegan" xml:space="preserve">
+        <value>Vegan</value>
+    </data>
+    <data name="IsVegetarian" xml:space="preserve">
+        <value>Taimne</value>
+    </data>
+    <data name="FoodPicture" xml:space="preserve">
+        <value>Pilt toidust</value>
+    </data>
+    <data name="RecipeSingular" xml:space="preserve">
+        <value>Retsept</value>
+    </data>
+    <data name="ChooseImageButton" xml:space="preserve">
+        <value>Valige pilt</value>
+    </data>
+    <data name="Step" xml:space="preserve">
+        <value>Samm</value>
+    </data>
+    <data name="AddStepButton" xml:space="preserve">
+        <value>Lisa samm</value>
+    </data>
+    <data name="RemoveStepButton" xml:space="preserve">
+        <value>Eemalda samm</value>
+    </data>
+</root>

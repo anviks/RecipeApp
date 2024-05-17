@@ -17,7 +17,7 @@ public class RecipeIngredient : BaseEntityId
     public string? IngredientModifier { get; set; } = default!;
     
     // TODO: update in ERD schema
-    public Guid UnitId { get; set; }
+    public Guid? UnitId { get; set; }
     public Unit? Unit { get; set; }
     
     public Guid RecipeId { get; set; }

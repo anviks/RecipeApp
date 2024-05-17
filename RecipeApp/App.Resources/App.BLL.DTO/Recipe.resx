@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="Recipes" xml:space="preserve">
+        <value>Recipes</value>
+    </data>
+    <data name="Title" xml:space="preserve">
+        <value>Title</value>
+    </data>
+    <data name="Description" xml:space="preserve">
+        <value>Description</value>
+    </data>
+    <data name="Instructions" xml:space="preserve">
+        <value>Instructions</value>
+    </data>
+    <data name="PreparationTime" xml:space="preserve">
+        <value>Preparation time</value>
+    </data>
+    <data name="CookingTime" xml:space="preserve">
+        <value>Cooking time</value>
+    </data>
+    <data name="Servings" xml:space="preserve">
+        <value>Servings</value>
+    </data>
+    <data name="IsVegetarian" xml:space="preserve">
+        <value>Vegetarian</value>
+    </data>
+    <data name="IsVegan" xml:space="preserve">
+        <value>Vegan</value>
+    </data>
+    <data name="IsGlutenFree" xml:space="preserve">
+        <value>Gluten free</value>
+    </data>
+    <data name="CreatedAt" xml:space="preserve">
+        <value>Created at</value>
+    </data>
+    <data name="AuthorUser" xml:space="preserve">
+        <value>Author</value>
+    </data>
+    <data name="UpdatedAt" xml:space="preserve">
+        <value>Updated at</value>
+    </data>
+    <data name="UpdatingUser" xml:space="preserve">
+        <value>Updated by</value>
+    </data>
+    <data name="FoodPicture" xml:space="preserve">
+        <value>Picture of food</value>
+    </data>
+    <data name="RecipeSingular" xml:space="preserve">
+        <value>Recipe</value>
+    </data>
+    <data name="ChooseImageButton" xml:space="preserve">
+        <value>Choose image</value>
+    </data>
+    <data name="Step" xml:space="preserve">
+        <value>Step</value>
+    </data>
+    <data name="AddStepButton" xml:space="preserve">
+        <value>Add step</value>
+    </data>
+    <data name="RemoveStepButton" xml:space="preserve">
+        <value>Remove step</value>
+    </data>
+</root>

@@ -1,41 +1,45 @@
 @model IEnumerable<RecipeApp.Areas.Admin.ViewModels.RecipeCategoryDetailsViewModel>
+@using RecipeApp.Areas.Admin.ViewModels
+@using CommonResource = Base.Resources.Common
+@using RecipeCategoryResource = App.Resources.App.BLL.DTO.RecipeCategory;
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>@RecipeCategoryResource.RecipeCategories</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">@CommonResource.CreateNewLink</a>
 </p>
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.CategoryName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RecipeName)
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.RecipeName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CategoryName)
+        </th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (RecipeCategoryDetailsViewModel item in Model)
+    {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CategoryName)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.RecipeName)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.RecipeCategory.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.RecipeCategory.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.RecipeCategory.Id">Delete</a>
+                @Html.DisplayFor(modelItem => item.CategoryName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.RecipeCategory.Id">@CommonResource.EditLink</a> |
+                <a asp-action="Details" asp-route-id="@item.RecipeCategory.Id">@CommonResource.DetailsLink</a> |
+                <a asp-action="Delete" asp-route-id="@item.RecipeCategory.Id">@CommonResource.DeleteLink</a>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>

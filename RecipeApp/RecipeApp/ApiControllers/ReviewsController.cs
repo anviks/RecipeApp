@@ -1,10 +1,12 @@
 using System.Net;
 using App.Contracts.BLL;
+using App.Domain.Identity;
 using Asp.Versioning;
 using AutoMapper;
 using Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BLL_DTO = App.BLL.DTO;
@@ -18,9 +20,11 @@ namespace RecipeApp.ApiControllers;
 [ApiController]
 public class ReviewsController(
     IAppBusinessLogic businessLogic,
-    IMapper mapper) : ControllerBase
+    IMapper mapper,
+    UserManager<AppUser> userManager) : ControllerBase
 {
-    private readonly EntityMapper<v1_0.ReviewResponse, BLL_DTO.ReviewResponse> _mapper = new(mapper);   
+    private readonly EntityMapper<v1_0.ReviewResponse, BLL_DTO.ReviewResponse> _responseLayerMapper = new(mapper);
+    private readonly EntityMapper<v1_0.ReviewRequest, BLL_DTO.ReviewRequest> _requestLayerMapper = new(mapper);
     
     // GET: api/v1/Reviews
     [HttpGet]
@@ -30,7 +34,7 @@ public class ReviewsController(
     public async Task<ActionResult<IEnumerable<v1_0.ReviewResponse>>> GetReviews()
     {
         var reviews = await businessLogic.Reviews.FindAllAsync();
-        return Ok(reviews.Select(_mapper.Map));
+        return Ok(reviews.Select(_responseLayerMapper.Map));
     }
 
     // GET: api/v1/Reviews/5
@@ -53,7 +57,7 @@ public class ReviewsController(
                 });
         }
 
-        return Ok(_mapper.Map(review));
+        return Ok(_responseLayerMapper.Map(review));
     }
 
     // PUT: api/v1/Reviews/5
@@ -63,9 +67,9 @@ public class ReviewsController(
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> PutReview(Guid id, v1_0.ReviewResponse reviewResponse)
+    public async Task<IActionResult> PutReview(Guid id, v1_0.ReviewRequest reviewRequest)
     {
-        if (id != reviewResponse.Id)
+        if (id != reviewRequest.Id)
         {
             return BadRequest(
                 new v1_0.RestApiErrorResponse
@@ -77,7 +81,7 @@ public class ReviewsController(
         
         try
         {
-            businessLogic.Reviews.Update(_mapper.Map(reviewResponse)!);
+            await businessLogic.Reviews.UpdateAsync(_requestLayerMapper.Map(reviewRequest)!);
             await businessLogic.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
@@ -106,16 +110,16 @@ public class ReviewsController(
     [Consumes("application/json")]
     [Produces("application/json")]
     [ProducesResponseType<v1_0.ReviewResponse>(StatusCodes.Status201Created)]
-    public async Task<ActionResult<v1_0.ReviewResponse>> PostReview(v1_0.ReviewResponse reviewResponse)
+    public async Task<ActionResult<v1_0.ReviewResponse>> PostReview(v1_0.ReviewRequest reviewRequest)
     {
-        businessLogic.Reviews.Add(_mapper.Map(reviewResponse)!);
+        businessLogic.Reviews.Add(_requestLayerMapper.Map(reviewRequest)!, Guid.Parse(userManager.GetUserId(User)!));
         await businessLogic.SaveChangesAsync();
 
         return CreatedAtAction("GetReview", new
         {
             version = HttpContext.GetRequestedApiVersion()?.ToString(),
-            id = reviewResponse.Id
-        }, reviewResponse);
+            id = reviewRequest.Id
+        }, reviewRequest);
     }
 
     // DELETE: api/v1/Reviews/5
