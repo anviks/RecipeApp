@@ -23,4 +23,7 @@
     <data name="Description" xml:space="preserve">
         <value>Kirjeldus</value>
     </data>
+    <data name="SelectIngredientType" xml:space="preserve">
+        <value>Valige koostisosa liik</value>
+    </data>
 </root>

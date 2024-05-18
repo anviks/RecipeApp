@@ -23,4 +23,7 @@
     <data name="Categories" xml:space="preserve">
         <value>Kategooriad</value>
     </data>
+    <data name="SelectCategory" xml:space="preserve">
+        <value>Valige kategooria</value>
+    </data>
 </root>

@@ -33,4 +33,7 @@
     <data name="UnitMultiplier" xml:space="preserve">
         <value>Unit multiplier</value>
     </data>
+    <data name="SelectUnit" xml:space="preserve">
+        <value>Select measurement unit</value>
+    </data>
 </root>

@@ -20,4 +20,7 @@
     <data name="IngredientSingular" xml:space="preserve">
         <value>Koostisosa</value>
     </data>
+    <data name="SelectIngredient" xml:space="preserve">
+        <value>Valige koostisosa</value>
+    </data>
 </root>

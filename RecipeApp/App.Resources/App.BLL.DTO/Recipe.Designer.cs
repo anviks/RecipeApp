@@ -195,6 +195,15 @@ namespace App.Resources.App.BLL.DTO {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select recipe.
+        /// </summary>
+        public static string SelectRecipe {
+            get {
+                return ResourceManager.GetString("SelectRecipe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Servings.
         /// </summary>
         public static string Servings {

@@ -71,4 +71,7 @@
     <data name="RemoveStepButton" xml:space="preserve">
         <value>Eemalda samm</value>
     </data>
+    <data name="SelectRecipe" xml:space="preserve">
+        <value>Valige retsept</value>
+    </data>
 </root>

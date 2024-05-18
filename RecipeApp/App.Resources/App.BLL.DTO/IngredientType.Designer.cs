@@ -94,5 +94,14 @@ namespace App.Resources.App.BLL.DTO {
                 return ResourceManager.GetString("Name", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select ingredient type.
+        /// </summary>
+        public static string SelectIngredientType {
+            get {
+                return ResourceManager.GetString("SelectIngredientType", resourceCulture);
+            }
+        }
     }
 }

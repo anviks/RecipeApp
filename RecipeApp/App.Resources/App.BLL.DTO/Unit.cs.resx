@@ -26,4 +26,7 @@
     <data name="Abbreviation" xml:space="preserve">
         <value>Zkratka</value>
     </data>
+    <data name="SelectUnit" xml:space="preserve">
+        <value>Vyberte jednotku měření</value>
+    </data>
 </root>

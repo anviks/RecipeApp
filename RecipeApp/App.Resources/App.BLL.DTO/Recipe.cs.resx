@@ -71,4 +71,7 @@
     <data name="RemoveStepButton" xml:space="preserve">
         <value>Odstraňte krok</value>
     </data>
+    <data name="SelectRecipe" xml:space="preserve">
+        <value>Vyberte recept</value>
+    </data>
 </root>

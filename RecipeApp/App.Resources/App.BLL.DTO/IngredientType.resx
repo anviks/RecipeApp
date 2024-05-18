@@ -30,4 +30,7 @@
     <data name="Description" xml:space="preserve">
         <value>Description</value>
     </data>
+    <data name="SelectIngredientType" xml:space="preserve">
+        <value>Select ingredient type</value>
+    </data>
 </root>

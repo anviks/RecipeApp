@@ -26,13 +26,4 @@
     <data name="CustomUnit" xml:space="preserve">
         <value>Vlastní jednotka měření</value>
     </data>
-    <data name="SelectUnit" xml:space="preserve">
-        <value>Vyberte jednotku měření</value>
-    </data>
-    <data name="SelectRecipe" xml:space="preserve">
-        <value>Vyberte recept</value>
-    </data>
-    <data name="SelectIngredient" xml:space="preserve">
-        <value>Vyberte přísadu</value>
-    </data>
 </root>

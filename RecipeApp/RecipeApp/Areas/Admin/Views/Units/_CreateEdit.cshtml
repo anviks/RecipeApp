@@ -1,9 +1,13 @@
 @model RecipeApp.Areas.Admin.ViewModels.UnitCreateEditViewModel
+@using App.Resources.App.BLL.DTO
+@using UnitResource = App.Resources.App.BLL.DTO.Unit;
 
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <div class="form-group">
     <label asp-for="Unit.IngredientTypeId" class="control-label"></label>
-    <select asp-for="Unit.IngredientTypeId" class="form-control" asp-items="Model.IngredientTypeSelectList"></select>
+    <select asp-for="Unit.IngredientTypeId" class="form-control" asp-items="Model.IngredientTypeSelectList">
+        <option disabled selected value="">-- @IngredientType.SelectIngredientType --</option>
+    </select>
     <span asp-validation-for="Unit.IngredientTypeId" class="text-danger"></span>
 </div>
 <div class="form-group">

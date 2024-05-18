@@ -26,4 +26,7 @@
     <data name="Abbreviation" xml:space="preserve">
         <value>Lühend</value>
     </data>
+    <data name="SelectUnit" xml:space="preserve">
+        <value>Valige mõõtühik</value>
+    </data>
 </root>

@@ -23,4 +23,7 @@
     <data name="Categories" xml:space="preserve">
         <value>Kategorie</value>
     </data>
+    <data name="SelectCategory" xml:space="preserve">
+        <value>Vyberte kategorii</value>
+    </data>
 </root>

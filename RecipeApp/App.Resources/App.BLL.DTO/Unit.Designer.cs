@@ -78,6 +78,15 @@ namespace App.Resources.App.BLL.DTO {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select measurement unit.
+        /// </summary>
+        public static string SelectUnit {
+            get {
+                return ResourceManager.GetString("SelectUnit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unit multiplier.
         /// </summary>
         public static string UnitMultiplier {

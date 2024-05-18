@@ -94,5 +94,14 @@ namespace App.Resources.App.BLL.DTO {
                 return ResourceManager.GetString("Name", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select category.
+        /// </summary>
+        public static string SelectCategory {
+            get {
+                return ResourceManager.GetString("SelectCategory", resourceCulture);
+            }
+        }
     }
 }

@@ -27,4 +27,7 @@
     <data name="Name" xml:space="preserve">
         <value>Name</value>
     </data>
+    <data name="SelectIngredient" xml:space="preserve">
+        <value>Select ingredient</value>
+    </data>
 </root>

@@ -20,4 +20,7 @@
     <data name="Name" xml:space="preserve">
         <value>Název</value>
     </data>
+    <data name="SelectIngredient" xml:space="preserve">
+        <value>Vyberte přísadu</value>
+    </data>
 </root>

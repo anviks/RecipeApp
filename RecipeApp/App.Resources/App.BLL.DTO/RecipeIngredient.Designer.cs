@@ -103,32 +103,5 @@ namespace App.Resources.App.BLL.DTO {
                 return ResourceManager.GetString("RecipeIngredientSingular", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Select ingredient.
-        /// </summary>
-        public static string SelectIngredient {
-            get {
-                return ResourceManager.GetString("SelectIngredient", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Select recipe.
-        /// </summary>
-        public static string SelectRecipe {
-            get {
-                return ResourceManager.GetString("SelectRecipe", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Select measurement unit.
-        /// </summary>
-        public static string SelectUnit {
-            get {
-                return ResourceManager.GetString("SelectUnit", resourceCulture);
-            }
-        }
     }
 }

@@ -1,4 +1,5 @@
 @model RecipeApp.Areas.Admin.ViewModels.ReviewCreateEditViewModel
+@using App.Resources.App.BLL.DTO
 @using CommonResource = Base.Resources.Common
 @using ReviewResource = App.Resources.App.BLL.DTO.Review
 
@@ -15,7 +16,9 @@
         <form asp-action="Create">
             <div class="form-group">
                 <label asp-for="ReviewRequest.RecipeId" class="control-label"></label>
-                <select asp-for="ReviewRequest.RecipeId" class="form-control" asp-items="Model.RecipeSelectList"></select>
+                <select asp-for="ReviewRequest.RecipeId" class="form-control" asp-items="Model.RecipeSelectList">
+                    <option disabled selected value="">-- @Recipe.SelectRecipe --</option>
+                </select>
                 <span asp-validation-for="ReviewRequest.RecipeId" class="text-danger"></span>
             </div>
             <partial name="_CreateEdit" model="Model"/>

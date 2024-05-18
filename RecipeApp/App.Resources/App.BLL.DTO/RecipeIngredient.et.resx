@@ -26,13 +26,4 @@
     <data name="CustomUnit" xml:space="preserve">
         <value>Kohandatud mõõtühik</value>
     </data>
-    <data name="SelectIngredient" xml:space="preserve">
-        <value>Valige koostisosa</value>
-    </data>
-    <data name="SelectRecipe" xml:space="preserve">
-        <value>Valige retsept</value>
-    </data>
-    <data name="SelectUnit" xml:space="preserve">
-        <value>Valige mõõtühik</value>
-    </data>
 </root>

@@ -33,13 +33,4 @@
     <data name="CustomUnit" xml:space="preserve">
         <value>Custom measurement unit</value>
     </data>
-    <data name="SelectUnit" xml:space="preserve">
-        <value>Select measurement unit</value>
-    </data>
-    <data name="SelectRecipe" xml:space="preserve">
-        <value>Select recipe</value>
-    </data>
-    <data name="SelectIngredient" xml:space="preserve">
-        <value>Select ingredient</value>
-    </data>
 </root>
