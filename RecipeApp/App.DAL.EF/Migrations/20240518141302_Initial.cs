@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Base.Domain;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
-
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
 namespace App.DAL.EF.Migrations
 {
@@ -59,9 +58,8 @@ namespace App.DAL.EF.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
-                    Description = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: true),
-                    BroadnessIndex = table.Column<short>(type: "smallint", nullable: false)
+                    Name = table.Column<LangStr>(type: "jsonb", maxLength: 2048, nullable: false),
+                    Description = table.Column<LangStr>(type: "jsonb", maxLength: 4096, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -73,7 +71,7 @@ namespace App.DAL.EF.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false)
+                    Name = table.Column<LangStr>(type: "jsonb", maxLength: 1024, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -85,8 +83,8 @@ namespace App.DAL.EF.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
-                    Description = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: false)
+                    Name = table.Column<LangStr>(type: "jsonb", maxLength: 1024, nullable: false),
+                    Description = table.Column<LangStr>(type: "jsonb", maxLength: 4096, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -204,7 +202,7 @@ namespace App.DAL.EF.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Title = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    Title = table.Column<LangStr>(type: "jsonb", maxLength: 2048, nullable: false),
                     Description = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: false),
                     ImageFileUrl = table.Column<string>(type: "text", nullable: false),
                     Instructions = table.Column<List<string>>(type: "jsonb", nullable: false),
@@ -287,10 +285,10 @@ namespace App.DAL.EF.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    IngredientTypeId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    Name = table.Column<LangStr>(type: "jsonb", maxLength: 2048, nullable: false),
                     Abbreviation = table.Column<string>(type: "character varying(16)", maxLength: 16, nullable: true),
-                    UnitMultiplier = table.Column<float>(type: "real", nullable: true)
+                    UnitMultiplier = table.Column<float>(type: "real", nullable: true),
+                    IngredientTypeId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -333,11 +331,12 @@ namespace App.DAL.EF.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    RecipeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Edited = table.Column<bool>(type: "boolean", nullable: false),
                     Rating = table.Column<short>(type: "smallint", nullable: false),
-                    Content = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    Comment = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    RecipeId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -361,12 +360,12 @@ namespace App.DAL.EF.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    RecipeId = table.Column<Guid>(type: "uuid", nullable: false),
-                    IngredientId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UnitId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CustomUnit = table.Column<string>(type: "text", nullable: true),
+                    CustomUnit = table.Column<LangStr>(type: "jsonb", maxLength: 512, nullable: true),
                     Quantity = table.Column<float>(type: "real", nullable: false),
-                    IngredientModifier = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true)
+                    IngredientModifier = table.Column<LangStr>(type: "jsonb", maxLength: 2048, nullable: true),
+                    UnitId = table.Column<Guid>(type: "uuid", nullable: true),
+                    RecipeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    IngredientId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -387,38 +386,7 @@ namespace App.DAL.EF.Migrations
                         name: "FK_RecipeIngredients_Units_UnitId",
                         column: x => x.UnitId,
                         principalTable: "Units",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.InsertData(
-                table: "IngredientTypes",
-                columns: new[] { "Id", "Description", "Name" },
-                values: new object[,]
-                {
-                    { new Guid("3f1b9698-2053-453a-8a26-cb172292bd2d"), "An ingredient that can be measured by volume.", "Volumetric" },
-                    { new Guid("937c04b5-fe9d-4f3b-9e7f-43a02b2f64fc"), "An ingredient that can be measured by weight.", "Weighable" },
-                    { new Guid("f1f17bb7-6246-4c4d-bcd2-d1c7f850f3eb"), "An ingredient that can be counted.", "Countable" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Units",
-                columns: new[] { "Id", "Abbreviation", "IngredientTypeId", "Name", "UnitMultiplier" },
-                values: new object[,]
-                {
-                    { new Guid("028f8549-0bd2-4a0a-8637-870495fe7523"), "g", new Guid("937c04b5-fe9d-4f3b-9e7f-43a02b2f64fc"), "gram", 1f },
-                    { new Guid("0988895a-ae22-42d4-87fc-aa4c08806ca7"), "l", new Guid("3f1b9698-2053-453a-8a26-cb172292bd2d"), "liter", 1000f },
-                    { new Guid("231b47fe-ee34-4367-8440-c8e9c2c5612f"), "oz", new Guid("937c04b5-fe9d-4f3b-9e7f-43a02b2f64fc"), "ounce", 28.3495f },
-                    { new Guid("2bbe3383-9f16-4728-9c1d-355c0a68311d"), "qt", new Guid("3f1b9698-2053-453a-8a26-cb172292bd2d"), "quart", 946.353f },
-                    { new Guid("47a95cb3-6ce0-41e5-8a61-5dd937c81765"), "ml", new Guid("3f1b9698-2053-453a-8a26-cb172292bd2d"), "milliliter", 1f },
-                    { new Guid("6458058a-5a2d-4a99-b623-40c4fd166f4f"), "tsp", new Guid("3f1b9698-2053-453a-8a26-cb172292bd2d"), "teaspoon", 4.92892f },
-                    { new Guid("65583eee-6fc7-4c26-8447-e7af40a0a126"), "fl oz", new Guid("3f1b9698-2053-453a-8a26-cb172292bd2d"), "fluid ounce", 29.5735f },
-                    { new Guid("8b57e2a3-3684-4d6a-9e1c-5ef6fec2461b"), "gal", new Guid("3f1b9698-2053-453a-8a26-cb172292bd2d"), "gallon", 3785.41f },
-                    { new Guid("9ad8bbdc-2ac3-43f8-8d3d-5b21ce0bcbbf"), "tbsp", new Guid("3f1b9698-2053-453a-8a26-cb172292bd2d"), "tablespoon", 14.7868f },
-                    { new Guid("a0695ef2-263f-4f6e-b10e-3f0e6daa3606"), "kg", new Guid("937c04b5-fe9d-4f3b-9e7f-43a02b2f64fc"), "kilogram", 1000f },
-                    { new Guid("b3349e93-c5d7-45cc-92b1-30c7e3c6f4fe"), "lb", new Guid("937c04b5-fe9d-4f3b-9e7f-43a02b2f64fc"), "pound", 453.592f },
-                    { new Guid("c06868a2-13d9-4684-9532-dd644f583cb8"), "c", new Guid("3f1b9698-2053-453a-8a26-cb172292bd2d"), "cup", 236.588f },
-                    { new Guid("dd7dec2c-87e4-4ad7-b324-7f32bcc8e1b2"), "pt", new Guid("3f1b9698-2053-453a-8a26-cb172292bd2d"), "pint", 473.176f }
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(

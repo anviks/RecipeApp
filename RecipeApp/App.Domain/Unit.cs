@@ -1,12 +1,14 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Base.Domain;
 
 namespace App.Domain;
 
 public class Unit : BaseEntityId
 {
-    [MaxLength(64)]
-    public string Name { get; set; } = default!;
+    [MaxLength(2048)]
+    [Column(TypeName = "jsonb")]
+    public LangStr Name { get; set; } = default!;
     
     [MaxLength(16)]
     public string? Abbreviation { get; set; }

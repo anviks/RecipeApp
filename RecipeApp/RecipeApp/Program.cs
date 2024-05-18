@@ -160,6 +160,7 @@ WebApplication app = builder.Build();
 // ===================================================
 
 await app.SeedAdminUser();
+await app.SeedSampleData();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

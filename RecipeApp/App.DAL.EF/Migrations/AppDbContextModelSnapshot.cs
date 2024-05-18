@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using App.DAL.EF;
+using Base.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -29,14 +30,14 @@ namespace App.DAL.EF.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(512)
-                        .HasColumnType("character varying(512)");
+                    b.Property<LangStr>("Description")
+                        .HasMaxLength(4096)
+                        .HasColumnType("jsonb");
 
-                    b.Property<string>("Name")
+                    b.Property<LangStr>("Name")
                         .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)");
+                        .HasMaxLength(2048)
+                        .HasColumnType("jsonb");
 
                     b.HasKey("Id");
 
@@ -187,10 +188,10 @@ namespace App.DAL.EF.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Name")
+                    b.Property<LangStr>("Name")
                         .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)");
+                        .HasMaxLength(1024)
+                        .HasColumnType("jsonb");
 
                     b.HasKey("Id");
 
@@ -203,39 +204,19 @@ namespace App.DAL.EF.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Description")
+                    b.Property<LangStr>("Description")
                         .IsRequired()
-                        .HasMaxLength(512)
-                        .HasColumnType("character varying(512)");
+                        .HasMaxLength(4096)
+                        .HasColumnType("jsonb");
 
-                    b.Property<string>("Name")
+                    b.Property<LangStr>("Name")
                         .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)");
+                        .HasMaxLength(1024)
+                        .HasColumnType("jsonb");
 
                     b.HasKey("Id");
 
                     b.ToTable("IngredientTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("5b2d62b8-d1b0-4cad-a810-eaffeee41cf1"),
-                            Description = "An ingredient that can be measured by volume.",
-                            Name = "Volumetric"
-                        },
-                        new
-                        {
-                            Id = new Guid("d2934247-2cd5-436d-ad0e-a87a72eea483"),
-                            Description = "An ingredient that can be measured by weight.",
-                            Name = "Weighable"
-                        },
-                        new
-                        {
-                            Id = new Guid("1680f0d3-2f82-45e7-8341-690a7e150413"),
-                            Description = "An ingredient that can be counted.",
-                            Name = "Countable"
-                        });
                 });
 
             modelBuilder.Entity("App.Domain.IngredientTypeAssociation", b =>
@@ -302,10 +283,10 @@ namespace App.DAL.EF.Migrations
                     b.Property<int>("Servings")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Title")
+                    b.Property<LangStr>("Title")
                         .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)");
+                        .HasMaxLength(2048)
+                        .HasColumnType("jsonb");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -349,15 +330,16 @@ namespace App.DAL.EF.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("CustomUnit")
-                        .HasColumnType("text");
+                    b.Property<LangStr>("CustomUnit")
+                        .HasMaxLength(512)
+                        .HasColumnType("jsonb");
 
                     b.Property<Guid>("IngredientId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("IngredientModifier")
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)");
+                    b.Property<LangStr>("IngredientModifier")
+                        .HasMaxLength(2048)
+                        .HasColumnType("jsonb");
 
                     b.Property<float>("Quantity")
                         .HasColumnType("real");
@@ -426,10 +408,10 @@ namespace App.DAL.EF.Migrations
                     b.Property<Guid>("IngredientTypeId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Name")
+                    b.Property<LangStr>("Name")
                         .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)");
+                        .HasMaxLength(2048)
+                        .HasColumnType("jsonb");
 
                     b.Property<float?>("UnitMultiplier")
                         .HasColumnType("real");
@@ -439,112 +421,6 @@ namespace App.DAL.EF.Migrations
                     b.HasIndex("IngredientTypeId");
 
                     b.ToTable("Units");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("8e2e2b5a-8584-4abf-865e-ff62af715a0b"),
-                            Abbreviation = "g",
-                            IngredientTypeId = new Guid("d2934247-2cd5-436d-ad0e-a87a72eea483"),
-                            Name = "gram",
-                            UnitMultiplier = 1f
-                        },
-                        new
-                        {
-                            Id = new Guid("a2585327-f51d-44ec-b4db-3877b6fe6a21"),
-                            Abbreviation = "kg",
-                            IngredientTypeId = new Guid("d2934247-2cd5-436d-ad0e-a87a72eea483"),
-                            Name = "kilogram",
-                            UnitMultiplier = 1000f
-                        },
-                        new
-                        {
-                            Id = new Guid("0b5ae24e-b06a-45a4-9a54-da816966e0ed"),
-                            Abbreviation = "oz",
-                            IngredientTypeId = new Guid("d2934247-2cd5-436d-ad0e-a87a72eea483"),
-                            Name = "ounce",
-                            UnitMultiplier = 28.3495f
-                        },
-                        new
-                        {
-                            Id = new Guid("a0d64ddc-dbe4-46f3-a7d8-51aff2a4cd6c"),
-                            Abbreviation = "lb",
-                            IngredientTypeId = new Guid("d2934247-2cd5-436d-ad0e-a87a72eea483"),
-                            Name = "pound",
-                            UnitMultiplier = 453.592f
-                        },
-                        new
-                        {
-                            Id = new Guid("efc8cbdb-4a75-4db8-99e4-fac9bbb01a42"),
-                            Abbreviation = "ml",
-                            IngredientTypeId = new Guid("5b2d62b8-d1b0-4cad-a810-eaffeee41cf1"),
-                            Name = "milliliter",
-                            UnitMultiplier = 1f
-                        },
-                        new
-                        {
-                            Id = new Guid("d92a81bf-301d-4fc8-a491-a34b02352f23"),
-                            Abbreviation = "l",
-                            IngredientTypeId = new Guid("5b2d62b8-d1b0-4cad-a810-eaffeee41cf1"),
-                            Name = "liter",
-                            UnitMultiplier = 1000f
-                        },
-                        new
-                        {
-                            Id = new Guid("db6b6078-9b25-4c4c-8a6a-d1498e4d0a39"),
-                            Abbreviation = "fl oz",
-                            IngredientTypeId = new Guid("5b2d62b8-d1b0-4cad-a810-eaffeee41cf1"),
-                            Name = "fluid ounce",
-                            UnitMultiplier = 29.5735f
-                        },
-                        new
-                        {
-                            Id = new Guid("92c9210c-ec14-4a2a-9d1f-145259cf0fc6"),
-                            Abbreviation = "c",
-                            IngredientTypeId = new Guid("5b2d62b8-d1b0-4cad-a810-eaffeee41cf1"),
-                            Name = "cup",
-                            UnitMultiplier = 236.588f
-                        },
-                        new
-                        {
-                            Id = new Guid("dac20572-1a9c-4b8a-ab34-32f674a39b5e"),
-                            Abbreviation = "pt",
-                            IngredientTypeId = new Guid("5b2d62b8-d1b0-4cad-a810-eaffeee41cf1"),
-                            Name = "pint",
-                            UnitMultiplier = 473.176f
-                        },
-                        new
-                        {
-                            Id = new Guid("bb1d3a76-7bee-4c9f-a7b1-a8e4a66b37ce"),
-                            Abbreviation = "qt",
-                            IngredientTypeId = new Guid("5b2d62b8-d1b0-4cad-a810-eaffeee41cf1"),
-                            Name = "quart",
-                            UnitMultiplier = 946.353f
-                        },
-                        new
-                        {
-                            Id = new Guid("775e96af-22ab-4e98-96ce-382ac2838ee6"),
-                            Abbreviation = "gal",
-                            IngredientTypeId = new Guid("5b2d62b8-d1b0-4cad-a810-eaffeee41cf1"),
-                            Name = "gallon",
-                            UnitMultiplier = 3785.41f
-                        },
-                        new
-                        {
-                            Id = new Guid("a71cece8-16c8-49f0-a6f1-aaff1c8918e3"),
-                            Abbreviation = "tsp",
-                            IngredientTypeId = new Guid("5b2d62b8-d1b0-4cad-a810-eaffeee41cf1"),
-                            Name = "teaspoon",
-                            UnitMultiplier = 4.92892f
-                        },
-                        new
-                        {
-                            Id = new Guid("3be4c844-a6ba-4a80-8480-2a76e5392f11"),
-                            Abbreviation = "tbsp",
-                            IngredientTypeId = new Guid("5b2d62b8-d1b0-4cad-a810-eaffeee41cf1"),
-                            Name = "tablespoon",
-                            UnitMultiplier = 14.7868f
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

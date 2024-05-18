@@ -9,9 +9,10 @@ namespace App.Domain;
 
 public class Recipe : BaseEntityId
 {
-    [MaxLength(128)]
+    [MaxLength(2048)]
+    [Column(TypeName = "jsonb")]
     [Display(ResourceType = typeof(App.Resources.App.Domain.Recipe), Name = nameof(Title))]
-    public string Title { get; set; } = default!;
+    public LangStr Title { get; set; } = default!;
     
     [MaxLength(512)]
     [Display(ResourceType = typeof(App.Resources.App.Domain.Recipe), Name = nameof(Description))]
