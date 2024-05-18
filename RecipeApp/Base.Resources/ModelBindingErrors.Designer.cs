@@ -60,11 +60,101 @@ namespace Base.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Value {0} is invalid..
+        ///   Looks up a localized string similar to The attempted value &apos;{1}&apos; is not valid for &apos;{0}&apos;..
+        /// </summary>
+        public static string AttemptedValueIsInvalid {
+            get {
+                return ResourceManager.GetString("AttemptedValueIsInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A value for the &apos;{0}&apos; property was not provided..
+        /// </summary>
+        public static string MissingBindRequiredValue {
+            get {
+                return ResourceManager.GetString("MissingBindRequiredValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A value is required..
+        /// </summary>
+        public static string MissingKeyOrValue {
+            get {
+                return ResourceManager.GetString("MissingKeyOrValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A non-empty request body is required..
+        /// </summary>
+        public static string MissingRequestBodyRequiredValue {
+            get {
+                return ResourceManager.GetString("MissingRequestBodyRequiredValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The attempted value &apos;{0}&apos; is not valid..
+        /// </summary>
+        public static string NonPropertyAttemptedValueIsInvalid {
+            get {
+                return ResourceManager.GetString("NonPropertyAttemptedValueIsInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The supplied value is invalid..
+        /// </summary>
+        public static string NonPropertyUnknownValueIsInvalid {
+            get {
+                return ResourceManager.GetString("NonPropertyUnknownValueIsInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value must be a number..
+        /// </summary>
+        public static string NonPropertyValueMustBeANumber {
+            get {
+                return ResourceManager.GetString("NonPropertyValueMustBeANumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; is invalid..
+        /// </summary>
+        public static string UnknownValueIsInvalid {
+            get {
+                return ResourceManager.GetString("UnknownValueIsInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; is invalid..
         /// </summary>
         public static string ValueIsInvalid {
             get {
                 return ResourceManager.GetString("ValueIsInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; must be a number..
+        /// </summary>
+        public static string ValueMustBeANumber {
+            get {
+                return ResourceManager.GetString("ValueMustBeANumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; must not be null..
+        /// </summary>
+        public static string ValueMustNotBeNull {
+            get {
+                return ResourceManager.GetString("ValueMustNotBeNull", resourceCulture);
             }
         }
     }

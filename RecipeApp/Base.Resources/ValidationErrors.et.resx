@@ -33,4 +33,11 @@
     <data name="MissingImageFile" xml:space="preserve">
         <value>Palun valige pilt.</value>
     </data>
+    <data name="Required" xml:space="preserve">
+        <value>Väli {0} on kohustuslik.</value>
+    </data>
+    <data name="InvalidEmail" xml:space="preserve">
+        <value>Väli {0} ei ole kehtiv e-posti aadress.</value>
+    </data>
 </root>
+    

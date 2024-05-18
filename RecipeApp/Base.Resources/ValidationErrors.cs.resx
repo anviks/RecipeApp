@@ -33,4 +33,10 @@
     <data name="MissingImageFile" xml:space="preserve">
         <value>Vyberte prosím obrázek.</value>
     </data>
+    <data name="Required" xml:space="preserve">
+        <value>Pole {0} je povinné.</value>
+    </data>
+    <data name="InvalidEmail" xml:space="preserve">
+        <value>Pole {0} není platná e-mailová adresa.</value>
+    </data>
 </root>

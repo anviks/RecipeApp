@@ -72,7 +72,7 @@ namespace RecipeApp.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
-            [Required]
+            [Required(ErrorMessageResourceType = typeof(Base.Resources.ValidationErrors), ErrorMessageResourceName = "Required")]
             [StringLength(64, 
                 ErrorMessageResourceType = typeof(Base.Resources.ValidationErrors), 
                 ErrorMessageResourceName = "StringLengthBetween",
@@ -87,8 +87,8 @@ namespace RecipeApp.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessageResourceType = typeof(Base.Resources.ValidationErrors), ErrorMessageResourceName = "Required")]
+            [EmailAddress(ErrorMessageResourceType = typeof(Base.Resources.ValidationErrors), ErrorMessageResourceName = "InvalidEmail")]
             [Display(ResourceType = typeof(Base.Resources.Attributes), Name = nameof(Email))]
             public string Email { get; set; }
 
@@ -96,7 +96,7 @@ namespace RecipeApp.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
+            [Required(ErrorMessageResourceType = typeof(Base.Resources.ValidationErrors), ErrorMessageResourceName = "Required")]
             [StringLength(100, ErrorMessageResourceType = typeof(Base.Resources.ValidationErrors), ErrorMessageResourceName = "StringLengthBetween",
                 MinimumLength = 6)]
             [DataType(DataType.Password)]

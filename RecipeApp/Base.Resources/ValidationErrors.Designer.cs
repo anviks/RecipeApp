@@ -69,11 +69,29 @@ namespace Base.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The {0} field is not a valid email address..
+        /// </summary>
+        public static string InvalidEmail {
+            get {
+                return ResourceManager.GetString("InvalidEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please select an image..
         /// </summary>
         public static string MissingImageFile {
             get {
                 return ResourceManager.GetString("MissingImageFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The {0} field is required..
+        /// </summary>
+        public static string Required {
+            get {
+                return ResourceManager.GetString("Required", resourceCulture);
             }
         }
         

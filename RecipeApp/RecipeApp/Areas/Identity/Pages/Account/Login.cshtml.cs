@@ -61,7 +61,7 @@ namespace RecipeApp.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
+            [Required(ErrorMessageResourceType = typeof(Base.Resources.ValidationErrors), ErrorMessageResourceName = "Required")]
             [Display(ResourceType = typeof(Base.Resources.Attributes), Name = nameof(UsernameOrEmail))]
             public string UsernameOrEmail { get; set; }
 
@@ -69,7 +69,7 @@ namespace RecipeApp.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
+            [Required(ErrorMessageResourceType = typeof(Base.Resources.ValidationErrors), ErrorMessageResourceName = "Required")]
             [DataType(DataType.Password)]
             [Display(ResourceType = typeof(Base.Resources.Attributes), Name = nameof(Password))]
             public string Password { get; set; }

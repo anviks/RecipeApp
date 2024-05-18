@@ -12,6 +12,36 @@
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
     <data name="ValueIsInvalid" xml:space="preserve">
-        <value>Väärtus {0} ei ole sobilik.</value>
+        <value>Väärtus '{0}' ei ole sobilik.</value>
+    </data>
+    <data name="ValueMustBeANumber" xml:space="preserve">
+        <value>Väärtus '{0}' peab olema number.</value>
+    </data>
+    <data name="MissingBindRequiredValue" xml:space="preserve">
+        <value>Atribuudi '{0}' väärtus on puudu.</value>
+    </data>
+    <data name="AttemptedValueIsInvalid" xml:space="preserve">
+        <value>Esitatud väärtus '{1}' pole kehtiv omadusele '{0}'.</value>
+    </data>
+    <data name="MissingKeyOrValue" xml:space="preserve">
+        <value>Väärtus on nõutud.</value>
+    </data>
+    <data name="MissingRequestBodyRequiredValue" xml:space="preserve">
+        <value>Nõutud päringu keha puudub.</value>
+    </data>
+    <data name="NonPropertyUnknownValueIsInvalid" xml:space="preserve">
+        <value>Esitatud väärtus ei ole kehtiv.</value>
+    </data>
+    <data name="NonPropertyValueMustBeANumber" xml:space="preserve">
+        <value>Väärtus peab olema number.</value>
+    </data>
+    <data name="UnknownValueIsInvalid" xml:space="preserve">
+        <value>Väärtus '{0}' ei ole sobilik.</value>
+    </data>
+    <data name="ValueMustNotBeNull" xml:space="preserve">
+        <value>Väärtus '{0}' ei tohi olla 'null'.</value>
+    </data>
+    <data name="NonPropertyAttemptedValueIsInvalid" xml:space="preserve">
+        <value>Esitatud väärtus '{0}' ei ole sobilik.</value>
     </data>
 </root>
