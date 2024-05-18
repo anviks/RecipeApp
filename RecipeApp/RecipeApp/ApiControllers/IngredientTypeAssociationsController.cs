@@ -12,6 +12,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace RecipeApp.ApiControllers;
 
+/// <summary>
+/// API controller for managing ingredient type associations.
+/// </summary>
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]")]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
@@ -20,28 +23,37 @@ public class IngredientTypeAssociationsController(
     IAppBusinessLogic businessLogic,
     IMapper mapper) : ControllerBase
 {
-    private readonly EntityMapper<BLL_DTO.IngredientTypeAssociation, v1_0.IngredientTypeAssociation> _mapper = new(mapper);
+    private readonly EntityMapper<BLL_DTO.IngredientTypeAssociation, v1_0.IngredientTypeAssociation> _mapper =
+        new(mapper);
     
-    // GET: api/v1/IngredientTypeAssociations
+    /// <summary>
+    /// Get all ingredient type associations.
+    /// </summary>
+    /// <returns>A list of ingredient type associations.</returns>
     [HttpGet]
     [AllowAnonymous]
     [Produces("application/json")]
-    [ProducesResponseType<IEnumerable<v1_0.IngredientTypeAssociation>>(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<v1_0.IngredientTypeAssociation>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<v1_0.IngredientTypeAssociation>>> GetIngredientTypeAssociations()
     {
         var ingredientTypeAssociations = await businessLogic.IngredientTypeAssociations.FindAllAsync();
         return Ok(ingredientTypeAssociations);
     }
 
-    // GET: api/v1/IngredientTypeAssociations/5
+    /// <summary>
+    /// Get a specific ingredient type association by id.
+    /// </summary>
+    /// <param name="id">The id of the ingredient type association.</param>
+    /// <returns>The ingredient type association with the specified id.</returns>
     [HttpGet("{id:guid}")]
     [AllowAnonymous]
     [Produces("application/json")]
-    [ProducesResponseType<v1_0.IngredientTypeAssociation>(StatusCodes.Status200OK)]
-    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(v1_0.IngredientTypeAssociation), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<v1_0.IngredientTypeAssociation>> GetIngredientTypeAssociation(Guid id)
     {
-        BLL_DTO.IngredientTypeAssociation? ingredientTypeAssociation = await businessLogic.IngredientTypeAssociations.FindAsync(id);
+        BLL_DTO.IngredientTypeAssociation? ingredientTypeAssociation =
+            await businessLogic.IngredientTypeAssociations.FindAsync(id);
 
         if (ingredientTypeAssociation == null)
         {
@@ -49,21 +61,26 @@ public class IngredientTypeAssociationsController(
                 new v1_0.RestApiErrorResponse
                 {
                     Status = HttpStatusCode.NotFound,
-                    Error = $"IngredientTypeAssociation with ID {id} not found."
+                    Error = $"IngredientTypeAssociation with id {id} not found."
                 });
         }
 
         return Ok(_mapper.Map(ingredientTypeAssociation));
     }
 
-    // PUT: api/v1/IngredientTypeAssociations/5
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    /// <summary>
+    /// Update a specific ingredient type association.
+    /// </summary>
+    /// <param name="id">The id of the ingredient type association to update.</param>
+    /// <param name="ingredientTypeAssociation">The updated ingredient type association data.</param>
+    /// <returns>A status indicating the result of the update operation.</returns>
     [HttpPut("{id:guid}")]
     [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> PutIngredientTypeAssociation(Guid id, v1_0.IngredientTypeAssociation ingredientTypeAssociation)
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> PutIngredientTypeAssociation(Guid id,
+        v1_0.IngredientTypeAssociation ingredientTypeAssociation)
     {
         if (id != ingredientTypeAssociation.Id)
         {
@@ -88,7 +105,7 @@ public class IngredientTypeAssociationsController(
                     new v1_0.RestApiErrorResponse
                     {
                         Status = HttpStatusCode.NotFound,
-                        Error = $"IngredientTypeAssociation with ID {id} not found."
+                        Error = $"IngredientTypeAssociation with id {id} not found."
                     });
             }
             else
@@ -100,13 +117,17 @@ public class IngredientTypeAssociationsController(
         return NoContent();
     }
 
-    // POST: api/v1/IngredientTypeAssociations
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    /// <summary>
+    /// Create a new ingredient type association.
+    /// </summary>
+    /// <param name="ingredientTypeAssociation">The ingredient type association data.</param>
+    /// <returns>The created ingredient type association.</returns>
     [HttpPost]
     [Consumes("application/json")]
     [Produces("application/json")]
-    [ProducesResponseType<v1_0.IngredientTypeAssociation>(StatusCodes.Status201Created)]
-    public async Task<ActionResult<v1_0.IngredientTypeAssociation>> PostIngredientTypeAssociation(v1_0.IngredientTypeAssociation ingredientTypeAssociation)
+    [ProducesResponseType(typeof(v1_0.IngredientTypeAssociation), StatusCodes.Status201Created)]
+    public async Task<ActionResult<v1_0.IngredientTypeAssociation>> PostIngredientTypeAssociation(
+        v1_0.IngredientTypeAssociation ingredientTypeAssociation)
     {
         businessLogic.IngredientTypeAssociations.Add(_mapper.Map(ingredientTypeAssociation)!);
         await businessLogic.SaveChangesAsync();
@@ -118,20 +139,25 @@ public class IngredientTypeAssociationsController(
         }, ingredientTypeAssociation);
     }
 
-    // DELETE: api/v1/IngredientTypeAssociations/5
+    /// <summary>
+    /// Delete a specific ingredient type association by id.
+    /// </summary>
+    /// <param name="id">The id of the ingredient type association to delete.</param>
+    /// <returns>A status indicating the result of the delete operation.</returns>
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteIngredientTypeAssociation(Guid id)
     {
-        BLL_DTO.IngredientTypeAssociation? ingredientTypeAssociation = await businessLogic.IngredientTypeAssociations.FindAsync(id);
+        BLL_DTO.IngredientTypeAssociation? ingredientTypeAssociation =
+            await businessLogic.IngredientTypeAssociations.FindAsync(id);
         if (ingredientTypeAssociation == null)
         {
             return NotFound(
                 new v1_0.RestApiErrorResponse
                 {
                     Status = HttpStatusCode.NotFound,
-                    Error = $"IngredientTypeAssociation with ID {id} not found."
+                    Error = $"IngredientTypeAssociation with id {id} not found."
                 });
         }
 

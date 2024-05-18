@@ -15,6 +15,9 @@ using BLL_DTO = App.BLL.DTO;
 
 namespace RecipeApp.ApiControllers;
 
+/// <summary>
+/// API controller for managing recipes.
+/// </summary>
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]")]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -29,23 +32,30 @@ public class RecipesController(
     private readonly EntityMapper<v1_0.RecipeResponse, BLL_DTO.RecipeResponse> _responseMapper = new(mapper);
     private readonly EntityMapper<v1_0.RecipeRequest, BLL_DTO.RecipeRequest> _requestMapper = new(mapper);
 
-    // GET: api/v1/Recipes
+    /// <summary>
+    /// Get all recipes.
+    /// </summary>
+    /// <returns>A list of recipes.</returns>
     [HttpGet]
     [AllowAnonymous]
     [Produces("application/json")]
-    [ProducesResponseType<IEnumerable<v1_0.RecipeResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<v1_0.RecipeResponse>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<v1_0.RecipeResponse>>> GetRecipes()
     {
         var allRecipes = await businessLogic.Recipes.FindAllAsync();
         return Ok(allRecipes.Select(_responseMapper.Map).ToList());
     }
 
-    // GET: api/v1/Recipes/5
+    /// <summary>
+    /// Get a specific recipe by id.
+    /// </summary>
+    /// <param name="id">The id of the recipe.</param>
+    /// <returns>The recipe with the specified id.</returns>
     [HttpGet("{id:guid}")]
     [AllowAnonymous]
     [Produces("application/json")]
-    [ProducesResponseType<v1_0.RecipeResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(v1_0.RecipeResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<v1_0.RecipeResponse>> GetRecipe(Guid id)
     {
         BLL_DTO.RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(id);
@@ -63,13 +73,17 @@ public class RecipesController(
         return Ok(_responseMapper.Map(recipe));
     }
 
-    // PUT: api/v1/Recipes/5
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    /// <summary>
+    /// Update a specific recipe.
+    /// </summary>
+    /// <param name="id">The id of the recipe to update.</param>
+    /// <param name="request">The updated recipe data.</param>
+    /// <returns>A status indicating the result of the update operation.</returns>
     [HttpPut("{id:guid}")]
     [Consumes("multipart/form-data")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> PutRecipe(Guid id, v1_0.RecipeRequest request)
     {
         if (id != request.Id)
@@ -117,13 +131,16 @@ public class RecipesController(
         return NoContent();
     }
 
-    // POST: api/v1/Recipes
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    /// <summary>
+    /// Create a new recipe.
+    /// </summary>
+    /// <param name="request">The recipe data.</param>
+    /// <returns>The created recipe.</returns>
     [HttpPost]
     [Consumes("multipart/form-data")]
     [Produces("application/json")]
-    [ProducesResponseType<v1_0.RecipeResponse>(StatusCodes.Status201Created)]
-    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(v1_0.RecipeResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<v1_0.RecipeResponse>> PostRecipe(
         [FromForm] v1_0.RecipeRequest request)
     {
@@ -154,10 +171,14 @@ public class RecipesController(
         }, savedRecipe);
     }
 
-    // DELETE: api/v1/Recipes/5
+    /// <summary>
+    /// Delete a specific recipe by id.
+    /// </summary>
+    /// <param name="id">The id of the recipe to delete.</param>
+    /// <returns>A status indicating the result of the delete operation.</returns>
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteRecipe(Guid id)
     {
         BLL_DTO.RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(id);

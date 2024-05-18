@@ -1,6 +1,5 @@
 using System.Net;
 using App.Contracts.BLL;
-using App.DAL.EF;
 using Asp.Versioning;
 using AutoMapper;
 using Helpers;
@@ -13,6 +12,9 @@ using v1_0 = App.DTO.v1_0;
 
 namespace RecipeApp.ApiControllers;
 
+/// <summary>
+/// API controller for managing categories.
+/// </summary>
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]")]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
@@ -23,23 +25,30 @@ public class CategoriesController(
 {
     private readonly EntityMapper<BLL_DTO.Category, v1_0.Category> _mapper = new(mapper);
 
-    // GET: api/v1/Categories
+    /// <summary>
+    /// Get all categories.
+    /// </summary>
+    /// <returns>List of categories.</returns>
     [HttpGet]
     [AllowAnonymous]
     [Produces("application/json")]
-    [ProducesResponseType<IEnumerable<v1_0.Category>>(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<v1_0.Category>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<v1_0.Category>>> GetCategories()
     {
         var categories = await businessLogic.Categories.FindAllAsync();
         return Ok(categories.Select(_mapper.Map));
     }
 
-    // GET: api/v1/Categories/5
+    /// <summary>
+    /// Get a category by id.
+    /// </summary>
+    /// <param name="id">The id of the category.</param>
+    /// <returns>The category.</returns>
     [HttpGet("{id:guid}")]
     [AllowAnonymous]
     [Produces("application/json")]
-    [ProducesResponseType<v1_0.Category>(StatusCodes.Status200OK)]
-    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(v1_0.Category), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<v1_0.Category>> GetCategory(Guid id)
     {
         BLL_DTO.Category? category = await businessLogic.Categories.FindAsync(id);
@@ -57,13 +66,17 @@ public class CategoriesController(
         return Ok(_mapper.Map(category));
     }
 
-    // PUT: api/v1/Categories/5
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    /// <summary>
+    /// Update a category.
+    /// </summary>
+    /// <param name="id">The id of the category to update.</param>
+    /// <param name="category">The updated category data.</param>
+    /// <returns>A status indicating the result of the update operation.</returns>
     [HttpPut("{id:guid}")]
     [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> PutCategory(Guid id, v1_0.Category category)
     {
         if (id != category.Id)
@@ -101,12 +114,15 @@ public class CategoriesController(
         return NoContent();
     }
 
-    // POST: api/v1/Categories
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    /// <summary>
+    /// Create a category.
+    /// </summary>
+    /// <param name="category">The category to create.</param>
+    /// <returns>The created category.</returns>
     [HttpPost]
     [Consumes("application/json")]
     [Produces("application/json")]
-    [ProducesResponseType<v1_0.Category>(StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(v1_0.Category), StatusCodes.Status201Created)]
     public async Task<ActionResult<v1_0.Category>> PostCategory(v1_0.Category category)
     {
         businessLogic.Categories.Add(_mapper.Map(category)!);
@@ -119,10 +135,14 @@ public class CategoriesController(
         }, category);
     }
 
-    // DELETE: api/v1/Categories/5
+    /// <summary>
+    /// Delete a category.
+    /// </summary>
+    /// <param name="id">The id of the category to delete.</param>
+    /// <returns>A status indicating the result of the delete operation.</returns>
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteCategory(Guid id)
     {
         BLL_DTO.Category? category = await businessLogic.Categories.FindAsync(id);

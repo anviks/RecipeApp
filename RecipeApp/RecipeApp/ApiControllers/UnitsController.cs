@@ -12,6 +12,9 @@ using v1_0 = App.DTO.v1_0;
 
 namespace RecipeApp.ApiControllers;
 
+/// <summary>
+/// API controller for managing units.
+/// </summary>
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]")]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
@@ -22,23 +25,30 @@ public class UnitsController(
 {
     private readonly EntityMapper<v1_0.Unit, BLL_DTO.Unit> _mapper = new(mapper);
     
-    // GET: api/v1/Units
+    /// <summary>
+    /// Get all units.
+    /// </summary>
+    /// <returns>A list of units.</returns>
     [HttpGet]
     [AllowAnonymous]
     [Produces("application/json")]
-    [ProducesResponseType<IEnumerable<v1_0.Unit>>(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<v1_0.Unit>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<v1_0.Unit>>> GetUnits()
     {
         var units = await businessLogic.Units.FindAllAsync();
         return Ok(units.Select(_mapper.Map));
     }
 
-    // GET: api/v1/Units/5
+    /// <summary>
+    /// Get a specific unit by id.
+    /// </summary>
+    /// <param name="id">The id of the unit.</param>
+    /// <returns>The unit with the specified id.</returns>
     [HttpGet("{id:guid}")]
     [AllowAnonymous]
     [Produces("application/json")]
-    [ProducesResponseType<v1_0.Unit>(StatusCodes.Status200OK)]
-    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(v1_0.Unit), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<v1_0.Unit>> GetUnit(Guid id)
     {
         BLL_DTO.Unit? unit = await businessLogic.Units.FindAsync(id);
@@ -56,13 +66,17 @@ public class UnitsController(
         return Ok(_mapper.Map(unit));
     }
 
-    // PUT: api/v1/Units/5
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    /// <summary>
+    /// Update a specific unit.
+    /// </summary>
+    /// <param name="id">The id of the unit to update.</param>
+    /// <param name="unit">The updated unit data.</param>
+    /// <returns>A status indicating the result of the update operation.</returns>
     [HttpPut("{id:guid}")]
     [Consumes("application/json")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> PutUnit(Guid id, v1_0.Unit unit)
     {
         if (id != unit.Id)
@@ -100,12 +114,15 @@ public class UnitsController(
         return NoContent();
     }
 
-    // POST: api/v1/Units
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    /// <summary>
+    /// Create a new unit.
+    /// </summary>
+    /// <param name="unit">The unit data.</param>
+    /// <returns>The created unit.</returns>
     [HttpPost]
     [Consumes("application/json")]
     [Produces("application/json")]
-    [ProducesResponseType<v1_0.Unit>(StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(v1_0.Unit), StatusCodes.Status201Created)]
     public async Task<ActionResult<v1_0.Unit>> PostUnit(v1_0.Unit unit)
     {
         businessLogic.Units.Add(_mapper.Map(unit)!);
@@ -118,10 +135,14 @@ public class UnitsController(
         }, unit);
     }
 
-    // DELETE: api/v1/Units/5
+    /// <summary>
+    /// Delete a specific unit by id.
+    /// </summary>
+    /// <param name="id">The id of the unit to delete.</param>
+    /// <returns>A status indicating the result of the delete operation.</returns>
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType<v1_0.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteUnit(Guid id)
     {
         BLL_DTO.Unit? unit = await businessLogic.Units.FindAsync(id);

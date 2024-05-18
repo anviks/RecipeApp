@@ -4,7 +4,7 @@ using System.Net;
 using System.Security.Claims;
 using App.DAL.EF;
 using App.Domain.Identity;
-using v1_0_DTO = App.DTO.v1_0;
+using v1_0 = App.DTO.v1_0;
 using App.DTO.v1_0.Identity;
 using Asp.Versioning;
 using Helpers;
@@ -13,12 +13,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BLL_DTO = App.BLL.DTO;
 using AppDomain = App.Domain.Identity;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace RecipeApp.ApiControllers.Identity;
 
+/// <summary>
+/// API controller for managing user's account.
+/// </summary>
 [ApiVersion("1.0")]
 [Route("/api/v{version:apiVersion}/[controller]/[action]")]
 [ApiController]
@@ -30,12 +32,18 @@ public class AccountController(
     AppDbContext context
 ) : ControllerBase
 {
+    /// <summary>
+    /// Register a new user
+    /// </summary>
+    /// <param name="request">The registration request</param>
+    /// <param name="expiresInSeconds">The expiration time of the JWT in seconds</param>
+    /// <returns>The JWT, refresh token, username and email</returns>
     [HttpPost]
     [Consumes("application/json")]
     [Produces("application/json")]
-    [ProducesResponseType<LoginResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<v1_0_DTO.RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<v1_0_DTO.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<LoginResponse>> Register(
         [FromBody] RegisterRequest request,
         [FromQuery] int expiresInSeconds)
@@ -48,7 +56,7 @@ public class AccountController(
         {
             logger.LogWarning("User with email {email} is already registered", request.Email);
             return BadRequest(
-                new v1_0_DTO.RestApiErrorResponse
+                new v1_0.RestApiErrorResponse
                 {
                     Status = HttpStatusCode.BadRequest,
                     Error = $"User with email {request.Email} is already registered"
@@ -61,7 +69,7 @@ public class AccountController(
         {
             logger.LogWarning("User with username {username} is already registered", request.Username);
             return BadRequest(
-                new v1_0_DTO.RestApiErrorResponse
+                new v1_0.RestApiErrorResponse
                 {
                     Status = HttpStatusCode.BadRequest,
                     Error = $"User with username {request.Username} is already registered"
@@ -83,7 +91,7 @@ public class AccountController(
         if (!result.Succeeded)
         {
             return BadRequest(
-                new v1_0_DTO.RestApiErrorResponse
+                new v1_0.RestApiErrorResponse
                 {
                     Status = HttpStatusCode.BadRequest,
                     Error = result.Errors.First().Description
@@ -97,7 +105,7 @@ public class AccountController(
         {
             logger.LogError("User with email {email} is not found after registration", request.Email);
             return BadRequest(
-                new v1_0_DTO.RestApiErrorResponse
+                new v1_0.RestApiErrorResponse
                 {
                     Status = HttpStatusCode.BadRequest,
                     Error = $"User with email {request.Email} is not found after registration"
@@ -114,12 +122,18 @@ public class AccountController(
         });
     }
 
+    /// <summary>
+    /// Login a user
+    /// </summary>
+    /// <param name="loginRequest">The login request</param>
+    /// <param name="expiresInSeconds">The expiration time of the JWT in seconds</param>
+    /// <returns>The JWT, refresh token, username and email</returns>
     [HttpPost]
     [Consumes("application/json")]
     [Produces("application/json")]
-    [ProducesResponseType<LoginResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<v1_0_DTO.RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<v1_0_DTO.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<LoginResponse>> Login(
         [FromBody] LoginRequest loginRequest,
         [FromQuery] int expiresInSeconds
@@ -149,7 +163,7 @@ public class AccountController(
         {
             // TODO: random delay
             return BadRequest(
-                new v1_0_DTO.RestApiErrorResponse
+                new v1_0.RestApiErrorResponse
                 {
                     Status = HttpStatusCode.BadRequest,
                     Error = "Invalid login attempt"
@@ -188,13 +202,19 @@ public class AccountController(
         });
     }
 
+    /// <summary>
+    /// Refresh the JWT using a refresh token
+    /// </summary>
+    /// <param name="request">The refresh token request containing the JWT and refresh token</param>
+    /// <param name="expiresInSeconds">The expiration time of the JWT in seconds</param>
+    /// <returns>The new JWT and refresh token</returns>
     [HttpPost]
     [Consumes("application/json")]
     [Produces("application/json")]
-    [ProducesResponseType<LoginResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<v1_0_DTO.RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<v1_0_DTO.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
-    [ProducesResponseType<v1_0_DTO.RestApiErrorResponse>(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status409Conflict)]
     public async Task<ActionResult<LoginResponse>> Refresh(
         [FromBody] RefreshTokenRequest request,
         [FromQuery] int expiresInSeconds
@@ -203,7 +223,7 @@ public class AccountController(
         if (request.JsonWebToken == null)
         {
             return BadRequest(
-                new v1_0_DTO.RestApiErrorResponse
+                new v1_0.RestApiErrorResponse
                 {
                     Status = HttpStatusCode.BadRequest,
                     Error = "No token"
@@ -230,7 +250,7 @@ public class AccountController(
         if (userEmail == null)
         {
             return BadRequest(
-                new v1_0_DTO.RestApiErrorResponse
+                new v1_0.RestApiErrorResponse
                 {
                     Status = HttpStatusCode.BadRequest,
                     Error = "No email claim"
@@ -242,7 +262,7 @@ public class AccountController(
         if (user == null)
         {
             return NotFound(
-                new v1_0_DTO.RestApiErrorResponse
+                new v1_0.RestApiErrorResponse
                 {
                     Status = HttpStatusCode.NotFound,
                     Error = $"User with email {userEmail} not found"
@@ -263,7 +283,7 @@ public class AccountController(
         if (user.RefreshTokens == null || user.RefreshTokens.Count == 0)
         {
             return NotFound(
-                new v1_0_DTO.RestApiErrorResponse
+                new v1_0.RestApiErrorResponse
                 {
                     Status = HttpStatusCode.NotFound,
                     Error = $"RefreshTokens collection is {(user.RefreshTokens == null ? "null" : "empty")}"
@@ -274,7 +294,7 @@ public class AccountController(
         if (user.RefreshTokens.Count != 1)
         {
             return Conflict(
-                new v1_0_DTO.RestApiErrorResponse
+                new v1_0.RestApiErrorResponse
                 {
                     Status = HttpStatusCode.Conflict,
                     Error = "More than one valid refresh token found"
@@ -302,13 +322,18 @@ public class AccountController(
         });
     }
 
+    /// <summary>
+    /// Logout the user
+    /// </summary>
+    /// <param name="request">The logout request containing the refresh token</param>
+    /// <returns>The number of deleted refresh tokens</returns>
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [HttpPost]
     [Consumes("application/json")]
     [Produces("application/json")]
-    [ProducesResponseType<LogoutResponse>(StatusCodes.Status200OK)]
-    [ProducesResponseType<v1_0_DTO.RestApiErrorResponse>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType<v1_0_DTO.RestApiErrorResponse>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(LogoutResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<LogoutResponse>> Logout([FromBody] LogoutRequest request)
     {
         // delete the refresh token - so user is kicked out after jwt expiration
@@ -319,7 +344,7 @@ public class AccountController(
         if (userIdStr == null)
         {
             return BadRequest(
-                new v1_0_DTO.RestApiErrorResponse
+                new v1_0.RestApiErrorResponse
                 {
                     Status = HttpStatusCode.BadRequest,
                     Error = "Invalid refresh token"
@@ -330,7 +355,7 @@ public class AccountController(
         if (!Guid.TryParse(userIdStr, out Guid userId))
         {
             return BadRequest(
-                new v1_0_DTO.RestApiErrorResponse
+                new v1_0.RestApiErrorResponse
                 {
                     Status = HttpStatusCode.BadRequest,
                     Error = "Invalid user id"
@@ -344,7 +369,7 @@ public class AccountController(
         if (user == null)
         {
             return NotFound(
-                new v1_0_DTO.RestApiErrorResponse
+                new v1_0.RestApiErrorResponse
                 {
                     Status = HttpStatusCode.NotFound,
                     Error = "User not found"
