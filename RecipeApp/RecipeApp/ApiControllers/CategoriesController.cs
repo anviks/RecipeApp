@@ -36,7 +36,7 @@ public class CategoriesController(
     public async Task<ActionResult<IEnumerable<v1_0.Category>>> GetCategories()
     {
         var categories = await businessLogic.Categories.FindAllAsync();
-        return Ok(categories.Select(_mapper.Map));
+        return Ok(categories.Select(_mapper.Map).ToList());
     }
 
     /// <summary>
@@ -125,6 +125,7 @@ public class CategoriesController(
     [ProducesResponseType(typeof(v1_0.Category), StatusCodes.Status201Created)]
     public async Task<ActionResult<v1_0.Category>> PostCategory(v1_0.Category category)
     {
+        category.Id = Guid.NewGuid();
         businessLogic.Categories.Add(_mapper.Map(category)!);
         await businessLogic.SaveChangesAsync();
 

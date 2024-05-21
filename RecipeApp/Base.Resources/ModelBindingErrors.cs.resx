@@ -11,37 +11,37 @@
     <resheader name="writer">
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
-    <data name="ModelBindingErrors.ValueIsInvalid" xml:space="preserve">
+    <data name="ValueIsInvalid" xml:space="preserve">
         <value>Hodnota '{0}' není platná.</value>
     </data>
-    <data name="ModelBindingErrors.ValueMustBeANumber" xml:space="preserve">
+    <data name="ValueMustBeANumber" xml:space="preserve">
         <value>Hodnota '{0}' musí být číslo.</value>
     </data>
-    <data name="ModelBindingErrors.MissingBindRequiredValue" xml:space="preserve">
+    <data name="MissingBindRequiredValue" xml:space="preserve">
         <value>Hodnota pro vlastnost '{0}' nebyla zadána.</value>
     </data>
-    <data name="ModelBindingErrors.AttemptedValueIsInvalid" xml:space="preserve">
+    <data name="AttemptedValueIsInvalid" xml:space="preserve">
         <value>Pokus o hodnotu '{1}' není platný pro '{0}'.</value>
     </data>
-    <data name="ModelBindingErrors.MissingKeyOrValue" xml:space="preserve">
+    <data name="MissingKeyOrValue" xml:space="preserve">
         <value>Hodnota je vyžadována.</value>
     </data>
-    <data name="ModelBindingErrors.MissingRequestBodyRequiredValue" xml:space="preserve">
+    <data name="MissingRequestBodyRequiredValue" xml:space="preserve">
         <value>Je vyžadován neprázdný požadavek na tělo.</value>
     </data>
-    <data name="ModelBindingErrors.NonPropertyUnknownValueIsInvalid" xml:space="preserve">
+    <data name="NonPropertyUnknownValueIsInvalid" xml:space="preserve">
         <value>Zadaná hodnota není platná.</value>
     </data>
-    <data name="ModelBindingErrors.NonPropertyValueMustBeANumber" xml:space="preserve">
+    <data name="NonPropertyValueMustBeANumber" xml:space="preserve">
         <value>Hodnota musí být číslo.</value>
     </data>
-    <data name="ModelBindingErrors.UnknownValueIsInvalid" xml:space="preserve">
+    <data name="UnknownValueIsInvalid" xml:space="preserve">
         <value>Hodnota '{0}' není platná.</value>
     </data>
-    <data name="ModelBindingErrors.ValueMustNotBeNull" xml:space="preserve">
+    <data name="ValueMustNotBeNull" xml:space="preserve">
         <value>Hodnota '{0}' nesmí být null.</value>
     </data>
-    <data name="ModelBindingErrors.NonPropertyAttemptedValueIsInvalid" xml:space="preserve">
+    <data name="NonPropertyAttemptedValueIsInvalid" xml:space="preserve">
         <value>Pokus o hodnotu '{0}' není platný.</value>
     </data>
 </root>
