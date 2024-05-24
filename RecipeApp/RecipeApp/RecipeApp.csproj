@@ -39,7 +39,6 @@
 
     <ItemGroup>
       <Folder Include="Areas\Admin\Controllers\" />
-      <Folder Include="Areas\Admin\ViewModels\" />
     </ItemGroup>
 
     <PropertyGroup>
@@ -47,8 +46,29 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <AdditionalFiles Include="Areas\Admin\Views\Categories\Create.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Categories\Delete.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Categories\Details.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Categories\Edit.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Categories\Index.cshtml" />
       <AdditionalFiles Include="Areas\Admin\Views\Home\Index.cshtml" />
       <AdditionalFiles Include="Areas\Admin\Views\Home\Privacy.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Ingredients\Create.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Ingredients\Delete.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Ingredients\Details.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Ingredients\Edit.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Ingredients\Index.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypeAssociations\Create.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypeAssociations\Delete.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypeAssociations\Details.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypeAssociations\Edit.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypeAssociations\Index.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypes\Create.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypes\Delete.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypes\Details.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypes\Edit.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\IngredientTypes\Index.cshtml" />
+      <AdditionalFiles Include="Areas\Admin\Views\Shared\_ValidationScriptsPartial.cshtml" />
       <AdditionalFiles Include="Views\Ingredients\_CreateEdit.cshtml" />
       <AdditionalFiles Include="Views\Ingredients\_DetailsDelete.cshtml" />
       <AdditionalFiles Include="Views\IngredientTypeAssociations\_CreateEdit.cshtml" />
@@ -230,6 +250,42 @@
       <_ContentIncludedByDefault Remove="Areas\Admin\Views\RecipeIngredients\Index.cshtml" />
       <_ContentIncludedByDefault Remove="Areas\Admin\Views\RecipeIngredients\_CreateEdit.cshtml" />
       <_ContentIncludedByDefault Remove="Areas\Admin\Views\RecipeIngredients\_DetailsDelete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Ingredients\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Ingredients\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Ingredients\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Ingredients\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Ingredients\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\IngredientTypeAssociations\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\IngredientTypeAssociations\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\IngredientTypeAssociations\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\IngredientTypeAssociations\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\IngredientTypeAssociations\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\IngredientTypes\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\IngredientTypes\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\IngredientTypes\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\IngredientTypes\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\IngredientTypes\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\RecipeCategorys\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\RecipeCategorys\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\RecipeCategorys\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\RecipeCategorys\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\RecipeCategorys\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\RecipeIngredients\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\RecipeIngredients\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\RecipeIngredients\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\RecipeIngredients\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\RecipeIngredients\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Recipes\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Recipes\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Recipes\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Recipes\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Recipes\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Reviews\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Reviews\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Reviews\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Reviews\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Reviews\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Shared\_ValidationScriptsPartial.cshtml" />
     </ItemGroup>
 
     <ItemGroup>
