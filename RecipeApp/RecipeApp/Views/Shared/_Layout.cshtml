@@ -71,6 +71,52 @@
                             </li>
                         </ul>
                     </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Navigation
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" asp-area="" asp-controller="Categories" asp-action="Index">@AppResource.Category.Categories</a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-area="" asp-controller="Ingredients" asp-action="Index">@AppResource.Ingredient.Ingredients</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-area="" asp-controller="IngredientTypes" asp-action="Index">@AppResource.IngredientType.IngredientTypes</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-area="" asp-controller="IngredientTypeAssociations" asp-action="Index">@AppResource.IngredientTypeAssociation.IngredientTypeAssociations</a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-area="" asp-controller="Recipes" asp-action="Index">@AppResource.Recipe.Recipes</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-area="" asp-controller="RecipeCategories" asp-action="Index">@AppResource.RecipeCategory.RecipeCategories</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-area="" asp-controller="RecipeIngredients" asp-action="Index">@AppResource.RecipeIngredient.RecipeIngredients</a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-area="" asp-controller="Reviews" asp-action="Index">@AppResource.Review.Reviews</a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-area="" asp-controller="Units" asp-action="Index">@AppResource.Unit.Units</a>
+                            </li>
+                        </ul>
+                    </li>
                     <partial name="_LanguageSelectionPartial"/>
                 </ul>
                 <partial name="_LoginPartial"/>

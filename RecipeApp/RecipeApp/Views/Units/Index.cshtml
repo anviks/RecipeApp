@@ -1,0 +1,56 @@
+@model IEnumerable<RecipeApp.ViewModels.UnitDetailsViewModel>
+@using CommonResource = Base.Resources.Common
+@using UnitResource = App.Resources.App.BLL.DTO.Unit
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>@UnitResource.Units</h1>
+
+<p>
+    <a asp-action="Create">@CommonResource.CreateNewLink</a>
+</p>
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.IngredientTypeName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Unit.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Unit.Abbreviation)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Unit.UnitMultiplier)
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IngredientTypeName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Unit.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Unit.Abbreviation)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Unit.UnitMultiplier)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Unit.Id">@CommonResource.EditLink</a> |
+                <a asp-action="Details" asp-route-id="@item.Unit.Id">@CommonResource.DetailsLink</a> |
+                <a asp-action="Delete" asp-route-id="@item.Unit.Id">@CommonResource.DeleteLink</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -1,0 +1,34 @@
+@model RecipeApp.ViewModels.ReviewCreateEditViewModel
+@using CommonResource = Base.Resources.Common
+@using ReviewResource = App.Resources.App.BLL.DTO.Review
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>@CommonResource.EditTitle</h1>
+
+<h4>@ReviewResource.ReviewSingular</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <partial name="_CreateEdit" model="Model"/>
+            <input type="hidden" asp-for="ReviewRequest.Id" />
+            <input type="hidden" asp-for="ReviewRequest.RecipeId" />
+            <div class="form-group">
+                <button type="submit" value="Save" class="btn btn-primary">
+                    @CommonResource.SaveButton
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">@CommonResource.BackToListLink</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

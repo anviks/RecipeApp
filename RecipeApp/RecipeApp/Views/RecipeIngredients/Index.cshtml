@@ -1,0 +1,63 @@
+@model IEnumerable<RecipeApp.ViewModels.RecipeIngredientDetailsViewModel>
+@using RecipeApp.ViewModels
+@using CommonResource = Base.Resources.Common
+@using RecipeIngredientResource = App.Resources.App.BLL.DTO.RecipeIngredient;
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>@RecipeIngredientResource.RecipeIngredients</h1>
+
+<p>
+    <a asp-action="Create">@CommonResource.CreateNewLink</a>
+</p>
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.RecipeName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RecipeIngredient.Quantity)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UnitName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RecipeIngredient.IngredientModifier)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IngredientName)
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (RecipeIngredientDetailsViewModel item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RecipeName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RecipeIngredient.Quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UnitName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RecipeIngredient.IngredientModifier)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IngredientName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.RecipeIngredient.Id">@CommonResource.EditLink</a> |
+                <a asp-action="Details" asp-route-id="@item.RecipeIngredient.Id">@CommonResource.DetailsLink</a> |
+                <a asp-action="Delete" asp-route-id="@item.RecipeIngredient.Id">@CommonResource.DeleteLink</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
