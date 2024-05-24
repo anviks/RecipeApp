@@ -10,9 +10,8 @@ using BLL_DTO = App.BLL.DTO;
 namespace App.BLL.Services;
 
 public class RecipeCategoryService(
-    IUnitOfWork unitOfWork,
     IRecipeCategoryRepository repository,
     IMapper mapper)
-    : BaseEntityService<DAL_DTO.RecipeCategory, BLL_DTO.RecipeCategory, IRecipeCategoryRepository>(unitOfWork, repository,
+    : BaseEntityService<DAL_DTO.RecipeCategory, BLL_DTO.RecipeCategory, IRecipeCategoryRepository>(repository,
             new EntityMapper<DAL_DTO.RecipeCategory, BLL_DTO.RecipeCategory>(mapper)),
         IRecipeCategoryService;

@@ -59,6 +59,24 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid, IdentityUs
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
+        SetUniversalTime();
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
+    public override int SaveChanges()
+    {
+        SetUniversalTime();
+        return base.SaveChanges();
+    }
+
+    public override int SaveChanges(bool acceptAllChangesOnSuccess)
+    {
+        SetUniversalTime();
+        return base.SaveChanges(acceptAllChangesOnSuccess);
+    }
+
+    private void SetUniversalTime()
+    {
         foreach (EntityEntry entity in ChangeTracker.Entries().Where(e => e.State != EntityState.Deleted))
         {
             foreach (PropertyEntry prop in entity
@@ -72,7 +90,5 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid, IdentityUs
                 }
             }
         }
-
-        return base.SaveChangesAsync(cancellationToken);
     }
 }

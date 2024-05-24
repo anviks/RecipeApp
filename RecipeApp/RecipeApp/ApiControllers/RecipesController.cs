@@ -109,7 +109,7 @@ public class RecipesController(
 
         try
         {
-            await businessLogic.Recipes.UpdateAsync(_requestMapper.Map(request)!,
+            var idk = await businessLogic.Recipes.UpdateAsync(_requestMapper.Map(request)!,
                 Guid.Parse(userManager.GetUserId(User)!), environment.WebRootPath);
             await businessLogic.SaveChangesAsync();
         }

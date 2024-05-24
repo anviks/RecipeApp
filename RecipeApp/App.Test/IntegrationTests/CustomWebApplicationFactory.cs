@@ -1,15 +1,15 @@
-using System.Text.Json;
-using App.BLL.DTO;
 using App.DAL.EF;
+using App.Domain.Identity;
 using Base.Domain;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace App.Test.Integration;
+namespace App.Test.IntegrationTests;
 
 public class CustomWebApplicationFactory<TStartup>
     : WebApplicationFactory<TStartup> where TStartup: class
@@ -57,16 +57,23 @@ public class CustomWebApplicationFactory<TStartup>
             var db = scopedServices.GetRequiredService<AppDbContext>();
             var logger = scopedServices
                 .GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
+            var userManager = scopedServices.GetRequiredService<UserManager<AppUser>>();
             db.Database.EnsureDeleted();
             db.Database.Migrate();
-            // db.Database.EnsureCreated();
-            SeedData(db);
-            // custom data seed?
+            
+            SeedData(db, userManager);
         });
     }
     
-    private static void SeedData(AppDbContext context)
+    private static void SeedData(AppDbContext context, UserManager<AppUser> userManager)
     {
+        userManager.CreateAsync(new AppUser
+        {
+            Id = Guid.Parse("00000000-0000-0000-0000-000000001000"),
+            UserName = "test.user",
+            Email = "test-user@gmail.com"
+        }, "Test123!").Wait();
+        
         context.Categories.AddRange(
             new Domain.Category
             {

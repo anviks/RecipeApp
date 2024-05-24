@@ -10,9 +10,8 @@ using BLL_DTO = App.BLL.DTO;
 namespace App.BLL.Services;
 
 public class IngredientService(
-    IUnitOfWork unitOfWork,
     IIngredientRepository repository,
     IMapper mapper)
-    : BaseEntityService<DAL_DTO.Ingredient, BLL_DTO.Ingredient, IIngredientRepository>(unitOfWork, repository,
+    : BaseEntityService<DAL_DTO.Ingredient, BLL_DTO.Ingredient, IIngredientRepository>(repository,
             new EntityMapper<DAL_DTO.Ingredient, BLL_DTO.Ingredient>(mapper)),
         IIngredientService;

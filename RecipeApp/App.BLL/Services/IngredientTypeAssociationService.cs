@@ -10,9 +10,8 @@ using BLL_DTO = App.BLL.DTO;
 namespace App.BLL.Services;
 
 public class IngredientTypeAssociationService(
-    IUnitOfWork unitOfWork,
     IIngredientTypeAssociationRepository repository,
     IMapper mapper)
-    : BaseEntityService<DAL_DTO.IngredientTypeAssociation, BLL_DTO.IngredientTypeAssociation, IIngredientTypeAssociationRepository>(unitOfWork, repository,
+    : BaseEntityService<DAL_DTO.IngredientTypeAssociation, BLL_DTO.IngredientTypeAssociation, IIngredientTypeAssociationRepository>(repository,
             new EntityMapper<DAL_DTO.IngredientTypeAssociation, BLL_DTO.IngredientTypeAssociation>(mapper)),
         IIngredientTypeAssociationService;

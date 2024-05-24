@@ -10,10 +10,9 @@ using BLL_DTO = App.BLL.DTO;
 namespace App.BLL.Services;
 
 public class ReviewService(
-    IUnitOfWork unitOfWork,
     IReviewRepository repository,
     IMapper mapper)
-    : BaseEntityService<DAL_DTO.Review, BLL_DTO.ReviewResponse, IReviewRepository>(unitOfWork, repository,
+    : BaseEntityService<DAL_DTO.Review, BLL_DTO.ReviewResponse, IReviewRepository>(repository,
             new EntityMapper<DAL_DTO.Review, BLL_DTO.ReviewResponse>(mapper)),
         IReviewService
 {

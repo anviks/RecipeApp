@@ -26,9 +26,7 @@ public interface IEntityRepository<TEntity, in TKey>
     
     TEntity? Find(TKey id, bool tracking = false);
     Task<TEntity?> FindAsync(TKey id, bool tracking = false);
-    IEnumerable<TEntity> FindAll(IEnumerable<TKey> ids, bool tracking = false);
     IEnumerable<TEntity> FindAll(bool tracking = false);
-    Task<IEnumerable<TEntity>> FindAllAsync(IEnumerable<TKey> ids, bool tracking = false);
     Task<IEnumerable<TEntity>> FindAllAsync(bool tracking = false);
     
     bool Exists(TKey id, bool tracking = false);

@@ -108,19 +108,9 @@ public class BaseEntityRepository<TKey, TDomainEntity, TDalEntity, TDbContext> :
         return Mapper.Map(await GetQuery(tracking).FirstOrDefaultAsync(e => e.Id.Equals(id)));
     }
 
-    public virtual IEnumerable<TDalEntity> FindAll(IEnumerable<TKey> ids, bool tracking = false)
-    {
-        return GetQuery(tracking).Where(e => ids.Contains(e.Id)).AsEnumerable().Select(Mapper.Map)!;
-    }
-
     public virtual IEnumerable<TDalEntity> FindAll(bool tracking = false)
     {
         return GetQuery(tracking).AsEnumerable().Select(Mapper.Map)!;
-    }
-
-    public virtual async Task<IEnumerable<TDalEntity>> FindAllAsync(IEnumerable<TKey> ids, bool tracking = false)
-    {
-        return (await GetQuery(tracking).Where(e => ids.Contains(e.Id)).ToListAsync()).Select(Mapper.Map)!;
     }
 
     public virtual async Task<IEnumerable<TDalEntity>> FindAllAsync(bool tracking = false)

@@ -1,18 +1,18 @@
 using AutoMapper;
+using Base.Test.DAL;
 using Base.Test.Domain;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Xunit.Abstractions;
 
-namespace Base.Test.DAL;
+namespace Base.Test.BLL;
 
-public class BaseRepositoryTest
+public class BaseServiceTest
 {
     private readonly TestDbContext _ctx;
-    private readonly TestEntityRepository _testEntityRepository;
+    private readonly TestEntityService _testEntityService;
     private static readonly Random Random = new();
 
-    public BaseRepositoryTest()
+    public BaseServiceTest()
     {
         // set up mock database - inmemory
         var optionsBuilder = new DbContextOptionsBuilder<TestDbContext>();
@@ -28,19 +28,19 @@ public class BaseRepositoryTest
         var config = new MapperConfiguration(cfg => cfg.CreateMap<TestEntity, TestEntity>());
         IMapper? mapper = config.CreateMapper();
 
-        _testEntityRepository = new TestEntityRepository(_ctx, mapper);
+        _testEntityService = new TestEntityService(_ctx, mapper);
     }
-
-    [Fact]
+    
+        [Fact]
     public async Task Add_ShouldAddEntity()
     {
         // Arrange
         TestEntity entity = CreateRandomEntity();
 
         // Act
-        TestEntity addedEntity = _testEntityRepository.Add(entity);
+        TestEntity addedEntity = _testEntityService.Add(entity);
         await _ctx.SaveChangesAsync();
-        TestEntity? entityInDb = await _testEntityRepository.FindAsync(addedEntity.Id);
+        TestEntity? entityInDb = await _testEntityService.FindAsync(addedEntity.Id);
 
         // Assert
         addedEntity.Should().NotBeNull();
@@ -63,7 +63,7 @@ public class BaseRepositoryTest
         var entities = Enumerable.Range(0, count).Select(_ => CreateRandomEntity()).ToList();
 
         // Act
-        _testEntityRepository.AddRange(entities);
+        _testEntityService.AddRange(entities);
         await _ctx.SaveChangesAsync();
         var entitiesInDb = _ctx.TestEntities.ToList();
 
@@ -81,9 +81,9 @@ public class BaseRepositoryTest
 
         // Act
         entity.Value = "Quuz";
-        TestEntity updatedEntity = _testEntityRepository.Update(entity);
+        TestEntity updatedEntity = _testEntityService.Update(entity);
         await _ctx.SaveChangesAsync();
-        TestEntity? entityInDb = await _testEntityRepository.FindAsync(updatedEntity.Id);
+        TestEntity? entityInDb = await _testEntityService.FindAsync(updatedEntity.Id);
 
         // Assert
         updatedEntity.Should().NotBeNull();
@@ -110,7 +110,7 @@ public class BaseRepositoryTest
 
         // Act
         entities.ForEach(e => e.Value = "Quuz" + e.Id);
-        _testEntityRepository.UpdateRange(entities);
+        _testEntityService.UpdateRange(entities);
         await _ctx.SaveChangesAsync();
         var entitiesInDb = _ctx.TestEntities.ToList();
 
@@ -127,8 +127,8 @@ public class BaseRepositoryTest
         TestEntity entity2 = await AddRandomEntity();
 
         // Act
-        var removedCount = _testEntityRepository.Remove(entity);
-        var removedCount2 = _testEntityRepository.Remove(entity2.Id);
+        var removedCount = _testEntityService.Remove(entity);
+        var removedCount2 = _testEntityService.Remove(entity2.Id);
         await _ctx.SaveChangesAsync();
 
         // Assert
@@ -145,8 +145,8 @@ public class BaseRepositoryTest
         await AddRandomEntity();
 
         // Act
-        var removedCount = _testEntityRepository.Remove(new TestEntity { Id = Guid.NewGuid(), Value = "Foo" });
-        var removedCount2 = _testEntityRepository.Remove(Guid.NewGuid());
+        var removedCount = _testEntityService.Remove(new TestEntity { Id = Guid.NewGuid(), Value = "Foo" });
+        var removedCount2 = _testEntityService.Remove(Guid.NewGuid());
         await _ctx.SaveChangesAsync();
 
         // Assert
@@ -163,8 +163,8 @@ public class BaseRepositoryTest
         TestEntity entity2 = await AddRandomEntity();
 
         // Act
-        var removedCount = await _testEntityRepository.RemoveAsync(entity);
-        var removedCount2 = await _testEntityRepository.RemoveAsync(entity2.Id);
+        var removedCount = await _testEntityService.RemoveAsync(entity);
+        var removedCount2 = await _testEntityService.RemoveAsync(entity2.Id);
         await _ctx.SaveChangesAsync();
 
         // Assert
@@ -181,8 +181,8 @@ public class BaseRepositoryTest
         await AddRandomEntity();
 
         // Act
-        var removedCount = await _testEntityRepository.RemoveAsync(new TestEntity { Id = Guid.NewGuid(), Value = "Foo" });
-        var removedCount2 = await _testEntityRepository.RemoveAsync(Guid.NewGuid());
+        var removedCount = await _testEntityService.RemoveAsync(new TestEntity { Id = Guid.NewGuid(), Value = "Foo" });
+        var removedCount2 = await _testEntityService.RemoveAsync(Guid.NewGuid());
         await _ctx.SaveChangesAsync();
 
         // Assert
@@ -202,8 +202,8 @@ public class BaseRepositoryTest
         TestEntity entity5 = await AddRandomEntity();
 
         // Act
-        var removedCount = _testEntityRepository.RemoveRange(new[] { entity1, entity2 });
-        var removedCount2 = _testEntityRepository.RemoveRange(new[] { entity4.Id, entity5.Id });
+        var removedCount = _testEntityService.RemoveRange(new[] { entity1, entity2 });
+        var removedCount2 = _testEntityService.RemoveRange(new[] { entity4.Id, entity5.Id });
         await _ctx.SaveChangesAsync();
         var entitiesInDb = _ctx.TestEntities.ToList();
 
@@ -221,7 +221,7 @@ public class BaseRepositoryTest
         TestEntity entity = await AddRandomEntity();
 
         // Act
-        TestEntity? data = _testEntityRepository.Find(entity.Id);
+        TestEntity? data = _testEntityService.Find(entity.Id);
 
         // Assert
         data.Should().NotBeNull();
@@ -235,7 +235,7 @@ public class BaseRepositoryTest
         TestEntity entity = await AddRandomEntity();
 
         // Act
-        TestEntity? data = await _testEntityRepository.FindAsync(entity.Id);
+        TestEntity? data = await _testEntityService.FindAsync(entity.Id);
 
         // Assert
         data.Should().NotBeNull();
@@ -250,7 +250,7 @@ public class BaseRepositoryTest
         TestEntity entity2 = await AddRandomEntity();
 
         // Act
-        var data = _testEntityRepository.FindAll().ToList();
+        var data = _testEntityService.FindAll().ToList();
 
         // Assert
         data.Should().HaveCount(2);
@@ -266,7 +266,7 @@ public class BaseRepositoryTest
         TestEntity entity2 = await AddRandomEntity();
 
         // Act
-        var data = (await _testEntityRepository.FindAllAsync()).ToList();
+        var data = (await _testEntityService.FindAllAsync()).ToList();
 
         // Assert
         data.Should().HaveCount(2);
@@ -281,7 +281,7 @@ public class BaseRepositoryTest
         TestEntity entity = await AddRandomEntity();
 
         // Act
-        var exists = _testEntityRepository.Exists(entity.Id);
+        var exists = _testEntityService.Exists(entity.Id);
 
         // Assert
         exists.Should().BeTrue();
@@ -294,7 +294,7 @@ public class BaseRepositoryTest
         TestEntity entity = await AddRandomEntity();
 
         // Act
-        var exists = await _testEntityRepository.ExistsAsync(entity.Id);
+        var exists = await _testEntityService.ExistsAsync(entity.Id);
 
         // Assert
         exists.Should().BeTrue();

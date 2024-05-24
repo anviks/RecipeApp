@@ -6,17 +6,17 @@ using Helpers;
 namespace Base.BLL;
 
 public class BaseEntityService<TDalEntity, TBllEntity, TRepository>(
-    IUnitOfWork unitOfWork,
+    // IUnitOfWork unitOfWork,
     TRepository repository,
     EntityMapper<TDalEntity, TBllEntity> mapper)
-    : BaseEntityService<TDalEntity, TBllEntity, TRepository, Guid>(unitOfWork, repository, mapper),
+    : BaseEntityService<TDalEntity, TBllEntity, TRepository, Guid>(/*unitOfWork, */repository, mapper),
         IEntityService<TBllEntity>
     where TBllEntity : class, IDomainEntityId
     where TRepository : IEntityRepository<TDalEntity, Guid>
     where TDalEntity : class, IDomainEntityId<Guid>;
 
 public class BaseEntityService<TDalEntity, TBllEntity, TRepository, TKey>(
-    IUnitOfWork unitOfWork,
+    // IUnitOfWork unitOfWork,
     TRepository repository,
     EntityMapper<TDalEntity, TBllEntity> mapper)
     : IEntityService<TBllEntity, TKey>
@@ -25,7 +25,7 @@ public class BaseEntityService<TDalEntity, TBllEntity, TRepository, TKey>(
     where TBllEntity : class, IDomainEntityId<TKey>
     where TDalEntity : class, IDomainEntityId<TKey>
 {
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    // private readonly IUnitOfWork _unitOfWork = unitOfWork;
     protected readonly TRepository Repository = repository;
     protected readonly EntityMapper<TDalEntity, TBllEntity> Mapper = mapper;
 
@@ -100,21 +100,9 @@ public class BaseEntityService<TDalEntity, TBllEntity, TRepository, TKey>(
         return Mapper.Map(dalEntity!);
     }
 
-    public virtual IEnumerable<TBllEntity> FindAll(IEnumerable<TKey> ids, bool tracking = false)
-    {
-        var dalEntities = Repository.FindAll(ids, tracking);
-        return dalEntities.Select(Mapper.Map).Select(e => e!);
-    }
-
     public virtual IEnumerable<TBllEntity> FindAll(bool tracking = false)
     {
         var dalEntities = Repository.FindAll(tracking);
-        return dalEntities.Select(Mapper.Map).Select(e => e!);
-    }
-
-    public virtual async Task<IEnumerable<TBllEntity>> FindAllAsync(IEnumerable<TKey> ids, bool tracking = false)
-    {
-        var dalEntities = await Repository.FindAllAsync(ids, tracking);
         return dalEntities.Select(Mapper.Map).Select(e => e!);
     }
 

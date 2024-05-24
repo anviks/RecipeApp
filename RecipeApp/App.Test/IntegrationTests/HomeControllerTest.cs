@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 
-namespace App.Test.Integration;
+namespace App.Test.IntegrationTests;
 
 [Collection("NonParallel")]
 public class HomeControllerTest : IClassFixture<CustomWebApplicationFactory<Program>>

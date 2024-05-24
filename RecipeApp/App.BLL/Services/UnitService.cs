@@ -10,9 +10,8 @@ using BLL_DTO = App.BLL.DTO;
 namespace App.BLL.Services;
 
 public class UnitService(
-    IUnitOfWork unitOfWork,
     IUnitRepository repository,
     IMapper mapper)
-    : BaseEntityService<DAL_DTO.Unit, BLL_DTO.Unit, IUnitRepository>(unitOfWork, repository,
+    : BaseEntityService<DAL_DTO.Unit, BLL_DTO.Unit, IUnitRepository>(repository,
             new EntityMapper<DAL_DTO.Unit, BLL_DTO.Unit>(mapper)),
         IUnitService;

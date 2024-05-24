@@ -12,15 +12,14 @@ using BLL_DTO = App.BLL.DTO;
 namespace App.BLL.Services;
 
 public class RecipeService(
-    IUnitOfWork unitOfWork,
     IRecipeRepository repository,
     IMapper mapper)
-    : BaseEntityService<DAL_DTO.Recipe, BLL_DTO.RecipeResponse, IRecipeRepository>(unitOfWork, repository,
+    : BaseEntityService<DAL_DTO.Recipe, BLL_DTO.RecipeResponse, IRecipeRepository>(repository,
             new EntityMapper<DAL_DTO.Recipe, BLL_DTO.RecipeResponse>(mapper)),
         IRecipeService
 {
     private readonly EntityMapper<BLL_DTO.RecipeRequest, DAL_DTO.Recipe> _recipeMapper = new(mapper);
-    private readonly string[] _uploadPathFromWebroot = ["uploads", "images"];
+    private static readonly string[] UploadPathFromWebroot = ["uploads", "images"];
 
     public async Task<BLL_DTO.RecipeResponse> AddAsync(BLL_DTO.RecipeRequest recipeRequest, Guid userId,
         string localWebRootPath)
@@ -70,17 +69,19 @@ public class RecipeService(
         return await Repository.RemoveAsync(id);
     }
 
-    private async Task<string> SaveImage(IFormFile file, string webRootPath)
+    private static async Task<string> SaveImage(IFormFile file, string webRootPath)
     {
         var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
-        var uploadPath = Path.Combine(new[] { webRootPath }.Concat(_uploadPathFromWebroot)
-            .Concat(new[] { fileName }).ToArray());
+        var uploadPath = Path.Combine(webRootPath, Path.Combine(UploadPathFromWebroot), fileName);
+
+        Directory.CreateDirectory(Path.GetDirectoryName(uploadPath)!);
+        
         await using (var stream = new FileStream(uploadPath, FileMode.Create))
         {
             await file.CopyToAsync(stream);
         }
 
-        var uploadUrl = "~/" + string.Join("/", _uploadPathFromWebroot.Concat(new[] { fileName }));
+        var uploadUrl = "~/" + string.Join("/", UploadPathFromWebroot.Concat(new[] { fileName }));
         return uploadUrl;
     }
 

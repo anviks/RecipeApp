@@ -10,9 +10,8 @@ using BLL_DTO = App.BLL.DTO;
 namespace App.BLL.Services;
 
 public class CategoryService(
-    IUnitOfWork unitOfWork,
     ICategoryRepository repository,
     IMapper mapper)
-    : BaseEntityService<DAL_DTO.Category, BLL_DTO.Category, ICategoryRepository>(unitOfWork, repository,
+    : BaseEntityService<DAL_DTO.Category, BLL_DTO.Category, ICategoryRepository>(repository,
             new EntityMapper<DAL_DTO.Category, BLL_DTO.Category>(mapper)),
         ICategoryService;

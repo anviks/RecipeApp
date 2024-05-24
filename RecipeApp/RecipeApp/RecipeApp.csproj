@@ -25,7 +25,7 @@
         </PackageReference>
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.1" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     </ItemGroup>
 
     <ItemGroup>
@@ -39,7 +39,6 @@
 
     <ItemGroup>
       <Folder Include="Areas\Admin\Controllers\" />
-      <Folder Include="wwwroot\uploads\images\" />
     </ItemGroup>
 
     <PropertyGroup>
@@ -153,6 +152,10 @@
       <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\ResetPasswordConfirmation.cshtml" />
       <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\_StatusMessage.cshtml" />
       <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\_ViewImports.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="wwwroot\uploads\images\test-image.png" />
     </ItemGroup>
 
 </Project>

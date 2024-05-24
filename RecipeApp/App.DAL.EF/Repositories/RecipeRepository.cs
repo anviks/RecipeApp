@@ -39,6 +39,17 @@ public class RecipeRepository(AppDbContext dbContext, IMapper mapper)
     
     public override void UpdateRange(IEnumerable<DAL_DTO.Recipe> entities)
     {
-        throw new NotImplementedException();
+        List<Domain.Recipe> recipes = entities.Select(Mapper.Map).ToList()!;
+        
+        foreach (Domain.Recipe recipe in recipes)
+        {
+            Domain.Recipe existingRecipe = DbSet.AsNoTracking().First(r => r.Id == recipe.Id);
+            
+            LangStr title = recipe.Title;
+            recipe.Title = existingRecipe.Title;
+            recipe.Title.SetTranslation(title);
+        }
+        
+        DbContext.UpdateRange(recipes);
     }
 }

@@ -31,7 +31,6 @@ public class CategoriesControllerTest
     public CategoriesControllerTest(ITestOutputHelper testOutputHelper)
     {
         _testOutputHelper = testOutputHelper;
-        23.Should().Be(23, because: "this is the literal value");
         
         // set up mock database - inmemory
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
