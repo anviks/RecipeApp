@@ -74,4 +74,7 @@
     <data name="SaveButton" xml:space="preserve">
         <value>Uložit</value>
     </data>
+    <data name="NavigationDropdown" xml:space="preserve">
+        <value>Navigace</value>
+    </data>
 </root>
