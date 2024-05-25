@@ -17,7 +17,6 @@ using BLL_DTO = App.BLL.DTO;
 
 namespace RecipeApp.Controllers;
 
-// [Area("Admin")]
 [Authorize]
 public class RecipesController(
     IAppBusinessLogic businessLogic,
@@ -85,6 +84,7 @@ public class RecipesController(
         }
 
         await businessLogic.SaveChangesAsync();
+        
         return RedirectToAction(nameof(Index));
     }
 

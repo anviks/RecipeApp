@@ -288,8 +288,4 @@
       <_ContentIncludedByDefault Remove="Views\Shared\_ValidationScriptsPartial.cshtml" />
     </ItemGroup>
 
-    <ItemGroup>
-      <EmbeddedResource Include="wwwroot\uploads\images\test-image.png" />
-    </ItemGroup>
-
 </Project>

@@ -1,6 +1,9 @@
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
+using AngleSharp.Io;
+using Microsoft.AspNetCore.Http;
 using Xunit;
+using HttpMethod = System.Net.Http.HttpMethod;
 
 namespace Helpers;
 
@@ -9,52 +12,73 @@ public static class HttpClientExtensions
     public static Task<HttpResponseMessage> SendAsync(
         this HttpClient client,
         IHtmlFormElement form,
-        IHtmlElement submitButton)
+        IHtmlElement submitButton,
+        bool isMultipart = false,
+        Stream? fileStream = null)
     {
-        return client.SendAsync(form, submitButton, new Dictionary<string, string>());
+        return client.SendAsync(form, submitButton, new Dictionary<string, string>(), isMultipart, fileStream);
     }
 
     public static Task<HttpResponseMessage> SendAsync(
         this HttpClient client,
         IHtmlFormElement form,
-        IEnumerable<KeyValuePair<string, string>> formValues)
+        IEnumerable<KeyValuePair<string, string>> formValues,
+        bool isMultipart = false,
+        Stream? fileStream = null)
     {
         IElement submitElement = Assert.Single(form.QuerySelectorAll("[type=submit]"));
         var submitButton = Assert.IsAssignableFrom<IHtmlElement>(submitElement);
 
-        return client.SendAsync(form, submitButton, formValues);
+        return client.SendAsync(form, submitButton, formValues, isMultipart, fileStream);
     }
 
     public static Task<HttpResponseMessage> SendAsync(
         this HttpClient client,
         IHtmlFormElement form,
         IHtmlElement submitButton,
-        IEnumerable<KeyValuePair<string, string>> formValues)
+        IEnumerable<KeyValuePair<string, string>> formValues,
+        bool isMultipart = false,
+        Stream? fileStream = null)
     {
+        MultipartFormDataContent? multipartContent = null;
+        if (isMultipart)
+        {
+            multipartContent = new MultipartFormDataContent();
+        }
+
         foreach (var (key, value) in formValues)
         {
             switch (form[key])
             {
-                case IHtmlInputElement:
+                case IHtmlInputElement inputElement:
                 {
-                    (form[key] as IHtmlInputElement)!.Value = value;
-                    if ((form[key] as IHtmlInputElement)!.Type == "checkbox" && bool.Parse(value))
+                    if (inputElement.Type == "checkbox" && bool.Parse(value))
                     {
-                        (form[key] as IHtmlInputElement)!.IsChecked = true;
+                        inputElement.IsChecked = true;
+                        multipartContent?.Add(new StringContent(value), key);
+                    }
+                    else if (inputElement.Type == "file" && isMultipart)
+                    {
+                        multipartContent!.Add(new StreamContent(fileStream!), key, value);
+                    }
+                    else
+                    {
+                        inputElement.Value = value;
+                        multipartContent?.Add(new StringContent(value), key);
                     }
 
                     break;
                 }
-                case IHtmlSelectElement:
+                case IHtmlSelectElement selectElement:
                 {
-                    (form[key] as IHtmlSelectElement)!.Value = value;
+                    selectElement.Value = value;
                     break;
                 }
             }
         }
 
-        var submit = form.GetSubmission(submitButton);
-        var target = (Uri) submit!.Target;
+        DocumentRequest? submit = form.GetSubmission(submitButton);
+        var target = (Uri)submit!.Target;
         if (submitButton.HasAttribute("formaction"))
         {
             var formaction = submitButton.GetAttribute("formaction");

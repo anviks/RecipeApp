@@ -14,14 +14,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Xunit.Abstractions;
 using v1_0 = App.DTO.v1_0;
 
-namespace App.Test.IntegrationTests.api;
+namespace App.Test.IntegrationTests.Api;
 
-// [Collection("NonParallel")]
+[Collection("NonParallel")]
 public class HappyFlowTest : IClassFixture<CustomWebApplicationFactory<Program>>, IDisposable
 {
-    private const string Email = "test-user@gmail.com";
-    private const string Username = "test.user";
-    private const string Password = "Test123!";
+    private const string RecipeUri = "/api/v1.0/Recipes";
+    private const string? RegisterUri = "/api/v1.0/Account/Register";
+    private const string? LoginUri = "/api/v1.0/Account/Login";
+    private const string? LogoutUri = "/api/v1.0/Account/Logout";
     private readonly HttpClient _client;
     private readonly CustomWebApplicationFactory<Program> _factory;
     private readonly ITestOutputHelper _output;
@@ -47,6 +48,23 @@ public class HappyFlowTest : IClassFixture<CustomWebApplicationFactory<Program>>
         Logout(_loginData.RefreshToken).Wait();
         GC.SuppressFinalize(this);
     }
+    
+    [Fact]
+    public async Task Register_ShouldCreateUser()
+    {
+        // Act
+        var registerRequest = new RegisterRequest
+        {
+            Email = "random.email@gmail.com",
+            Username = "random.user",
+            Password = "Test123!"
+        };
+        HttpResponseMessage response = await _client.PostAsJsonAsync(RegisterUri, registerRequest);
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        _dbContext.Users.Should().Contain(u => u.UserName == registerRequest.Username);
+    }
 
     [Fact]
     public async Task CreateRecipe()
@@ -55,7 +73,7 @@ public class HappyFlowTest : IClassFixture<CustomWebApplicationFactory<Program>>
         var assembly = Assembly.GetExecutingAssembly();
 
         // Load the image from embedded resources
-        await using Stream? stream = assembly.GetManifestResourceStream("App.Test.IntegrationTests.api.image.png");
+        await using Stream? stream = assembly.GetManifestResourceStream("App.Test.IntegrationTests.image.png");
         
         if (stream == null)
         {
@@ -77,7 +95,7 @@ public class HappyFlowTest : IClassFixture<CustomWebApplicationFactory<Program>>
         formData.Add(new StringContent("false"), "IsGlutenFree");
 
         // Act
-        HttpResponseMessage response = await _client.PostAsync("/api/v1.0/Recipes", formData);
+        HttpResponseMessage response = await _client.PostAsync(RecipeUri, formData);
 
         // Assert
         response.EnsureSuccessStatusCode();
@@ -106,7 +124,7 @@ public class HappyFlowTest : IClassFixture<CustomWebApplicationFactory<Program>>
         recipeInDb!.Title.Should().ContainValue("Title");
         recipeInDb.AuthorUser.Should().NotBeNull();
         recipeInDb.AuthorUser!.Id.Should().NotBeEmpty();
-        recipeInDb.AuthorUser.UserName.Should().Be(Username);
+        recipeInDb.AuthorUser.UserName.Should().Be(_factory.GetUsername);
         recipeInDb.CreatedAt.Should().BeCloseTo(DateTime.Now.ToUniversalTime(), TimeSpan.FromSeconds(10));
     }
 
@@ -130,7 +148,7 @@ public class HappyFlowTest : IClassFixture<CustomWebApplicationFactory<Program>>
         formData.Add(new StringContent("4"), "Servings");
         
         // Act
-        HttpResponseMessage response = await _client.PutAsync($"/api/v1.0/Recipes/{recipeId}", formData);
+        HttpResponseMessage response = await _client.PutAsync($"{RecipeUri}/{recipeId}", formData);
         _dbContext.ChangeTracker.Clear();
         
         // Assert
@@ -147,7 +165,7 @@ public class HappyFlowTest : IClassFixture<CustomWebApplicationFactory<Program>>
         recipeInDb.Description.Should().Be("Updated Description");
         recipeInDb.ImageFileUrl.Should().Be(addedRecipe.ImageFileUrl);
         recipeInDb.CookingTime.Should().Be(addedRecipe.CookingTime);
-        recipeInDb.UpdatingUser!.UserName.Should().Be(Username);
+        recipeInDb.UpdatingUser!.UserName.Should().Be(_factory.GetUsername);
         recipeInDb.UpdatingUserId.Should().NotBeEmpty();
         recipeInDb.UpdatedAt.Should().BeCloseTo(DateTime.Now.ToUniversalTime(), TimeSpan.FromSeconds(10));
         recipeInDb.UpdatedAt.Should().BeAfter(recipeInDb.CreatedAt);
@@ -161,7 +179,7 @@ public class HappyFlowTest : IClassFixture<CustomWebApplicationFactory<Program>>
         Guid recipeId = addedRecipe.Id;
         
         // Act
-        HttpResponseMessage response = await _client.DeleteAsync($"/api/v1.0/Recipes/{recipeId}");
+        HttpResponseMessage response = await _client.DeleteAsync($"{RecipeUri}/{recipeId}");
         _dbContext.ChangeTracker.Clear();
         
         // Assert
@@ -190,7 +208,7 @@ public class HappyFlowTest : IClassFixture<CustomWebApplicationFactory<Program>>
             IsVegetarian = true,
             IsVegan = true,
             IsGlutenFree = false,
-            AuthorUserId = _dbContext.Users.First(u => u.UserName == Username).Id,
+            AuthorUserId = _dbContext.Users.First(u => u.UserName == _factory.GetUsername).Id,
             CreatedAt = DateTime.Now
         }).Entity;
         
@@ -202,8 +220,8 @@ public class HappyFlowTest : IClassFixture<CustomWebApplicationFactory<Program>>
     private async Task<LoginResponse> Register()
     {
         HttpResponseMessage response =
-            await _client.PostAsJsonAsync("/api/v1.0/Account/Register",
-                new RegisterRequest { Email = Email, Username = Username, Password = Password });
+            await _client.PostAsJsonAsync(RegisterUri,
+                new RegisterRequest { Email = _factory.GetEmail, Username = _factory.GetUsername, Password = _factory.GetPassword });
         response.EnsureSuccessStatusCode();
         var contentStr = await response.Content.ReadAsStringAsync();
 
@@ -218,8 +236,8 @@ public class HappyFlowTest : IClassFixture<CustomWebApplicationFactory<Program>>
     private async Task<LoginResponse> Login()
     {
         HttpResponseMessage response =
-            await _client.PostAsJsonAsync("/api/v1.0/Account/Login",
-                new LoginRequest { UsernameOrEmail = Username, Password = Password });
+            await _client.PostAsJsonAsync(LoginUri,
+                new LoginRequest { UsernameOrEmail = _factory.GetUsername, Password = _factory.GetPassword });
         response.EnsureSuccessStatusCode();
         var contentStr = await response.Content.ReadAsStringAsync();
 
@@ -233,7 +251,7 @@ public class HappyFlowTest : IClassFixture<CustomWebApplicationFactory<Program>>
 
     private async Task<LogoutResponse> Logout(string refreshToken)
     {
-        HttpResponseMessage response = await _client.PostAsJsonAsync("/api/v1.0/Account/Logout", new LogoutRequest{ RefreshToken = refreshToken });
+        HttpResponseMessage response = await _client.PostAsJsonAsync(LogoutUri, new LogoutRequest{ RefreshToken = refreshToken });
         response.EnsureSuccessStatusCode();
         var contentStr = await response.Content.ReadAsStringAsync();
 

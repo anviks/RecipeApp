@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace RecipeApp.Controllers;
 
-// [Area("Admin")]
 [Authorize(Roles = "Admin")]
 public class IngredientsController(IAppBusinessLogic businessLogic) : Controller
 {

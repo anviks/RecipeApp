@@ -12,7 +12,6 @@ using RecipeApp.ViewModels;
 
 namespace RecipeApp.Controllers;
 
-// [Area("Admin")]
 [Authorize]
 public class ReviewsController(
     IAppBusinessLogic businessLogic, 

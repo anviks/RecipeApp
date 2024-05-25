@@ -8,7 +8,6 @@ using RecipeApp.ViewModels;
 
 namespace RecipeApp.Controllers;
 
-// [Area("Admin")]
 [Authorize(Roles = "Admin")]
 public class UnitsController(IAppBusinessLogic businessLogic) : Controller
 {

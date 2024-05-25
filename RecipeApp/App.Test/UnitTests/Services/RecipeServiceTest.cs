@@ -14,9 +14,18 @@ using NSubstitute;
 
 namespace App.Test.UnitTests.Services;
 
-public class RecipeServiceTest(TestDatabaseFixture fixture) : IClassFixture<TestDatabaseFixture>, IDisposable
+public class RecipeServiceTest : IClassFixture<TestDatabaseFixture>, IDisposable
 {
     private readonly IFormFile _formFileMock = Substitute.For<IFormFile>();
+    private readonly TestDatabaseFixture _fixture;
+    private readonly AppDbContext _context;
+    private readonly RecipeService _service;
+
+    public RecipeServiceTest(TestDatabaseFixture fixture)
+    {
+        _fixture = fixture;
+        (_context, _service) = SetupDependencies();
+    }
 
     public void Dispose()
     {
@@ -28,7 +37,6 @@ public class RecipeServiceTest(TestDatabaseFixture fixture) : IClassFixture<Test
     public async Task AddAsync_ShouldThrowError_WhenImageIsNull()
     {
         // Arrange
-        (AppDbContext context, RecipeService? service) = SetupDependencies();
         var recipeRequest = new RecipeRequest
         {
             Title = "Test Recipe",
@@ -38,22 +46,21 @@ public class RecipeServiceTest(TestDatabaseFixture fixture) : IClassFixture<Test
 
         // Act
         Func<Task> action = async () =>
-            await service.AddAsync(recipeRequest, TestDatabaseFixture.UserId, TestDatabaseFixture.WebRootPath);
+            await _service.AddAsync(recipeRequest, TestDatabaseFixture.UserId, TestDatabaseFixture.WebRootPath);
 
         // Assert
         await action.Should().ThrowAsync<MissingImageException>();
-        context.Recipes.Should().BeEmpty();
+        _context.Recipes.Should().BeEmpty();
     }
 
     [Fact]
     public async Task AddAsync_ShouldAddRecipe_WhenImageIsNotNull()
     {
         // Arrange
-        (AppDbContext context, RecipeService? service) = SetupDependencies();
         MockFileUpload("non-existing-image.jpg");
 
         // Act
-        RecipeResponse addedRecipe = await service.AddAsync(new RecipeRequest
+        RecipeResponse addedRecipe = await _service.AddAsync(new RecipeRequest
         {
             Title = "Test Recipe",
             Description = "Test Description",
@@ -61,7 +68,7 @@ public class RecipeServiceTest(TestDatabaseFixture fixture) : IClassFixture<Test
         }, TestDatabaseFixture.UserId, TestDatabaseFixture.WebRootPath);
 
         // Assert
-        Domain.Recipe? addedRecipeInDb = await context.Recipes.FindAsync(addedRecipe.Id);
+        Domain.Recipe? addedRecipeInDb = await _context.Recipes.FindAsync(addedRecipe.Id);
         addedRecipeInDb.Should().NotBeNull();
         addedRecipe.Should().NotBeNull();
         addedRecipe.Id.Should().Be(addedRecipeInDb!.Id).And.NotBe(Guid.Empty);
@@ -77,11 +84,10 @@ public class RecipeServiceTest(TestDatabaseFixture fixture) : IClassFixture<Test
     public async Task UpdateAsync_ShouldKeepOldImage_WhenImageIsNull()
     {
         // Arrange
-        (AppDbContext context, RecipeService? service) = SetupDependencies();
-        Domain.Recipe addedRecipe = await AddRecipe(context, "non-existing-image.jpg");
+        Domain.Recipe addedRecipe = await AddRecipe(_context, "non-existing-image.jpg");
 
         // Act
-        RecipeResponse updatedRecipe = await service.UpdateAsync(new RecipeRequest
+        RecipeResponse updatedRecipe = await _service.UpdateAsync(new RecipeRequest
         {
             Id = addedRecipe.Id,
             Title = "Updated Test Recipe",
@@ -91,7 +97,7 @@ public class RecipeServiceTest(TestDatabaseFixture fixture) : IClassFixture<Test
         }, TestDatabaseFixture.UserId, TestDatabaseFixture.WebRootPath);
 
         // Assert
-        Domain.Recipe? updatedRecipeInDb = await context.Recipes.FindAsync(addedRecipe.Id);
+        Domain.Recipe? updatedRecipeInDb = await _context.Recipes.FindAsync(addedRecipe.Id);
         updatedRecipeInDb.Should().NotBeNull();
         updatedRecipe.Should().NotBeNull();
         updatedRecipe.Id.Should().Be(updatedRecipeInDb!.Id).And.Be(addedRecipe.Id);
@@ -104,12 +110,11 @@ public class RecipeServiceTest(TestDatabaseFixture fixture) : IClassFixture<Test
     public async Task UpdateAsync_ShouldUpdateRecipe_WhenImageIsNotNull()
     {
         // Arrange
-        (AppDbContext context, RecipeService? service) = SetupDependencies();
         MockFileUpload("non-existing-image-2.jpg");
-        Domain.Recipe addedRecipe = await AddRecipe(context, "non-existing-image.jpg");
+        Domain.Recipe addedRecipe = await AddRecipe(_context, "non-existing-image.jpg");
 
         // Act
-        RecipeResponse updatedRecipe = await service.UpdateAsync(new RecipeRequest
+        RecipeResponse updatedRecipe = await _service.UpdateAsync(new RecipeRequest
         {
             Id = addedRecipe.Id,
             Title = "Updated Test Recipe",
@@ -118,7 +123,7 @@ public class RecipeServiceTest(TestDatabaseFixture fixture) : IClassFixture<Test
         }, TestDatabaseFixture.UserId, TestDatabaseFixture.WebRootPath);
 
         // Assert
-        Domain.Recipe? updatedRecipeInDb = await context.Recipes.FindAsync(addedRecipe.Id);
+        Domain.Recipe? updatedRecipeInDb = await _context.Recipes.FindAsync(addedRecipe.Id);
         updatedRecipeInDb.Should().NotBeNull();
         updatedRecipe.Should().NotBeNull();
         updatedRecipe.Id.Should().Be(updatedRecipeInDb!.Id).And.Be(addedRecipe.Id);
@@ -133,11 +138,8 @@ public class RecipeServiceTest(TestDatabaseFixture fixture) : IClassFixture<Test
     [Fact]
     public async Task RemoveAsync_ShouldReturnZero_WhenRecipeDoesNotExist()
     {
-        // Arrange
-        (_, RecipeService? service) = SetupDependencies();
-
         // Act
-        var removedCount = await service.RemoveAsync(Guid.NewGuid(), TestDatabaseFixture.WebRootPath);
+        var removedCount = await _service.RemoveAsync(Guid.NewGuid(), TestDatabaseFixture.WebRootPath);
 
         // Assert
         removedCount.Should().Be(0);
@@ -147,16 +149,15 @@ public class RecipeServiceTest(TestDatabaseFixture fixture) : IClassFixture<Test
     public async Task RemoveAsync_ShouldRemoveRecipe_WhenRecipeExists()
     {
         // Arrange
-        (AppDbContext context, RecipeService? service) = SetupDependencies();
-        Domain.Recipe addedRecipe = await AddRecipe(context, "existing-image.jpg", createActualFile: true);
+        Domain.Recipe addedRecipe = await AddRecipe(_context, "existing-image.jpg", createActualFile: true);
 
         // Act
-        var removedCount = await service.RemoveAsync(addedRecipe.Id, TestDatabaseFixture.WebRootPath);
-        await context.SaveChangesAsync();
+        var removedCount = await _service.RemoveAsync(addedRecipe.Id, TestDatabaseFixture.WebRootPath);
+        await _context.SaveChangesAsync();
 
         // Assert
         removedCount.Should().Be(1);
-        Domain.Recipe? removedRecipe = await context.Recipes.FindAsync(addedRecipe.Id);
+        Domain.Recipe? removedRecipe = await _context.Recipes.FindAsync(addedRecipe.Id);
         removedRecipe.Should().BeNull();
     }
 
@@ -189,9 +190,9 @@ public class RecipeServiceTest(TestDatabaseFixture fixture) : IClassFixture<Test
 
     private (AppDbContext, RecipeService) SetupDependencies()
     {
-        AppDbContext context = fixture.CreateContext();
-        var repository = new RecipeRepository(context, fixture.Mapper);
-        var service = new RecipeService(repository, fixture.Mapper);
+        AppDbContext context = _fixture.CreateContext();
+        var repository = new RecipeRepository(context, _fixture.Mapper);
+        var service = new RecipeService(repository, _fixture.Mapper);
         context.Database.BeginTransaction();
 
         return (context, service);

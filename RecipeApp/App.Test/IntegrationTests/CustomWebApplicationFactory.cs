@@ -14,6 +14,14 @@ namespace App.Test.IntegrationTests;
 public class CustomWebApplicationFactory<TStartup>
     : WebApplicationFactory<TStartup> where TStartup: class
 {
+    private const string Email = "test-user@gmail.com";
+    private const string Username = "test.user";
+    private const string Password = "Test123!";
+    private static readonly Guid UserId = Guid.Parse("00000000-0000-0000-0000-000000001000");
+    public string GetEmail => Email;
+    public string GetUsername => Username;
+    public string GetPassword => Password;
+    public Guid GetUserId => UserId;
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
@@ -27,10 +35,6 @@ public class CustomWebApplicationFactory<TStartup>
         
         builder.ConfigureServices((context, services) =>
         {
-            
-            // change the di container registrations
-            
-            
             // find DbContext
             ServiceDescriptor? descriptor = services.SingleOrDefault(
                 d => d.ServiceType ==
@@ -69,10 +73,10 @@ public class CustomWebApplicationFactory<TStartup>
     {
         userManager.CreateAsync(new AppUser
         {
-            Id = Guid.Parse("00000000-0000-0000-0000-000000001000"),
-            UserName = "test.user",
-            Email = "test-user@gmail.com"
-        }, "Test123!").Wait();
+            Id = UserId,
+            UserName = Username,
+            Email = Email
+        }, Password).Wait();
         
         context.Categories.AddRange(
             new Domain.Category

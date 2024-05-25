@@ -16,4 +16,10 @@
       <PackageReference Include="xunit.assert" Version="2.8.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="Microsoft.AspNetCore.Http">
+        <HintPath>..\..\..\..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.4\Microsoft.AspNetCore.Http.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

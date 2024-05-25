@@ -41,7 +41,10 @@
 
     <ItemGroup>
       <None Remove="Integration\api\image.png" />
-      <EmbeddedResource Include="IntegrationTests\api\image.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="IntegrationTests\image.png" />
     </ItemGroup>
 
 </Project>

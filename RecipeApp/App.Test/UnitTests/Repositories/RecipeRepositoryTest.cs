@@ -15,6 +15,8 @@ public class RecipeRepositoryTest : IClassFixture<TestDatabaseFixture>
     private readonly IMapper _mapper;
     private readonly EntityMapper<Recipe, DAL.DTO.Recipe> _entityMapper;
     private readonly TestDatabaseFixture _fixture;
+    private readonly AppDbContext _context;
+    private readonly RecipeRepository _repository;
     private int _createdRecipes;
 
     public RecipeRepositoryTest(TestDatabaseFixture fixture)
@@ -26,28 +28,27 @@ public class RecipeRepositoryTest : IClassFixture<TestDatabaseFixture>
         });
         _mapper = config.CreateMapper();
         _entityMapper = new EntityMapper<Recipe, DAL.DTO.Recipe>(_mapper);
+        (_context, _repository) = SetupDependencies();
     }
 
     [Fact]
     public async Task Update_ShouldUpdateTranslations()
     {
         // Arrange
-        (AppDbContext context, RecipeRepository repository) = SetupDependencies();
-
         Recipe recipe = CreateRecipe();
-        context.Recipes.Add(recipe);
-        await context.SaveChangesAsync();
-        context.ChangeTracker.Clear();
+        _context.Recipes.Add(recipe);
+        await _context.SaveChangesAsync();
+        _context.ChangeTracker.Clear();
         Thread.CurrentThread.CurrentUICulture = new CultureInfo("et-EE");
 
         // Act
         DAL.DTO.Recipe dalRecipe = _entityMapper.Map(recipe)!;
         dalRecipe.Title = "Test Retsept 1";
-        repository.Update(dalRecipe);
-        await context.SaveChangesAsync();
+        _repository.Update(dalRecipe);
+        await _context.SaveChangesAsync();
 
         // Assert
-        Recipe updatedRecipe = await context.Recipes.FirstAsync(r => r.Id == recipe.Id);
+        Recipe updatedRecipe = await _context.Recipes.FirstAsync(r => r.Id == recipe.Id);
         updatedRecipe.Title.Translate("en-GB").Should().Be("Test Recipe 1");
         updatedRecipe.Title.Translate("en").Should().Be("Test Recipe 1");
         updatedRecipe.Title.Translate("et-EE").Should().Be("Test Retsept 1");
@@ -58,13 +59,11 @@ public class RecipeRepositoryTest : IClassFixture<TestDatabaseFixture>
     public async Task UpdateRange_ShouldUpdateTranslations()
     {
         // Arrange
-        (AppDbContext context, RecipeRepository repository) = SetupDependencies();
-
         Recipe recipe1 = CreateRecipe();
         Recipe recipe2 = CreateRecipe();
-        context.Recipes.AddRange(recipe1, recipe2);
-        await context.SaveChangesAsync();
-        context.ChangeTracker.Clear();
+        _context.Recipes.AddRange(recipe1, recipe2);
+        await _context.SaveChangesAsync();
+        _context.ChangeTracker.Clear();
         Thread.CurrentThread.CurrentUICulture = new CultureInfo("et-EE");
 
         // Act
@@ -72,17 +71,17 @@ public class RecipeRepositoryTest : IClassFixture<TestDatabaseFixture>
         dalRecipe1.Title = "Test Retsept 1";
         DAL.DTO.Recipe dalRecipe2 = _entityMapper.Map(recipe2)!;
         dalRecipe2.Title = "Test Retsept 2";
-        repository.UpdateRange(new List<DAL.DTO.Recipe> { dalRecipe1, dalRecipe2 });
-        await context.SaveChangesAsync();
+        _repository.UpdateRange(new List<DAL.DTO.Recipe> { dalRecipe1, dalRecipe2 });
+        await _context.SaveChangesAsync();
 
         // Assert
-        Recipe updatedRecipe1 = await context.Recipes.FirstAsync(r => r.Id == recipe1.Id);
+        Recipe updatedRecipe1 = await _context.Recipes.FirstAsync(r => r.Id == recipe1.Id);
         updatedRecipe1.Title.Translate("en-GB").Should().Be("Test Recipe 1");
         updatedRecipe1.Title.Translate("en").Should().Be("Test Recipe 1");
         updatedRecipe1.Title.Translate("et-EE").Should().Be("Test Retsept 1");
         updatedRecipe1.Title.Translate("et").Should().Be("Test Retsept 1");
         
-        Recipe updatedRecipe2 = await context.Recipes.FirstAsync(r => r.Id == recipe2.Id);
+        Recipe updatedRecipe2 = await _context.Recipes.FirstAsync(r => r.Id == recipe2.Id);
         updatedRecipe2.Title.Translate("en-GB").Should().Be("Test Recipe 2");
         updatedRecipe2.Title.Translate("en").Should().Be("Test Recipe 2");
         updatedRecipe2.Title.Translate("et-EE").Should().Be("Test Retsept 2");
@@ -93,15 +92,13 @@ public class RecipeRepositoryTest : IClassFixture<TestDatabaseFixture>
     public async Task FindAsync_ShouldReturnRecipe_WithNavigationProperties()
     {
         // Arrange
-        (AppDbContext context, RecipeRepository repository) = SetupDependencies();
-
         Recipe recipe = CreateRecipe();
-        context.Recipes.Add(recipe);
-        await context.SaveChangesAsync();
-        context.ChangeTracker.Clear();
+        _context.Recipes.Add(recipe);
+        await _context.SaveChangesAsync();
+        _context.ChangeTracker.Clear();
 
         // Act
-        DAL.DTO.Recipe? dalRecipe = await repository.FindAsync(recipe.Id);
+        DAL.DTO.Recipe? dalRecipe = await _repository.FindAsync(recipe.Id);
 
         // Assert
         dalRecipe.Should().NotBeNull();

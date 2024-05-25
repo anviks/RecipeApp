@@ -14,12 +14,14 @@
 </div>
 <div class="form-group">
     <label asp-for="ImageFile" class="control-label"></label>
-    <label id="fileInputLabel" class="btn btn-primary d-block">
-        <i class="fa fa-image"></i> @Recipe.ChooseImageButton
-        <input type="file" asp-for="ImageFile" class="form-control" style="display: none;" name="image" onchange="displayImage(this)" accept="image/*"/>
-    </label>
-    <img id="previewImage" src="#" alt="Preview Image" style="display: none; max-width: 150px; max-height: 150px;"/>
-    <span asp-validation-for="ImageFile" class="text-danger"></span>
+    <div class="form-group">
+        <label id="fileInputLabel" asp-for="ImageFile" class="btn btn-primary d-block">
+            <i class="fa fa-image"></i> @Recipe.ChooseImageButton
+            <input asp-for="ImageFile" class="form-control" style="display: none;" onchange="displayImage(this)" accept="image/*"/>
+        </label>
+        <img id="previewImage" src="#" alt="Preview Image" style="display: none; max-width: 150px; max-height: 150px;"/>
+        <span asp-validation-for="ImageFile" class="text-danger"></span>
+    </div>
 </div>
 <div class="form-group">
     <label asp-for="PreparationTime" class="control-label"></label>
