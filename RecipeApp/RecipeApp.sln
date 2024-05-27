@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0_SolutionItems", "0_Soluti
 		Dockerfile = Dockerfile
 		docker-compose-tests.yml = docker-compose-tests.yml
 		wait-for-it.sh = wait-for-it.sh
-		.gitlab-ci.yml = .gitlab-ci.yml
+		..\.gitlab-ci.yml = ..\.gitlab-ci.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1_App", "1_App", "{F941707C-1BEC-4997-949E-B96B544942E4}"
