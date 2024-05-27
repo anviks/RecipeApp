@@ -5,6 +5,7 @@ deploy-job-master:
   stage: deploy
   image: docker:latest
   script:
+    - cd RecipeApp
     - docker ps
     - docker system prune -a --volumes -f
     - docker login -u anviks -p $dockerhub
