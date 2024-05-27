@@ -27,7 +27,7 @@ public class RecipeService(
         if (recipeRequest.ImageFile == null) throw new MissingImageException();
 
         DAL_DTO.Recipe dalRecipe = _recipeMapper.Map(recipeRequest)!;
-        dalRecipe.CreatedAt = DateTime.Now;
+        dalRecipe.CreatedAt = DateTime.Now.ToUniversalTime();
         dalRecipe.AuthorUserId = userId;
 
         var uploadUrl = await SaveImage(recipeRequest.ImageFile, localWebRootPath);
@@ -43,7 +43,7 @@ public class RecipeService(
         DAL_DTO.Recipe dalRecipe = _recipeMapper.Map(recipeRequest)!;
         dalRecipe.CreatedAt = existingRecipe.CreatedAt;
         dalRecipe.AuthorUserId = existingRecipe.AuthorUserId;
-        dalRecipe.UpdatedAt = DateTime.Now;
+        dalRecipe.UpdatedAt = DateTime.Now.ToUniversalTime();
         dalRecipe.UpdatingUserId = userId;
         
         if (recipeRequest.ImageFile != null)

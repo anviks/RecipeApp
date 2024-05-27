@@ -1,3 +1,4 @@
+using System.Text;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using AngleSharp.Io;
@@ -88,7 +89,7 @@ public static class HttpClientExtensions
 
         var submission = new HttpRequestMessage(new HttpMethod(submit.Method.ToString()), target)
         {
-            Content = new StreamContent(submit.Body)
+            Content = /*isMultipart ? multipartContent! :*/ new StreamContent(submit.Body)
         };
 
         foreach (var (key, value) in submit.Headers)

@@ -14,6 +14,7 @@ using NSubstitute;
 
 namespace App.Test.UnitTests.Services;
 
+[Collection("NonParallel")]
 public class RecipeServiceTest : IClassFixture<TestDatabaseFixture>, IDisposable
 {
     private readonly IFormFile _formFileMock = Substitute.For<IFormFile>();
@@ -180,7 +181,8 @@ public class RecipeServiceTest : IClassFixture<TestDatabaseFixture>, IDisposable
             Instructions = ["Test Instruction 1", "Test Instruction 2"],
             ImageFileUrl = imageFileUrl,
             AuthorUserId = TestDatabaseFixture.UserId,
-            CreatedAt = DateTime.Now
+            // TODO: Why tf won't SaveChanges make this Universal?
+            CreatedAt = DateTime.Now.ToUniversalTime()
         }).Entity;
         await context.SaveChangesAsync();
         context.ChangeTracker.Clear();

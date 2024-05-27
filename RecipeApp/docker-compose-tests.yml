@@ -1,0 +1,29 @@
+services:
+  db-test:
+    image: postgres:16
+    container_name: recipeapp-db-test
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=recipeapp_test
+      - POSTGRES_USER=testuser
+      - POSTGRES_PASSWORD=testpass
+    restart: on-failure
+    logging:
+      options:
+        max-size: 10m
+        max-file: 5
+
+  testapp:
+    build:
+      context: .
+      target: build
+    command: dotnet test /app/App.Test -l "console;verbosity=normal"
+    container_name: testapp
+    environment:
+      ConnectionStrings__TestDbConnection: "Host=recipeapp-db-test;Port=5432;Database=recipeapp_test;Username=testuser;Password=testpass"
+    depends_on:
+      - db-test
+volumes:
+  db-volume:
+    

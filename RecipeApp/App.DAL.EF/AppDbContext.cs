@@ -42,8 +42,8 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid, IdentityUs
             .HasOne(r => r.UpdatingUser) // Recipe has one UpdatingUser
             .WithMany(u => u.UpdatedRecipes) // AppUser has many UpdatedRecipes
             .HasForeignKey(r => r.UpdatingUserId);
-
-        if (Database.ProviderName!.Contains("InMemory"))
+        
+        if (Database.ProviderName!.Contains("InMemory") || Database.ProviderName.Contains("Sqlite"))
         {
             builder.Entity<Category>().OwnsOne(c => c.Name, b => b.ToJson());
             builder.Entity<Category>().OwnsOne(c => c.Description, b => b.ToJson());

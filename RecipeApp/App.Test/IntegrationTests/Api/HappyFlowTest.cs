@@ -209,7 +209,7 @@ public class HappyFlowTest : IClassFixture<CustomWebApplicationFactory<Program>>
             IsVegan = true,
             IsGlutenFree = false,
             AuthorUserId = _dbContext.Users.First(u => u.UserName == _factory.GetUsername).Id,
-            CreatedAt = DateTime.Now
+            CreatedAt = DateTime.Now.ToUniversalTime()
         }).Entity;
         
         _dbContext.SaveChanges();

@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace App.Test.UnitTests.Repositories;
 
+[Collection("NonParallel")]
 public class RecipeRepositoryTest : IClassFixture<TestDatabaseFixture>
 {
     private readonly IMapper _mapper;
@@ -129,7 +130,7 @@ public class RecipeRepositoryTest : IClassFixture<TestDatabaseFixture>
             ImageFileUrl = "non-existing.jpg",
             Instructions = [$"Test Instruction {_createdRecipes * 2 - 1}", $"Test Instruction {_createdRecipes * 2}"],
             AuthorUserId = TestDatabaseFixture.UserId,
-            CreatedAt = DateTime.Now
+            CreatedAt = DateTime.Now.ToUniversalTime()
         };
     }
 }

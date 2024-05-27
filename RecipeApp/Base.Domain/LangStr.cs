@@ -21,8 +21,11 @@ public class LangStr : Dictionary<string, string>
 
     public LangStr(string value, string culture)
     {
-        if (culture.Length < 1) throw new ApplicationException("Culture is required!");
-
+        if (culture.Length < 1)
+        {
+            culture = DefaultCulture;
+        }
+        
         var neutralCulture = culture.Split('-')[0];
         this[neutralCulture] = value;
     }

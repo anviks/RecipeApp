@@ -171,7 +171,7 @@ public class HappyFlowTest : IClassFixture<CustomWebApplicationFactory<Program>>
             IsVegetarian = true,
             Instructions = ["Step 1", "Step 2"],
             AuthorUserId = _factory.GetUserId,
-            CreatedAt = DateTime.Now
+            CreatedAt = DateTime.Now.ToUniversalTime()
         });
         await _context.SaveChangesAsync();
         _context.ChangeTracker.Clear();

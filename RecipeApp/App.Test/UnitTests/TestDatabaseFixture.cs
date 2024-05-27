@@ -1,13 +1,11 @@
 using App.DAL.EF;
 using App.Domain.Identity;
 using AutoMapper;
-using Base.Domain;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 
-namespace App.Test;
+namespace App.Test.UnitTests;
 
 public class TestDatabaseFixture
 {
@@ -48,7 +46,7 @@ public class TestDatabaseFixture
         }
     }
 
-    private void SeedData(AppDbContext context)
+    private static void SeedData(AppDbContext context)
     {
         context.Users.Add(new AppUser
         {
@@ -63,11 +61,12 @@ public class TestDatabaseFixture
     public AppDbContext CreateContext()
     {
         IConfigurationBuilder configurationBuilder = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.Testing.json");
+            .AddJsonFile("appsettings.json")
+            .AddEnvironmentVariables();
         IConfiguration configuration = configurationBuilder.Build();
-
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
-
+        
+        var connectionString = configuration.GetConnectionString("TestDbConnection");
+        
         return new AppDbContext(
             new DbContextOptionsBuilder<AppDbContext>()
                 .UseNpgsql(connectionString)

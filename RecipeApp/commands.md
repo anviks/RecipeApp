@@ -83,3 +83,14 @@ cd ..
 * `--useAsyncActions` or `-async` - Generate async controller actions.
 * `--referenceScriptLibraries` or `-scripts` - Reference script libraries in the generated views. Adds _ValidationScriptsPartial to Edit and Create pages.
 * `--force` or `-f` - Overwrite existing files.
+
+
+```bash
+docker build -t recipeapp:latest .
+
+docker compose -f docker-compose-tests.yml up --abort-on-container-exit --exit-code-from testapp
+docker compose -f docker-compose-tests.yml up --abort-on-container-exit --exit-code-from testapp --build
+
+# multiplatform build
+docker buildx build --progress=plain --force-rm --push -t anviks/recipeapp:latest . 
+```

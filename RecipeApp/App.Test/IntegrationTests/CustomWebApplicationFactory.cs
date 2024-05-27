@@ -29,7 +29,6 @@ public class CustomWebApplicationFactory<TStartup>
         builder.ConfigureAppConfiguration((context, config) =>
         {
             config.AddJsonFile("appsettings.json")
-                .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", true)
                 .AddEnvironmentVariables();
         });
         
@@ -49,8 +48,7 @@ public class CustomWebApplicationFactory<TStartup>
             // and new DbContext
             services.AddDbContext<AppDbContext>(options =>
             {
-                // options.UseInMemoryDatabase("TestDb");
-                var connectionString = context.Configuration.GetConnectionString("DefaultConnection");
+                var connectionString = context.Configuration.GetConnectionString("TestDbConnection");
                 options.UseNpgsql(connectionString);
             });
             
