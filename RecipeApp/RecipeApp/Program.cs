@@ -183,7 +183,7 @@ app.UseCors("AllowCors");
 
 app.UseRequestLocalization(options: app.Services.GetService<IOptions<RequestLocalizationOptions>>()?.Value!);
 
-app.UseMiddleware<CustomCultureMiddleware>();
+// app.UseMiddleware<CustomCultureMiddleware>();
 
 app.UseAuthorization();
 
