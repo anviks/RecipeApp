@@ -52,8 +52,8 @@ COPY Base.Test/. ./Base.Test/
 COPY Helpers/. ./Helpers/
 
 # Run the tests
-#RUN dotnet test Base.Test
-#RUN dotnet test App.Test
+RUN dotnet test Base.Test
+RUN dotnet test App.Test
 
 WORKDIR /app/RecipeApp
 RUN dotnet publish -c Release -o out
