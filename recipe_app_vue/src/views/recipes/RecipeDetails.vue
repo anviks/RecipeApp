@@ -26,13 +26,15 @@ onMounted(async () => {
     });
     
     for (const recipeIngredient of recipe.value!.recipeIngredients!) {
-        recipeIngredient.unit = (await unitsService.findById(recipeIngredient.unitId)).data!;
+        if (recipeIngredient.unitId) {
+            recipeIngredient.unit = (await unitsService.findById(recipeIngredient.unitId)).data!;
+        }
     }
-    
+
     for (const recipeIngredient of recipe.value!.recipeIngredients!) {
         recipeIngredient.ingredient = (await ingredientsService.findById(recipeIngredient.ingredientId)).data!;
     }
-    
+
     for (const recipeCategory of recipe.value!.recipeCategories!) {
         recipeCategory.category = (await categoriesService.findById(recipeCategory.categoryId)).data!;
     }

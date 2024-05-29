@@ -4,13 +4,14 @@ import type { Recipe } from '@/types';
 import useServices from '@/helpers/useServices';
 import { backendDomain } from '@/config';
 
-const { recipesService, ingredientsService, categoriesService } = useServices();
+const { recipesService } = useServices();
 const recipes = ref<Recipe[]>([]);
+const isLoading = ref(true);
 
 onMounted(async () => {
     const result = await recipesService.findAll();
-    console.log(result.data!);
     recipes.value = result.data!;
+    isLoading.value = false;
 });
 
 function getDietaryLabels(recipe: Recipe): string {
@@ -33,7 +34,7 @@ function getDietaryLabels(recipe: Recipe): string {
     <p>
         <RouterLink :to="{name: 'RecipeCreate'}">Create New</RouterLink>
     </p>
-    <table v-if="recipes?.length" class="table">
+    <table v-if="!isLoading" class="table">
         <thead>
         <tr>
             <th>

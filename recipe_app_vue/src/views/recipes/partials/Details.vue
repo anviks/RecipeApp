@@ -97,7 +97,7 @@ function getDietaryRestrictions(): string {
         <dd class="col-sm-10">
             <ul>
                 <li v-for="ingredient in recipe.recipeIngredients" :key="ingredient.id">
-                    {{ ingredient.quantity }} {{ ingredient.unit?.abbreviation }} of {{ ingredient.ingredient?.name }}
+                    {{ ingredient.quantity }} {{ ingredient.unit?.abbreviation ?? ingredient.customUnit }} of {{ ingredient.ingredient?.name }}
                 </li>
             </ul>
         </dd>

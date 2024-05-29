@@ -26,7 +26,9 @@ onMounted(async () => {
     });
 
     for (const recipeIngredient of recipe.value!.recipeIngredients!) {
-        recipeIngredient.unit = (await unitsService.findById(recipeIngredient.unitId)).data!;
+        if (recipeIngredient.unitId) {
+            recipeIngredient.unit = (await unitsService.findById(recipeIngredient.unitId)).data!;
+        }
     }
 
     for (const recipeIngredient of recipe.value!.recipeIngredients!) {

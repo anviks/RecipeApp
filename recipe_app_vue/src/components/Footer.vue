@@ -5,7 +5,7 @@
 <template>
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2024 - RecipeApp - <a href="/Home/Privacy">Privacy</a> | en-GB | en-GB
+            &copy; 2024 - RecipeApp - <a href="/Home/Privacy">Privacy</a>
         </div>
     </footer>
 </template>

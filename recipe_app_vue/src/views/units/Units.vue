@@ -5,6 +5,7 @@ import useServices from '@/helpers/useServices';
 
 const { unitsService, ingredientTypesService } = useServices();
 const units = ref<Unit[]>([]);
+const isLoading = ref(true);
 
 onMounted(async () => {
     const result = await unitsService.findAll();
@@ -12,6 +13,8 @@ onMounted(async () => {
         unit.ingredientType = (await ingredientTypesService.findById(unit.ingredientTypeId)).data!;
     }
     units.value = result.data!;
+    
+    isLoading.value = false;
 });
 </script>
 
@@ -20,7 +23,7 @@ onMounted(async () => {
     <p>
         <RouterLink :to="{name: 'UnitCreate'}">Create New</RouterLink>
     </p>
-    <table v-if="units.length" class="table">
+    <table v-if="!isLoading" class="table">
         <thead>
         <tr>
             <th>

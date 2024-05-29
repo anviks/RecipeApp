@@ -51,7 +51,7 @@ const submitLogin = async () => {
                                type="text"
                                id="Input_UsernameOrEmail"
                                name="Input.UsernameOrEmail">
-                        <label class="form-label" for="Input_UsernameOrEmail">UsernameOrEmail</label>
+                        <label class="form-label" for="Input_UsernameOrEmail">Username or email</label>
                     </div>
                     <div class="form-floating mb-3">
                         <input v-model="loginData.password" class="form-control" autocomplete="current-password"
