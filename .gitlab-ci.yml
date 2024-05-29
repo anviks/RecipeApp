@@ -10,5 +10,6 @@ deploy-job-master:
     - docker system prune -a --volumes -f
     - docker login -u anviks -p $dockerhub
     - docker buildx build --progress=plain --force-rm --push -t anviks/recipeapp:latest .
+    - docker compose -f docker-compose-tests.yml up --abort-on-container-exit --exit-code-from testapp
   only:
     - main
