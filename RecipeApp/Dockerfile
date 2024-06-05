@@ -51,9 +51,7 @@ COPY Base.Contracts.Domain/. ./Base.Contracts.Domain/
 COPY Base.Test/. ./Base.Test/
 COPY Helpers/. ./Helpers/
 
-# Run the tests
 RUN dotnet test Base.Test
-#RUN dotnet test App.Test
 
 WORKDIR /app/RecipeApp
 RUN dotnet publish -c Release -o out
@@ -62,6 +60,7 @@ RUN dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 EXPOSE 80
 EXPOSE 8080
+EXPOSE 443
 WORKDIR /app
 COPY --from=build /app/RecipeApp/out ./
 COPY wait-for-it.sh /app
