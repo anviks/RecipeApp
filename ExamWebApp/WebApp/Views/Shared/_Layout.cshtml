@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using App.Domain.Identity
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -25,6 +31,22 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                     </li>
+                    @{
+                        AppUser? user = await UserManager.GetUserAsync(User);
+                        if (SignInManager.IsSignedIn(User) && user != null && await UserManager.IsInRoleAsync(user, "Admin"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Admin
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" asp-area="Admin" asp-controller="Samples" asp-action="Index">Samples</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                    }
                 </ul>
                 <partial name="_LoginPartial"/>
             </div>

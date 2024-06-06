@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using WebApp;
 using WebApp.Helpers;
 using AutoMapperProfile = WebApp.Helpers.AutoMapperProfile;
 
@@ -107,6 +108,9 @@ builder.Services.AddSwaggerGen();
 // ===================================================
 WebApplication app = builder.Build();
 // ===================================================
+
+await app.SeedAdminUser();
+await app.SeedSampleData();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
