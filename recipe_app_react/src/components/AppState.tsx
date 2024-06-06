@@ -3,8 +3,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { parseJwt } from '@/helpers/jwtParser';
 import { UserContext } from '@/types';
-import IngredientsService from '@/services/ingredientsService';
-import AccountService from '@/services/accountService';
 
 
 const initialUserContext: UserContext = {

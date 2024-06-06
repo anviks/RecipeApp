@@ -2,11 +2,7 @@
 
 import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
 import { Ingredient, IngredientType, IngredientTypeAssociation } from '@/types';
-import {
-    useIngredientsService,
-    useIngredientTypeAssociationsService,
-    useIngredientTypesService
-} from '@/components/ServiceContext';
+import { useServices } from '@/components/ServiceContext';
 import { useUserContext } from '@/components/AppState';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -21,10 +17,7 @@ export default function Create() {
     const [isLoading, setIsLoading] = useState(true);
 
     const { userContext, setUserContext } = useUserContext();
-
-    const ingredientsService = useIngredientsService();
-    const ingredientTypesService = useIngredientTypesService();
-    const ingredientTypeAssociationsService = useIngredientTypeAssociationsService();
+    const { ingredientsService, ingredientTypesService, ingredientTypeAssociationsService } = useServices();
 
     const router = useRouter();
 

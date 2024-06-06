@@ -3,8 +3,8 @@ import { Inter } from 'next/font/google';
 import 'bootstrap/dist/css/bootstrap.css';
 import './globals.css';
 import BootstrapActivation from '@/components/BootstrapActivation';
-import Footer from '@/components/nav/Footer';
-import Header from '@/components/nav/Header';
+import Footer from '@/components/Footer';
+import Header from '@/components/Header';
 import AppState from '@/components/AppState';
 import { ServiceProvider } from '@/components/ServiceContext';
 

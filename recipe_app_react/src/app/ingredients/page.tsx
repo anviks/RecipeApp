@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { Ingredient } from '@/types';
-import { useIngredientsService } from '@/components/ServiceContext';
+import { useServices } from '@/components/ServiceContext';
 import Link from 'next/link';
 
 export default function Ingredients() {
     const [isLoading, setIsLoading] = useState(true);
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
-    const ingredientsService = useIngredientsService();
+    const { ingredientsService } = useServices();
 
     const loadIngredients = async () => {
         const allIngredients = await ingredientsService.findAll();

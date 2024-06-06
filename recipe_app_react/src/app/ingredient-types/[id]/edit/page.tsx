@@ -4,14 +4,14 @@ import Link from 'next/link';
 import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
 import { IngredientType } from '@/types';
 import { useParams, useRouter } from 'next/navigation';
-import { useIngredientTypesService } from '@/components/ServiceContext';
+import { useServices } from '@/components/ServiceContext';
 import { useUserContext } from '@/components/AppState';
 
 export default function Edit() {
     const [ingredientType, setIngredientType] = useState<IngredientType>();
     const [isLoading, setIsLoading] = useState(true);
 
-    const ingredientTypesService = useIngredientTypesService();
+    const { ingredientTypesService } = useServices();
     const { userContext, setUserContext } = useUserContext();
 
     const router = useRouter();

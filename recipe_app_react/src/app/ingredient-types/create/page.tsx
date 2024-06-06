@@ -2,7 +2,7 @@
 
 import { ChangeEvent, MouseEvent, useState } from 'react';
 import { IngredientType } from '@/types';
-import { useIngredientTypesService } from '@/components/ServiceContext';
+import { useServices } from '@/components/ServiceContext';
 import { useUserContext } from '@/components/AppState';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -10,7 +10,7 @@ import Link from 'next/link';
 export default function Create() {
     const [ingredientType, setIngredientType] = useState<IngredientType>({ name: '', description: '' });
 
-    const ingredientTypesService = useIngredientTypesService();
+    const { ingredientTypesService } = useServices();
     const { userContext, setUserContext } = useUserContext();
 
     const router = useRouter();

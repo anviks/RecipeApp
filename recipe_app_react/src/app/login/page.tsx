@@ -3,7 +3,7 @@ import React, { ChangeEvent, useContext, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ErrorResponse, LoginData } from '@/types';
 import { useUserContext } from '@/components/AppState';
-import { AccountContext, useAccountService } from '@/components/ServiceContext';
+import { useServices } from '@/components/ServiceContext';
 
 
 export default function Login() {
@@ -14,7 +14,7 @@ export default function Login() {
         password: ''
     });
     const { userContext, setUserContext } = useUserContext();
-    const accountService = useAccountService();
+    const { accountService } = useServices();
     
     const updateInput = (e: ChangeEvent<HTMLInputElement>) => {
         setFormData({...formData, [e.target.name]: e.target.value});

@@ -10,26 +10,20 @@ const ingredientsService = new IngredientsService();
 const ingredientTypesService = new IngredientTypesService();
 const ingredientTypeAssociationsService = new IngredientTypeAssociationsService();
 
-export const AccountContext = createContext(accountService);
-export const IngredientsServiceContext = createContext(ingredientsService);
-export const IngredientTypesServiceContext = createContext(ingredientTypesService);
-export const IngredientTypeAssociationsServiceContext = createContext(ingredientTypeAssociationsService);
+export const ServiceContext = createContext({
+    accountService,
+    ingredientsService,
+    ingredientTypesService,
+    ingredientTypeAssociationsService
+});
 
 export const ServiceProvider = ({ children }: Readonly<{ children: React.ReactNode }>) => {
     return (
-        <AccountContext.Provider value={accountService}>
-            <IngredientsServiceContext.Provider value={ingredientsService}>
-                <IngredientTypesServiceContext.Provider value={ingredientTypesService}>
-                    <IngredientTypeAssociationsServiceContext.Provider value={ingredientTypeAssociationsService}>
-                        {children}
-                    </IngredientTypeAssociationsServiceContext.Provider>
-                </IngredientTypesServiceContext.Provider>
-            </IngredientsServiceContext.Provider>
-        </AccountContext.Provider>
+        <ServiceContext.Provider
+            value={{ accountService, ingredientsService, ingredientTypesService, ingredientTypeAssociationsService }}>
+            {children}
+        </ServiceContext.Provider>
     );
 };
 
-export const useAccountService = () => useContext(AccountContext);
-export const useIngredientsService = () => useContext(IngredientsServiceContext);
-export const useIngredientTypesService = () => useContext(IngredientTypesServiceContext);
-export const useIngredientTypeAssociationsService = () => useContext(IngredientTypeAssociationsServiceContext);
+export const useServices = () => useContext(ServiceContext);

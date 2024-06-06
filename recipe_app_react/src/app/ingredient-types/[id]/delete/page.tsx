@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { MouseEvent, useEffect, useState } from 'react';
 import { IngredientType } from '@/types';
 import { useParams, useRouter } from 'next/navigation';
-import { useIngredientTypesService } from '@/components/ServiceContext';
+import { useServices } from '@/components/ServiceContext';
 import { useUserContext } from '@/components/AppState';
 
 export default function Delete() {
@@ -15,7 +15,8 @@ export default function Delete() {
     const { userContext, setUserContext } = useUserContext();
 
     let { id } = useParams();
-    const ingredientTypesService = useIngredientTypesService();
+    const { ingredientTypesService } = useServices();
+    
     if (typeof id !== 'string') {
         id = id.join('');
     }
@@ -75,5 +76,5 @@ function renderIngredientType(ingredientType: IngredientType, submitDelete: (e: 
             |
             <Link href={'/ingredient-types'}>Back to List</Link>
         </form>
-    </>
+    </>;
 }

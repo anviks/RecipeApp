@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Identity from "@/components/nav/Identity";
+import Identity from "@/components/Identity";
 
 export default function Header() {
     return (

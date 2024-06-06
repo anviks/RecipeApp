@@ -2,20 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import { IngredientTypeAssociation } from '@/types';
-import {
-    useIngredientsService,
-    useIngredientTypeAssociationsService,
-    useIngredientTypesService
-} from '@/components/ServiceContext';
+import { useServices } from '@/components/ServiceContext';
 import Link from 'next/link';
 
 export default function IngredientTypeAssociations() {
     const [isLoading, setIsLoading] = useState(true);
     const [ingredientTypeAssociations, setIngredientTypeAssociations] = useState<IngredientTypeAssociation[]>([]);
-    
-    const ingredientsService = useIngredientsService();
-    const ingredientTypesService = useIngredientTypesService();
-    const ingredientTypeAssociationsService = useIngredientTypeAssociationsService();
+
+    const { ingredientsService, ingredientTypesService, ingredientTypeAssociationsService } = useServices();
 
     const loadIngredientTypeAssociations = async () => {
         const allIngredientTypeAssociations = await ingredientTypeAssociationsService.findAll();

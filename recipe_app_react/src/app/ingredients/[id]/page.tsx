@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useIngredientsService } from '@/components/ServiceContext';
+import { useServices } from '@/components/ServiceContext';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { Ingredient, Optional } from '@/types';
@@ -11,7 +11,8 @@ export default function Details() {
     const [isLoading, setIsLoading] = useState(true);
     
     let { id } = useParams();
-    const ingredientsService = useIngredientsService();
+    const { ingredientsService } = useServices();
+    
     if (typeof id !== 'string') {
         id = id.join('');
     }

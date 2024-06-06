@@ -4,11 +4,7 @@ import Link from 'next/link';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Ingredient, IngredientType, IngredientTypeAssociation } from '@/types';
 import { useParams, useRouter } from 'next/navigation';
-import {
-    useIngredientsService,
-    useIngredientTypeAssociationsService,
-    useIngredientTypesService
-} from '@/components/ServiceContext';
+import { useServices } from '@/components/ServiceContext';
 import { useUserContext } from '@/components/AppState';
 
 export default function Edit() {
@@ -17,10 +13,7 @@ export default function Edit() {
     const [ingredientTypeAssociation, setIngredientTypeAssociation] = useState<IngredientTypeAssociation>();
     const [isLoading, setIsLoading] = useState(true);
 
-    const ingredientsService = useIngredientsService();
-    const ingredientTypesService = useIngredientTypesService();
-    const ingredientTypeAssociationsService = useIngredientTypeAssociationsService();
-
+    const { ingredientsService, ingredientTypesService, ingredientTypeAssociationsService } = useServices();
     const { userContext, setUserContext } = useUserContext();
 
     const router = useRouter();

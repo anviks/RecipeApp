@@ -1,11 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import {
-    useIngredientsService,
-    useIngredientTypeAssociationsService,
-    useIngredientTypesService
-} from '@/components/ServiceContext';
+import { useServices } from '@/components/ServiceContext';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { IngredientTypeAssociation } from '@/types';
@@ -13,10 +9,8 @@ import { IngredientTypeAssociation } from '@/types';
 export default function Details() {
     const [ingredientTypeAssociation, setIngredientTypeAssociation] = useState<IngredientTypeAssociation>();
     const [isLoading, setIsLoading] = useState(true);
-    
-    const ingredientsService = useIngredientsService();
-    const ingredientTypesService = useIngredientTypesService();
-    const ingredientTypeAssociationsService = useIngredientTypeAssociationsService();
+
+    const { ingredientsService, ingredientTypesService, ingredientTypeAssociationsService } = useServices();
     
     let { id } = useParams();
     if (typeof id !== 'string') {
