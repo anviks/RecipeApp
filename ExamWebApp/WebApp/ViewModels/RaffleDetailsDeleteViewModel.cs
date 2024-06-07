@@ -4,6 +4,6 @@ namespace WebApp.ViewModels;
 
 public class RaffleDetailsDeleteViewModel
 {
-    public Raffle Raffle { get; set; }
-    public string Company { get; set; }
+    public Raffle Raffle { get; set; } = default!;
+    public string Company { get; set; } = default!;
 }

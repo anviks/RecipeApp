@@ -81,6 +81,7 @@ public class ActivitiesController(IAppUnitOfWork unitOfWork, IMapper mapper) : C
     // POST: api/Activities
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
+    [Consumes("application/json")]
     public async Task<ActionResult<Activity>> PostActivity(Activity activity)
     {
         unitOfWork.Activities.Add(_mapper.Map(activity)!);

@@ -141,7 +141,7 @@ namespace App.DAL.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Duration = table.Column<TimeSpan>(type: "TEXT", nullable: false),
+                    DurationInMinutes = table.Column<int>(type: "INTEGER", nullable: false),
                     Date = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UserId = table.Column<Guid>(type: "TEXT", nullable: false),
                     ActivityTypeId = table.Column<Guid>(type: "TEXT", nullable: false)
@@ -271,24 +271,6 @@ namespace App.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tickets",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tickets", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Tickets_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "RaffleResults",
                 columns: table => new
                 {
@@ -307,6 +289,31 @@ namespace App.DAL.Migrations
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_RaffleResults_Raffles_RaffleId",
+                        column: x => x.RaffleId,
+                        principalTable: "Raffles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tickets",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    RaffleId = table.Column<Guid>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tickets", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tickets_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Tickets_Raffles_RaffleId",
                         column: x => x.RaffleId,
                         principalTable: "Raffles",
                         principalColumn: "Id",
@@ -420,6 +427,11 @@ namespace App.DAL.Migrations
                 name: "IX_RefreshTokens_AppUserId",
                 table: "RefreshTokens",
                 column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tickets_RaffleId",
+                table: "Tickets",
+                column: "RaffleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tickets_UserId",

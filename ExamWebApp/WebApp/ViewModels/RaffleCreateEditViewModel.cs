@@ -5,6 +5,6 @@ namespace WebApp.ViewModels;
 
 public class RaffleCreateEditViewModel
 {
-    public Raffle Raffle { get; set; }
-    public SelectList Companies { get; set; }
+    public Raffle Raffle { get; set; } = default!;
+    public SelectList? Companies { get; set; }
 }

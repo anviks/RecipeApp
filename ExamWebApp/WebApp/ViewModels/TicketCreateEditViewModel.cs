@@ -5,7 +5,7 @@ namespace WebApp.ViewModels;
 
 public class TicketCreateEditViewModel
 {
-    public Ticket Ticket { get; set; }
-    public SelectList Users { get; set; }
-    public SelectList Raffles { get; set; }
+    public Ticket Ticket { get; set; } = default!;
+    public SelectList? Users { get; set; }
+    public SelectList? Raffles { get; set; }
 }

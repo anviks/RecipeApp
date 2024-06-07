@@ -29,8 +29,8 @@ namespace App.DAL.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
 
-                    b.Property<TimeSpan>("Duration")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("DurationInMinutes")
+                        .HasColumnType("INTEGER");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("TEXT");
@@ -326,10 +326,15 @@ namespace App.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid>("RaffleId")
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RaffleId");
 
                     b.HasIndex("UserId");
 
@@ -521,11 +526,19 @@ namespace App.DAL.Migrations
 
             modelBuilder.Entity("App.Domain.Ticket", b =>
                 {
+                    b.HasOne("App.Domain.Raffle", "Raffle")
+                        .WithMany("Tickets")
+                        .HasForeignKey("RaffleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("App.Domain.Identity.AppUser", "User")
                         .WithMany("Tickets")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Raffle");
 
                     b.Navigation("User");
                 });
@@ -594,6 +607,8 @@ namespace App.DAL.Migrations
                     b.Navigation("Prizes");
 
                     b.Navigation("RaffleResults");
+
+                    b.Navigation("Tickets");
                 });
 
             modelBuilder.Entity("App.Domain.RaffleResult", b =>

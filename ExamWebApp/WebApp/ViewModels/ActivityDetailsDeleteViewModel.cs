@@ -4,7 +4,7 @@ namespace WebApp.ViewModels;
 
 public class ActivityDetailsDeleteViewModel
 {
-    public Activity Activity { get; set; }
-    public string ActivityType { get; set; }
-    public string User { get; set; }
+    public Activity Activity { get; set; } = default!;
+    public string ActivityType { get; set; } = default!;
+    public string User { get; set; } = default!;
 }

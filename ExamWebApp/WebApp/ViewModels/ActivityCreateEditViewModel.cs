@@ -5,7 +5,7 @@ namespace WebApp.ViewModels;
 
 public class ActivityCreateEditViewModel
 {
-    public Activity Activity { get; set; }
-    public SelectList ActivityTypes { get; set; }
-    public SelectList Users { get; set; }
+    public Activity Activity { get; set; } = default!;
+    public SelectList? ActivityTypes { get; set; }
+    public SelectList? Users { get; set; }
 }
