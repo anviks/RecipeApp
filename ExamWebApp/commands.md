@@ -32,9 +32,9 @@ cd ..
 $WebApp = "WebApp"
 $Domain = "App.Domain"
 $DbContext = "AppDbContext"
-$MvcOutput = "Areas/Admin/Controllers"
+$MvcOutput = "Controllers"
 $ApiOutput = "ApiControllers"
-$GenerateMvcControllers = $False
+$GenerateMvcControllers = $True
 $GenerateApiControllers = $True
 
 $Entities = Get-ChildItem -Path $Domain -Filter '*.cs' | ForEach-Object { $_.BaseName }
@@ -45,7 +45,7 @@ foreach ($Entity in $Entities) {
     $Controller = $Entity + "sController"
     $Model = "$Domain.$Entity"
   
-    if ($GenerateMvcControllers) { 
+    if ($GenerateMvcControllers -and $Entity -ne "Sample") { 
         dotnet aspnet-codegenerator controller `
             --controllerName $Controller `
             --readWriteActions `
@@ -58,7 +58,7 @@ foreach ($Entity in $Entities) {
             --force
     }
     
-    if ($GenerateApiControllers) {
+    if ($GenerateApiControllers -and $Entity -ne "Sample") {
         dotnet aspnet-codegenerator controller `
             --controllerName $Controller `
             --model $Model `

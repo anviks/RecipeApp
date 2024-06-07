@@ -62,15 +62,17 @@ public static class DataSeeder
         await using var context = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
         await context.Database.MigrateAsync();
 
-        await SeedSamples(context);
-        
-        await context.SaveChangesAsync();
+        SeedSamples(context);
+        SeedCompanies(context);
+        SeedActivityTypes(context);
+        if (context.Companies.Any()) SeedRaffles(context);
+        if (context.Raffles.Any()) SeedPrizes(context);
     }
 
-    private static async Task SeedSamples(AppDbContext context)
+    private static void SeedSamples(AppDbContext context)
     {
-        if (await context.Samples.AnyAsync()) return;
-        
+        if (context.Samples.Any()) return;
+
         var samples = new List<Sample>
         {
             new()
@@ -86,7 +88,123 @@ public static class DataSeeder
                 Field = "Sample 3"
             }
         };
-        
-        await context.Samples.AddRangeAsync(samples);
+
+        context.Samples.AddRange(samples);
+        context.SaveChanges();
+    }
+
+    private static void SeedCompanies(AppDbContext context)
+    {
+        if (context.Companies.Any()) return;
+
+        var companies = new List<Company>
+        {
+            new()
+            {
+                CompanyName = "Bolt"
+            },
+            new()
+            {
+                CompanyName = "Uber"
+            },
+            new()
+            {
+                CompanyName = "Tallink"
+            }
+        };
+
+        context.Companies.AddRange(companies);
+        context.SaveChanges();
+    }
+
+    private static void SeedActivityTypes(AppDbContext context)
+    {
+        if (context.ActivityTypes.Any()) return;
+
+        var activityTypes = new List<ActivityType>
+        {
+            new()
+            {
+                ActivityTypeName = "Running"
+            },
+            new()
+            {
+                ActivityTypeName = "Cycling"
+            },
+            new()
+            {
+                ActivityTypeName = "Swimming"
+            },
+            new()
+            {
+                ActivityTypeName = "Walking"
+            }
+        };
+
+        context.ActivityTypes.AddRange(activityTypes);
+        context.SaveChanges();
+    }
+
+    private static void SeedRaffles(AppDbContext context)
+    {
+        if (context.Raffles.Any()) return;
+
+        var raffles = new List<Raffle>
+        {
+            new()
+            {
+                CompanyId = context.Companies.First().Id,
+                RaffleName = "Raffle 1",
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now.AddDays(1)
+            },
+            new()
+            {
+                CompanyId = context.Companies.First().Id,
+                RaffleName = "Raffle 2",
+                AllowAnonymousUsers = true,
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now.AddDays(3)
+            },
+            new()
+            {
+                CompanyId = context.Companies.First().Id,
+                RaffleName = "Raffle 3",
+                VisibleToPublic = true,
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now.AddDays(5)
+            }
+        };
+
+        context.Raffles.AddRange(raffles);
+        context.SaveChanges();
+    }
+
+    private static void SeedPrizes(AppDbContext context)
+    {
+        if (context.Prizes.Any()) return;
+
+        var prizes = new List<Prize>
+        {
+            new()
+            {
+                RaffleId = context.Raffles.First().Id,
+                PrizeName = "Prize 1",
+            },
+            new()
+            {
+                RaffleId = context.Raffles.First().Id,
+                PrizeName = "Prize 2",
+            },
+            new()
+            {
+                RaffleId = context.Raffles.First().Id,
+                PrizeName = "Prize 3",
+                // RaffleResultId = context.RaffleResults.First().Id
+            }
+        };
+
+        context.Prizes.AddRange(prizes);
+        context.SaveChanges();
     }
 }

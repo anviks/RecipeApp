@@ -5,7 +5,7 @@ namespace App.Domain.Identity;
 
 public class AppUser : IdentityUser<Guid>, IDomainEntityId
 {
-    public Guid CompanyId { get; set; }
+    public Guid? CompanyId { get; set; }
     public Company? Company { get; set; }
     
     public ICollection<AppRefreshToken>? RefreshTokens { get; set; }

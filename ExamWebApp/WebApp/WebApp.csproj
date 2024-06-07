@@ -53,6 +53,36 @@
       <_ContentIncludedByDefault Remove="Areas\Admin\Views\Shared\_Layout.cshtml" />
       <_ContentIncludedByDefault Remove="Areas\Admin\Views\Shared\_LoginPartial.cshtml" />
       <_ContentIncludedByDefault Remove="Areas\Admin\Views\Shared\_ValidationScriptsPartial.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\RaffleResults\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\RaffleResults\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\RaffleResults\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\RaffleResults\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\RaffleResults\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Raffles\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Raffles\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Raffles\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Raffles\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Raffles\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Companys\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Companys\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Companys\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Companys\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Companys\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Activitys\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Activitys\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Activitys\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Activitys\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Activitys\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\ActivityTypes\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\ActivityTypes\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\ActivityTypes\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\ActivityTypes\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\ActivityTypes\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Tickets\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Tickets\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Tickets\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Tickets\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Tickets\Index.cshtml" />
     </ItemGroup>
 
     <ItemGroup>
