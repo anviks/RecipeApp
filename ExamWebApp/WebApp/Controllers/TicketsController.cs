@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using App.DAL.Contracts;
 using App.Domain.Identity;
+using Microsoft.AspNetCore.Identity;
 using WebApp.ViewModels;
 
 namespace WebApp.Controllers;
 
-public class TicketsController(IAppUnitOfWork unitOfWork) : Controller
+[Authorize]
+public class TicketsController(IAppUnitOfWork unitOfWork, UserManager<AppUser> userManager) : Controller
 {
     // GET: Tickets
     public async Task<IActionResult> Index()
@@ -70,6 +72,20 @@ public class TicketsController(IAppUnitOfWork unitOfWork) : Controller
         {
             viewModel.Ticket.Id = Guid.NewGuid();
             unitOfWork.Tickets.Add(viewModel.Ticket);
+
+            var results = await unitOfWork.RaffleResults.FindAllAsync();
+            foreach (RaffleResult result in results)
+            {
+                if (result.UserId == viewModel.Ticket.UserId) goto skipResultCreation;
+            }
+            unitOfWork.RaffleResults.Add(new RaffleResult
+            {
+                Id = Guid.NewGuid(),
+                UserId = viewModel.Ticket.UserId,
+                RaffleId = viewModel.Ticket.RaffleId
+            });
+            skipResultCreation:
+            
             await unitOfWork.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

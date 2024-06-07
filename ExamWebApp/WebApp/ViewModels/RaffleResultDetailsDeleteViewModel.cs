@@ -7,4 +7,5 @@ public class RaffleResultDetailsDeleteViewModel
     public RaffleResult RaffleResult { get; set; } = default!;
     public string Raffle { get; set; } = default!;
     public string User { get; set; } = default!;
+    public string? Prize { get; set; }
 }

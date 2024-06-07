@@ -21,6 +21,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.RaffleResult.AnonymousUserName)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Prize)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -35,6 +38,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.RaffleResult.AnonymousUserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Prize)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.RaffleResult.Id">Edit</a> |

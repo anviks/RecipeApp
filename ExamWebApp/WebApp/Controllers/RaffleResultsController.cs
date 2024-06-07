@@ -15,11 +15,13 @@ public class RaffleResultsController(IAppUnitOfWork unitOfWork) : Controller
     public async Task<IActionResult> Index()
     {
         var raffleResults = await unitOfWork.RaffleResults.FindAllAsync();
+        var prizes = await unitOfWork.Prizes.FindAllAsync();
         var viewModel = raffleResults.Select(r => new RaffleResultDetailsDeleteViewModel
         {
             RaffleResult = r,
             Raffle = unitOfWork.Raffles.Find(r.RaffleId)!.RaffleName,
-            User = unitOfWork.Users.Find(r.UserId ?? Guid.Empty)?.Id.ToString() ?? ""
+            User = unitOfWork.Users.Find(r.UserId ?? Guid.Empty)?.UserName ?? "",
+            Prize = prizes.FirstOrDefault(p => p.RaffleResultId == r.Id)?.PrizeName
         });
         return View(viewModel);
     }
@@ -32,6 +34,7 @@ public class RaffleResultsController(IAppUnitOfWork unitOfWork) : Controller
             return NotFound();
         }
 
+        var prizes = await unitOfWork.Prizes.FindAllAsync();
         var raffleResult = await unitOfWork.RaffleResults.FindAsync(id.Value);
         if (raffleResult == null)
         {
@@ -42,7 +45,8 @@ public class RaffleResultsController(IAppUnitOfWork unitOfWork) : Controller
         {
             RaffleResult = raffleResult,
             Raffle = (await unitOfWork.Raffles.FindAsync(raffleResult.RaffleId))?.RaffleName!,
-            User = (await unitOfWork.Users.FindAsync(raffleResult.UserId ?? Guid.Empty))?.Id.ToString() ?? ""
+            User = (await unitOfWork.Users.FindAsync(raffleResult.UserId ?? Guid.Empty))?.Id.ToString() ?? "",
+            Prize = prizes.FirstOrDefault(p => p.RaffleResultId == raffleResult.Id)?.PrizeName
         };
 
         return View(viewModel);
@@ -156,11 +160,13 @@ public class RaffleResultsController(IAppUnitOfWork unitOfWork) : Controller
             return NotFound();
         }
 
+        var prizes = await unitOfWork.Prizes.FindAllAsync();
         var viewModel = new RaffleResultDetailsDeleteViewModel
         {
             RaffleResult = raffleResult,
             Raffle = (await unitOfWork.Raffles.FindAsync(raffleResult.RaffleId))?.RaffleName!,
-            User = (await unitOfWork.Users.FindAsync(raffleResult.UserId ?? Guid.Empty))?.Id.ToString() ?? ""
+            User = (await unitOfWork.Users.FindAsync(raffleResult.UserId ?? Guid.Empty))?.Id.ToString() ?? "",
+            Prize = prizes.FirstOrDefault(p => p.RaffleResultId == raffleResult.Id)?.PrizeName
         };
 
         return View(viewModel);

@@ -19,7 +19,7 @@ public class ActivitiesController(IAppUnitOfWork unitOfWork) : Controller
         {
             Activity = a,
             ActivityType = unitOfWork.ActivityTypes.Find(a.ActivityTypeId)!.ActivityTypeName,
-            User = unitOfWork.Users.Find(a.UserId)!.Id.ToString()
+            User = unitOfWork.Users.Find(a.UserId)!.UserName?.ToString() ?? ""
         });
         return View(viewModel);
     }
