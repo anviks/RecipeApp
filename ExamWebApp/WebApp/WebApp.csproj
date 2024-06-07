@@ -88,14 +88,14 @@
       <_ContentIncludedByDefault Remove="Views\Activities\Details.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Activities\Edit.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Activities\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Samples\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Samples\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Samples\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Samples\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Admin\Views\Samples\Index.cshtml" />
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Areas\Admin\Views\Samples\Create.cshtml" />
-      <AdditionalFiles Include="Areas\Admin\Views\Samples\Delete.cshtml" />
-      <AdditionalFiles Include="Areas\Admin\Views\Samples\Details.cshtml" />
-      <AdditionalFiles Include="Areas\Admin\Views\Samples\Edit.cshtml" />
-      <AdditionalFiles Include="Areas\Admin\Views\Samples\Index.cshtml" />
       <AdditionalFiles Include="Areas\Admin\Views\_ViewImports.cshtml" />
       <AdditionalFiles Include="Areas\Admin\Views\_ViewStart.cshtml" />
       <AdditionalFiles Include="Views\Activities\Create.cshtml" />

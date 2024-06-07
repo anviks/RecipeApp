@@ -7,7 +7,6 @@ namespace App.DAL.Contracts;
 public interface IAppUnitOfWork : IUnitOfWork
 {
     IEntityRepository<AppUser> Users { get; }
-    ISampleRepository Samples { get; }
     IActivityRepository Activities { get; }
     IActivityTypeRepository ActivityTypes { get; }
     ICompanyRepository Companies { get; }

@@ -19,9 +19,6 @@ public class AppUnitOfWork(AppDbContext dbContext, IMapper mapper)
                                                new BaseEntityRepository<AppUser, AppUser, AppDbContext>(UowDbContext,
                                                    new EntityMapper<AppUser, AppUser>(mapper));
     
-    private ISampleRepository? _samples;
-    public ISampleRepository Samples => _samples ??= new SampleRepository(UowDbContext, mapper);
-    
     private IActivityRepository? _activities;
     public IActivityRepository Activities => _activities ??= new ActivityRepository(UowDbContext, mapper);
     
