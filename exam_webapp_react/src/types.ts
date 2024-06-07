@@ -40,7 +40,57 @@ export interface UserContext {
     isAuthenticated: () => boolean;
 }
 
-export interface Sample {
+export interface ActivityType {
     id?: string;
-    field: string;
+    activityTypeName: string;
+}
+
+export interface Activity {
+    id?: string;
+    durationInMinutes: number;
+    date: string;
+    userId: string;
+    activityTypeId: string;
+}
+
+export interface Company {
+    id?: string;
+    companyName: string;
+}
+
+export interface Prize {
+    id?: string;
+    prizeName: string;
+    raffleResultId?: string;
+    raffleId: string;
+}
+
+export interface Raffle {
+    id?: string;
+    raffleName: string;
+    visibleToPublic: boolean;
+    allowAnonymousUsers: boolean;
+    startDate: string;
+    endDate: string;
+    companyId: string;
+}
+
+export interface RaffleResult {
+    id?: string;
+    raffleId: string;
+    userId?: string;
+    anonymousUserName: string;
+}
+
+export interface Ticket {
+    id?: string;
+    userId: string;
+    raffleId: string;
+}
+
+export interface AppUser {
+    id?: string;
+    username: string;
+    email: string;
+    companyId: string;
 }

@@ -25,7 +25,7 @@ export default function Header() {
                                 </a>
                                 <ul className="dropdown-menu">
                                     <li>
-                                        <Link className="dropdown-item" href={'/samples'}>Samples</Link>
+                                        <Link className="dropdown-item" href={'/activities'}>Activities</Link>
                                     </li>
                                     <li>
                                         <hr className="dropdown-divider" />
