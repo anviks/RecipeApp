@@ -50,14 +50,14 @@ public class ActivitiesController(IAppUnitOfWork unitOfWork, IMapper mapper) : C
     // PUT: api/Activities/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutActivity(Guid id, Activity activity)
+    public async Task<IActionResult> PutActivity(Guid id)
     {
-        if (id != activity.Id)
+        var activity = await unitOfWork.Activities.FindAsync(id);
+        if (activity == null)
         {
-            return BadRequest();
+            return NotFound();
         }
-
-        unitOfWork.Activities.Update(_mapper.Map(activity)!);
+        unitOfWork.Activities.Update(activity);
 
         try
         {
