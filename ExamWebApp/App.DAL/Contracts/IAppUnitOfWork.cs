@@ -4,7 +4,7 @@ using Base.DAL.Contracts;
 
 namespace App.DAL.Contracts;
 
-public interface IAppUnitOfWork
+public interface IAppUnitOfWork : IUnitOfWork
 {
     IEntityRepository<AppUser> Users { get; }
     ISampleRepository Samples { get; }

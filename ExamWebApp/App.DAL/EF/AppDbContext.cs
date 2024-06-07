@@ -14,10 +14,18 @@ public class AppDbContext : IdentityDbContext<AppUser, AppRole, Guid, IdentityUs
 
     public DbSet<Sample> Samples { get; set; }
     
+    public DbSet<Activity> Activities { get; set; }
+    public DbSet<ActivityType> ActivityTypes { get; set; }
+    public DbSet<Company> Companies { get; set; }
+    public DbSet<Prize> Prizes { get; set; }
+    public DbSet<Raffle> Raffles { get; set; }
+    public DbSet<RaffleResult> RaffleResults { get; set; }
+    public DbSet<Ticket> Tickets { get; set; }
+
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
-    
+
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
         SetUniversalTime();

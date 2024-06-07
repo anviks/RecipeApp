@@ -34,8 +34,8 @@ $Domain = "App.Domain"
 $DbContext = "AppDbContext"
 $MvcOutput = "Areas/Admin/Controllers"
 $ApiOutput = "ApiControllers"
-$GenerateMvcControllers = $True
-$GenerateApiControllers = $False
+$GenerateMvcControllers = $False
+$GenerateApiControllers = $True
 
 $Entities = Get-ChildItem -Path $Domain -Filter '*.cs' | ForEach-Object { $_.BaseName }
 

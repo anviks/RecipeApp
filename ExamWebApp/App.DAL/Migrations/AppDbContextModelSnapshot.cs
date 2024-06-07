@@ -15,7 +15,66 @@ namespace App.DAL.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.5");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
+
+            modelBuilder.Entity("App.Domain.Activity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("ActivityTypeId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<TimeSpan>("Duration")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActivityTypeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Activities");
+                });
+
+            modelBuilder.Entity("App.Domain.ActivityType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ActivityTypeName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ActivityTypes");
+                });
+
+            modelBuilder.Entity("App.Domain.Company", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Companies");
+                });
 
             modelBuilder.Entity("App.Domain.Identity.AppRefreshToken", b =>
                 {
@@ -84,6 +143,9 @@ namespace App.DAL.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("INTEGER");
 
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("TEXT");
@@ -130,6 +192,8 @@ namespace App.DAL.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CompanyId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -155,6 +219,91 @@ namespace App.DAL.Migrations
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
 
+            modelBuilder.Entity("App.Domain.Prize", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PrizeName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("RaffleId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("RaffleResultId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RaffleId");
+
+                    b.HasIndex("RaffleResultId")
+                        .IsUnique();
+
+                    b.ToTable("Prizes");
+                });
+
+            modelBuilder.Entity("App.Domain.Raffle", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("AllowAnonymousUsers")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RaffleName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("VisibleToPublic")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Raffles");
+                });
+
+            modelBuilder.Entity("App.Domain.RaffleResult", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AnonymousUserName")
+                        .HasMaxLength(64)
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("RaffleId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RaffleId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RaffleResults");
+                });
+
             modelBuilder.Entity("App.Domain.Sample", b =>
                 {
                     b.Property<Guid>("Id")
@@ -169,6 +318,22 @@ namespace App.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Samples");
+                });
+
+            modelBuilder.Entity("App.Domain.Ticket", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Tickets");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -255,6 +420,25 @@ namespace App.DAL.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("App.Domain.Activity", b =>
+                {
+                    b.HasOne("App.Domain.ActivityType", "ActivityType")
+                        .WithMany("Activities")
+                        .HasForeignKey("ActivityTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("App.Domain.Identity.AppUser", "User")
+                        .WithMany("Activities")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ActivityType");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("App.Domain.Identity.AppRefreshToken", b =>
                 {
                     b.HasOne("App.Domain.Identity.AppUser", "AppUser")
@@ -264,6 +448,17 @@ namespace App.DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("AppUser");
+                });
+
+            modelBuilder.Entity("App.Domain.Identity.AppUser", b =>
+                {
+                    b.HasOne("App.Domain.Company", "Company")
+                        .WithMany("Users")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("App.Domain.Identity.AppUserRole", b =>
@@ -279,6 +474,62 @@ namespace App.DAL.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("App.Domain.Prize", b =>
+                {
+                    b.HasOne("App.Domain.Raffle", "Raffle")
+                        .WithMany("Prizes")
+                        .HasForeignKey("RaffleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("App.Domain.RaffleResult", "RaffleResult")
+                        .WithOne("Prize")
+                        .HasForeignKey("App.Domain.Prize", "RaffleResultId");
+
+                    b.Navigation("Raffle");
+
+                    b.Navigation("RaffleResult");
+                });
+
+            modelBuilder.Entity("App.Domain.Raffle", b =>
+                {
+                    b.HasOne("App.Domain.Company", "Company")
+                        .WithMany("Raffles")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("App.Domain.RaffleResult", b =>
+                {
+                    b.HasOne("App.Domain.Raffle", "Raffle")
+                        .WithMany("RaffleResults")
+                        .HasForeignKey("RaffleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("App.Domain.Identity.AppUser", "User")
+                        .WithMany("RaffleResults")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Raffle");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("App.Domain.Ticket", b =>
+                {
+                    b.HasOne("App.Domain.Identity.AppUser", "User")
+                        .WithMany("Tickets")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -317,9 +568,39 @@ namespace App.DAL.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("App.Domain.ActivityType", b =>
+                {
+                    b.Navigation("Activities");
+                });
+
+            modelBuilder.Entity("App.Domain.Company", b =>
+                {
+                    b.Navigation("Raffles");
+
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("App.Domain.Identity.AppUser", b =>
                 {
+                    b.Navigation("Activities");
+
+                    b.Navigation("RaffleResults");
+
                     b.Navigation("RefreshTokens");
+
+                    b.Navigation("Tickets");
+                });
+
+            modelBuilder.Entity("App.Domain.Raffle", b =>
+                {
+                    b.Navigation("Prizes");
+
+                    b.Navigation("RaffleResults");
+                });
+
+            modelBuilder.Entity("App.Domain.RaffleResult", b =>
+                {
+                    b.Navigation("Prize");
                 });
 #pragma warning restore 612, 618
         }
