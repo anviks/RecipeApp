@@ -5,6 +5,7 @@ using App.DAL.EF;
 using App.Domain.Identity;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -65,6 +66,11 @@ builder.Services
         };
     });
 
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("RafflePolicy", policy =>
+        policy.Requirements.Add(new RaffleAuthorizationRequirement()));
+builder.Services.AddScoped<IAuthorizationHandler, RaffleAuthorizationHandler>();
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddCors(options =>
@@ -111,6 +117,7 @@ WebApplication app = builder.Build();
 
 await app.SeedAdminUser();
 await app.SeedSampleData();
+await app.SeedUsers();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -131,6 +138,7 @@ app.UseRouting();
 
 app.UseCors("AllowCors");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseSwagger();

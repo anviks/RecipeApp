@@ -31,6 +31,46 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                     </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Navigation
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" asp-controller="Activities" asp-action="Index">Activities</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-controller="ActivityTypes" asp-action="Index">Activity Types</a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-controller="Raffles" asp-action="Index">Raffles</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-controller="RaffleResults" asp-action="Index">Raffle Results</a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-controller="Companies" asp-action="Index">Companies</a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-controller="Prizes" asp-action="Index">Prizes</a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-controller="Tickets" asp-action="Index">Tickets</a>
+                            </li>
+                        </ul>
+                    </li>
                     @{
                         AppUser? user = await UserManager.GetUserAsync(User);
                         if (SignInManager.IsSignedIn(User) && user != null && await UserManager.IsInRoleAsync(user, "Admin"))
@@ -40,12 +80,6 @@
                                     Admin
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item" asp-area="Admin" asp-controller="Samples" asp-action="Index">Samples</a>
-                                    </li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
                                     <li>
                                         <a class="dropdown-item" asp-area="Admin" asp-controller="Activities" asp-action="Index">Activities</a>
                                     </li>

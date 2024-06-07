@@ -1,4 +1,5 @@
 ﻿using App.DAL.Contracts.Repositories;
+using App.DAL.DTO;
 using AutoMapper;
 using Base.DAL.EF;
 using Helpers;
@@ -14,5 +15,17 @@ public class RaffleRepository(AppDbContext dbContext, IMapper mapper)
     {
         var queryable = base.GetQuery(tracking);
         return queryable.Include(a => a.Company);
+    }
+    
+    public async Task<IEnumerable<Raffle>> FindAllWithAccessAsync(bool isAdmin, Guid? companyId)
+    {
+        var query = dbContext.Raffles.AsQueryable();
+
+        if (!isAdmin)
+        {
+            query = query.Where(r => r.VisibleToPublic || (companyId != null && r.CompanyId == companyId));
+        }
+
+        return (await query.ToListAsync()).Select(mapper.Map<Raffle>);
     }
 }

@@ -54,6 +54,50 @@ public static class DataSeeder
         }
     }
 
+    public static async Task SeedUsers(this IApplicationBuilder applicationBuilder)
+    {
+        using IServiceScope serviceScope = applicationBuilder.ApplicationServices
+            .GetRequiredService<IServiceScopeFactory>()
+            .CreateScope();
+        await using var context = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
+        await context.Database.MigrateAsync();
+        using var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+        using var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>();
+        
+        if (await userManager.FindByNameAsync("basic") == null)
+        {
+            var user = new AppUser
+            {
+                Email = "basic@gmail.com",
+                UserName = "basic",
+                SecurityStamp = Guid.NewGuid().ToString()
+            };
+            
+            IdentityResult res = await userManager.CreateAsync(user, "asdasd");
+            if (!res.Succeeded)
+            {
+                Console.WriteLine(res.ToString());
+            }
+        }
+        
+        if (await userManager.FindByNameAsync("employee") == null)
+        {
+            var user = new AppUser
+            {
+                Email = "employee@gmail.com",
+                UserName = "employee",
+                SecurityStamp = Guid.NewGuid().ToString(),
+                CompanyId = context.Companies.First().Id
+            };
+            
+            IdentityResult res = await userManager.CreateAsync(user, "asdasd");
+            if (!res.Succeeded)
+            {
+                Console.WriteLine(res.ToString());
+            }
+        }
+    }
+
     public static async Task SeedSampleData(this IApplicationBuilder applicationBuilder)
     {
         using IServiceScope serviceScope = applicationBuilder.ApplicationServices

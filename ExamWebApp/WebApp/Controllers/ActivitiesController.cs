@@ -54,7 +54,7 @@ public class ActivitiesController(IAppUnitOfWork unitOfWork) : Controller
         var viewModel = new ActivityCreateEditViewModel
         {
             ActivityTypes = new SelectList(await unitOfWork.ActivityTypes.FindAllAsync(), "Id", "ActivityTypeName"),
-            Users = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "Id")
+            Users = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "UserName")
         };
         
         return View(viewModel);
@@ -75,7 +75,7 @@ public class ActivitiesController(IAppUnitOfWork unitOfWork) : Controller
             return RedirectToAction(nameof(Index));
         }
         viewModel.ActivityTypes = new SelectList(await unitOfWork.ActivityTypes.FindAllAsync(), "Id", "ActivityTypeName", viewModel.Activity.ActivityTypeId);
-        viewModel.Users = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "Id", viewModel.Activity.UserId);
+        viewModel.Users = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "UserName", viewModel.Activity.UserId);
         return View(viewModel);
     }
 
@@ -96,7 +96,7 @@ public class ActivitiesController(IAppUnitOfWork unitOfWork) : Controller
         {
             Activity = activity,
             ActivityTypes = new SelectList(await unitOfWork.ActivityTypes.FindAllAsync(), "Id", "ActivityTypeName", activity.ActivityTypeId),
-            Users = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "Id", activity.UserId)
+            Users = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "UserName", activity.UserId)
         };
         return View(viewModel);
     }
@@ -134,7 +134,7 @@ public class ActivitiesController(IAppUnitOfWork unitOfWork) : Controller
             return RedirectToAction(nameof(Index));
         }
         viewModel.ActivityTypes = new SelectList(await unitOfWork.ActivityTypes.FindAllAsync(), "Id", "ActivityTypeName", viewModel.Activity.ActivityTypeId);
-        viewModel.Users = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "Id", viewModel.Activity.UserId);
+        viewModel.Users = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "UserName", viewModel.Activity.UserId);
         return View(viewModel);
     }
 

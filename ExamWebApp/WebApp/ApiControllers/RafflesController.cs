@@ -19,6 +19,7 @@ namespace WebApp.ApiControllers;
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]")]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+[Authorize(Policy = "RafflePolicy")]
 [ApiController]
 public class RafflesController(IAppUnitOfWork unitOfWork, IMapper mapper) : ControllerBase
 {

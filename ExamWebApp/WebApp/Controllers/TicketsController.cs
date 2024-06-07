@@ -53,7 +53,7 @@ public class TicketsController(IAppUnitOfWork unitOfWork) : Controller
     {
         var viewModel = new TicketCreateEditViewModel
         {
-            Users = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "Id"),
+            Users = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "UserName"),
             Raffles = new SelectList(await unitOfWork.Raffles.FindAllAsync(), "Id", "RaffleName")
         };
         return View(viewModel);
@@ -74,7 +74,7 @@ public class TicketsController(IAppUnitOfWork unitOfWork) : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        viewModel.Users = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "Id", viewModel.Ticket.UserId);
+        viewModel.Users = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "UserName", viewModel.Ticket.UserId);
         viewModel.Raffles = new SelectList(await unitOfWork.Raffles.FindAllAsync(), "Id", "RaffleName",
             viewModel.Ticket.RaffleId);
         return View(viewModel);
@@ -97,7 +97,7 @@ public class TicketsController(IAppUnitOfWork unitOfWork) : Controller
         var viewModel = new TicketCreateEditViewModel
         {
             Ticket = ticket,
-            Users = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "Id", ticket.UserId),
+            Users = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "UserName", ticket.UserId),
             Raffles = new SelectList(await unitOfWork.Raffles.FindAllAsync(), "Id", "RaffleName", ticket.RaffleId)
         };
         return View(viewModel);
@@ -137,7 +137,7 @@ public class TicketsController(IAppUnitOfWork unitOfWork) : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        viewModel.Users = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "Id", viewModel.Ticket.UserId);
+        viewModel.Users = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "UserName", viewModel.Ticket.UserId);
         viewModel.Raffles = new SelectList(await unitOfWork.Raffles.FindAllAsync(), "Id", "RaffleName",
             viewModel.Ticket.RaffleId);
         return View(viewModel);

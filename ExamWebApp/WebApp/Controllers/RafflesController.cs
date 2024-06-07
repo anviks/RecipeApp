@@ -5,16 +5,22 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using App.DAL.Contracts;
+using App.Domain.Identity;
+using Microsoft.AspNetCore.Identity;
 using WebApp.ViewModels;
 
 namespace WebApp.Controllers;
 
-public class RafflesController(IAppUnitOfWork unitOfWork) : Controller
+[Authorize(Policy = "RafflePolicy")]
+public class RafflesController(IAppUnitOfWork unitOfWork, UserManager<AppUser> userManager) : Controller
 {
     // GET: Raffles
     public async Task<IActionResult> Index()
     {
-        var raffles = await unitOfWork.Raffles.FindAllAsync();
+        var isAdmin = User.IsInRole("Admin");
+        AppUser? user = await userManager.GetUserAsync(User);
+        var raffles = await unitOfWork.Raffles.FindAllWithAccessAsync(
+            isAdmin, user?.CompanyId ?? Guid.Empty);
         var viewModel = raffles.Select(r => new RaffleDetailsDeleteViewModel
         {
             Raffle = r,
@@ -46,87 +52,92 @@ public class RafflesController(IAppUnitOfWork unitOfWork) : Controller
         return View(viewModel);
     }
 
-         // GET: Raffles/Create
-        public async Task<IActionResult> Create()
+    // GET: Raffles/Create
+    public async Task<IActionResult> Create()
+    {
+        var viewModel = new RaffleCreateEditViewModel
         {
-            var viewModel = new RaffleCreateEditViewModel
-            {
-                Companies = new SelectList(await unitOfWork.Companies.FindAllAsync(), "Id", "CompanyName")
-            };
-            return View(viewModel);
+            Companies = new SelectList(await unitOfWork.Companies.FindAllAsync(), "Id", "CompanyName")
+        };
+        return View(viewModel);
+    }
+
+    // POST: Raffles/Create
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(RaffleCreateEditViewModel viewModel)
+    {
+        if (ModelState.IsValid)
+        {
+            viewModel.Raffle.Id = Guid.NewGuid();
+            unitOfWork.Raffles.Add(viewModel.Raffle);
+            await unitOfWork.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
-        // POST: Raffles/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(RaffleCreateEditViewModel viewModel)
+        viewModel.Companies = new SelectList(await unitOfWork.Companies.FindAllAsync(), "Id", "CompanyName",
+            viewModel.Raffle.CompanyId);
+        return View(viewModel);
+    }
+
+    // GET: Raffles/Edit/5
+    public async Task<IActionResult> Edit(Guid? id)
+    {
+        if (id == null)
         {
-            if (ModelState.IsValid)
+            return NotFound();
+        }
+
+        var raffle = await unitOfWork.Raffles.FindAsync(id.Value);
+        if (raffle == null)
+        {
+            return NotFound();
+        }
+
+        var viewModel = new RaffleCreateEditViewModel
+        {
+            Raffle = raffle,
+            Companies = new SelectList(await unitOfWork.Companies.FindAllAsync(), "Id", "CompanyName", raffle.CompanyId)
+        };
+        return View(viewModel);
+    }
+
+    // POST: Raffles/Edit/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(Guid id, RaffleCreateEditViewModel viewModel)
+    {
+        if (id != viewModel.Raffle.Id)
+        {
+            return NotFound();
+        }
+
+        if (ModelState.IsValid)
+        {
+            try
             {
-                viewModel.Raffle.Id = Guid.NewGuid();
-                unitOfWork.Raffles.Add(viewModel.Raffle);
+                unitOfWork.Raffles.Update(viewModel.Raffle);
                 await unitOfWork.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
             }
-            viewModel.Companies = new SelectList(await unitOfWork.Companies.FindAllAsync(), "Id", "CompanyName", viewModel.Raffle.CompanyId);
-            return View(viewModel);
-        }
-
-        // GET: Raffles/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
-        {
-            if (id == null)
+            catch (DbUpdateConcurrencyException)
             {
-                return NotFound();
-            }
-
-            var raffle = await unitOfWork.Raffles.FindAsync(id.Value);
-            if (raffle == null)
-            {
-                return NotFound();
-            }
-
-            var viewModel = new RaffleCreateEditViewModel
-            {
-                Raffle = raffle,
-                Companies = new SelectList(await unitOfWork.Companies.FindAllAsync(), "Id", "CompanyName", raffle.CompanyId)
-            };
-            return View(viewModel);
-        }
-
-        // POST: Raffles/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, RaffleCreateEditViewModel viewModel)
-        {
-            if (id != viewModel.Raffle.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                if (!await unitOfWork.Raffles.ExistsAsync(viewModel.Raffle.Id))
                 {
-                    unitOfWork.Raffles.Update(viewModel.Raffle);
-                    await unitOfWork.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!await unitOfWork.Raffles.ExistsAsync(viewModel.Raffle.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
-                return RedirectToAction(nameof(Index));
             }
-            viewModel.Companies = new SelectList(await unitOfWork.Companies.FindAllAsync(), "Id", "CompanyName", viewModel.Raffle.CompanyId);
-            return View(viewModel);
+
+            return RedirectToAction(nameof(Index));
         }
+
+        viewModel.Companies = new SelectList(await unitOfWork.Companies.FindAllAsync(), "Id", "CompanyName",
+            viewModel.Raffle.CompanyId);
+        return View(viewModel);
+    }
 
     // GET: Raffles/Delete/5
     public async Task<IActionResult> Delete(Guid? id)

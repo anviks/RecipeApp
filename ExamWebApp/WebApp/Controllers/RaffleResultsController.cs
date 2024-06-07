@@ -54,7 +54,7 @@ public class RaffleResultsController(IAppUnitOfWork unitOfWork) : Controller
         var viewModel = new RaffleResultCreateEditViewModel
         {
             Raffles = new SelectList(await unitOfWork.Raffles.FindAllAsync(), "Id", "RaffleName"),
-            Users = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "Id")
+            Users = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "UserName")
         };
         return View(viewModel);
     }
@@ -75,7 +75,7 @@ public class RaffleResultsController(IAppUnitOfWork unitOfWork) : Controller
         viewModel.Raffles = new SelectList(await unitOfWork.Raffles.FindAllAsync(), "Id", "RaffleName",
             viewModel.RaffleResult.RaffleId);
         viewModel.Users =
-            new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "Id", viewModel.RaffleResult.UserId);
+            new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "UserName", viewModel.RaffleResult.UserId);
         return View(viewModel);
     }
 
@@ -98,7 +98,7 @@ public class RaffleResultsController(IAppUnitOfWork unitOfWork) : Controller
             RaffleResult = raffleResult,
             Raffles =
                 new SelectList(await unitOfWork.Raffles.FindAllAsync(), "Id", "RaffleName", raffleResult.RaffleId),
-            Users = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "Id", raffleResult.UserId)
+            Users = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "UserName", raffleResult.UserId)
         };
         return View(viewModel);
     }
@@ -138,7 +138,7 @@ public class RaffleResultsController(IAppUnitOfWork unitOfWork) : Controller
         viewModel.Raffles = new SelectList(await unitOfWork.Raffles.FindAllAsync(), "Id", "RaffleName",
             viewModel.RaffleResult.RaffleId);
         viewModel.Users =
-            new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "Id", viewModel.RaffleResult.UserId);
+            new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "UserName", viewModel.RaffleResult.UserId);
         return View(viewModel);
     }
 
