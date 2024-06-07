@@ -28,7 +28,34 @@ export default function Header() {
                                         <Link className="dropdown-item" href={'/activities'}>Activities</Link>
                                     </li>
                                     <li>
+                                        <Link className="dropdown-item" href={'/activity-types'}>Activity Types</Link>
+                                    </li>
+                                    <li>
                                         <hr className="dropdown-divider" />
+                                    </li>
+                                    <li>
+                                        <Link className="dropdown-item" href={'/raffles'}>Raffles</Link>
+                                    </li>
+                                    <li>
+                                        <Link className="dropdown-item" href={'/raffle-results'}>Raffle Results</Link>
+                                    </li>
+                                    <li>
+                                        <hr className="dropdown-divider" />
+                                    </li>
+                                    <li>
+                                        <Link className="dropdown-item" href={'/companies'}>Companies</Link>
+                                    </li>
+                                    <li>
+                                        <hr className="dropdown-divider" />
+                                    </li>
+                                    <li>
+                                        <Link className="dropdown-item" href={'/prizes'}>Prizes</Link>
+                                    </li>
+                                    <li>
+                                        <hr className="dropdown-divider" />
+                                    </li>
+                                    <li>
+                                        <Link className="dropdown-item" href={'/tickets'}>Tickets</Link>
                                     </li>
                                 </ul>
                             </li>

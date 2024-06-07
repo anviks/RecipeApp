@@ -109,13 +109,13 @@ function renderRaffle(raffle: Raffle, setRaffle: (raffle: Raffle) => void, allCo
             </div>
             <div className="form-group">
                 <label className="control-label" htmlFor="allowAnonymousUsers">Allow Anonymous Users</label>
-                <input className="form-control valid" id="allowAnonymousUsers" type="checkbox"
+                <input className="form-check-input" id="allowAnonymousUsers" type="checkbox"
                        name="allowAnonymousUsers" checked={raffle.allowAnonymousUsers} onChange={updateInput} />
                 <span className="text-danger field-validation-valid"></span>
             </div>
             <div className="form-group">
                 <label className="control-label" htmlFor="visibleToPublic">Visible To Public</label>
-                <input className="form-control valid" id="visibleToPublic" type="checkbox" name="visibleToPublic"
+                <input className="form-check-input" id="visibleToPublic" type="checkbox" name="visibleToPublic"
                        checked={raffle.visibleToPublic} onChange={updateInput} />
                 <span className="text-danger field-validation-valid"></span>
             </div>

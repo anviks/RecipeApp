@@ -23,22 +23,22 @@ export default function Create() {
     const { userContext, setUserContext } = useUserContext();
 
     const router = useRouter();
-    
+
     const loadRaffle = async () => {
         const allCompaniesResult = await companiesService.findAll();
         setAllCompanies(allCompaniesResult.data!);
-        
+
         setIsLoading(false);
-    }
+    };
 
     useEffect(() => {
         loadRaffle().then();
     }, []);
 
     const updateInput = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        setRaffle({...raffle!, [e.target.name]: e.target.value});
-    }
-
+        setRaffle({ ...raffle!, [e.target.name]: e.target.value });
+    };
+    
     const submitCreate = async (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         await rafflesService.create(raffle, userContext);
@@ -56,12 +56,14 @@ export default function Create() {
                     <form method="post">
                         <div className="form-group">
                             <label className="control-label" htmlFor="raffleName">Field</label>
-                            <input className="form-control valid" id="raffleName" type="text" name="raffleName" value={raffle.raffleName} onChange={updateInput} />
+                            <input className="form-control valid" id="raffleName" type="text" name="raffleName"
+                                   value={raffle.raffleName} onChange={updateInput} />
                             <span className="text-danger field-validation-valid"></span>
                         </div>
                         <div className="form-group">
                             <label className="control-label" htmlFor="companyId">Company</label>
-                            <select className="form-control" name="companyId" value={raffle.companyId} onChange={updateInput}>
+                            <select className="form-control" name="companyId" value={raffle.companyId}
+                                    onChange={updateInput}>
                                 <option value="">Select</option>
                                 {allCompanies.map((company, index) => (
                                     <option key={index} value={company.id}>{company.companyName}</option>
@@ -70,22 +72,27 @@ export default function Create() {
                         </div>
                         <div className="form-group">
                             <label className="control-label" htmlFor="startDate">Start Date</label>
-                            <input className="form-control valid" id="startDate" type="text" name="startDate" value={raffle.startDate} onChange={updateInput} />
+                            <input className="form-control valid" id="startDate" type="text" name="startDate"
+                                   value={raffle.startDate} onChange={updateInput} />
                             <span className="text-danger field-validation-valid"></span>
                         </div>
                         <div className="form-group">
                             <label className="control-label" htmlFor="endDate">End Date</label>
-                            <input className="form-control valid" id="endDate" type="text" name="endDate" value={raffle.endDate} onChange={updateInput} />
+                            <input className="form-control valid" id="endDate" type="text" name="endDate"
+                                   value={raffle.endDate} onChange={updateInput} />
                             <span className="text-danger field-validation-valid"></span>
                         </div>
                         <div className="form-group">
                             <label className="control-label" htmlFor="allowAnonymousUsers">Allow Anonymous Users</label>
-                            <input className="form-control valid" id="allowAnonymousUsers" type="checkbox" name="allowAnonymousUsers" checked={raffle.allowAnonymousUsers} onChange={updateInput} />
+                            <input className="form-check-input" id="allowAnonymousUsers" type="checkbox"
+                                   name="allowAnonymousUsers" checked={raffle.allowAnonymousUsers}
+                                   onChange={updateInput} />
                             <span className="text-danger field-validation-valid"></span>
                         </div>
                         <div className="form-group">
                             <label className="control-label" htmlFor="visibleToPublic">Visible To Public</label>
-                            <input className="form-control valid" id="visibleToPublic" type="checkbox" name="visibleToPublic" checked={raffle.visibleToPublic} onChange={updateInput} />
+                            <input className="form-check-input" id="visibleToPublic" type="checkbox"
+                                   name="visibleToPublic" checked={raffle.visibleToPublic} onChange={updateInput} />
                             <span className="text-danger field-validation-valid"></span>
                         </div>
                         <div className="form-group">
