@@ -34,7 +34,7 @@ $Domain = "App.Domain"
 $DbContext = "AppDbContext"
 $MvcOutput = "Controllers"
 $ApiOutput = "ApiControllers"
-$GenerateMvcControllers = $True
+$GenerateMvcControllers = $False
 $GenerateApiControllers = $True
 
 $Entities = Get-ChildItem -Path $Domain -Filter '*.cs' | ForEach-Object { $_.BaseName }
@@ -58,7 +58,7 @@ foreach ($Entity in $Entities) {
             --force
     }
     
-    if ($GenerateApiControllers -and $Entity -ne "Sample") {
+    if ($GenerateApiControllers -and $Entity -eq "Raffle") {
         dotnet aspnet-codegenerator controller `
             --controllerName $Controller `
             --model $Model `
@@ -71,6 +71,7 @@ foreach ($Entity in $Entities) {
 }
 
 cd ..
+
 ```
 
 * `--controllerName` or `-name` - Name of the controller.

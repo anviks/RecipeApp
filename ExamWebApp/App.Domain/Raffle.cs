@@ -18,4 +18,5 @@ public class Raffle : BaseEntityId
     
     public IEnumerable<Prize>? Prizes { get; set; }
     public IEnumerable<RaffleResult>? RaffleResults { get; set; }
+    public IEnumerable<Ticket>? Tickets { get; set; }
 }

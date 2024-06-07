@@ -1,0 +1,20 @@
+@model WebApp.ViewModels.ActivityDetailsDeleteViewModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Activity</h4>
+    <hr />
+    <partial name="_DetailsDelete" model="Model"/>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Activity.Id" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

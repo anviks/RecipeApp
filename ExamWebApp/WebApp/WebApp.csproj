@@ -83,6 +83,11 @@
       <_ContentIncludedByDefault Remove="Views\Tickets\Details.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Tickets\Edit.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Tickets\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Activities\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Activities\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Activities\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Activities\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Activities\Index.cshtml" />
     </ItemGroup>
 
     <ItemGroup>
@@ -93,6 +98,49 @@
       <AdditionalFiles Include="Areas\Admin\Views\Samples\Index.cshtml" />
       <AdditionalFiles Include="Areas\Admin\Views\_ViewImports.cshtml" />
       <AdditionalFiles Include="Areas\Admin\Views\_ViewStart.cshtml" />
+      <AdditionalFiles Include="Views\Activities\Create.cshtml" />
+      <AdditionalFiles Include="Views\Activities\Delete.cshtml" />
+      <AdditionalFiles Include="Views\Activities\Details.cshtml" />
+      <AdditionalFiles Include="Views\Activities\Edit.cshtml" />
+      <AdditionalFiles Include="Views\Activities\Index.cshtml" />
+      <AdditionalFiles Include="Views\ActivityTypes\Create.cshtml" />
+      <AdditionalFiles Include="Views\ActivityTypes\Delete.cshtml" />
+      <AdditionalFiles Include="Views\ActivityTypes\Details.cshtml" />
+      <AdditionalFiles Include="Views\ActivityTypes\Edit.cshtml" />
+      <AdditionalFiles Include="Views\ActivityTypes\Index.cshtml" />
+      <AdditionalFiles Include="Views\Companies\Create.cshtml" />
+      <AdditionalFiles Include="Views\Companies\Delete.cshtml" />
+      <AdditionalFiles Include="Views\Companies\Details.cshtml" />
+      <AdditionalFiles Include="Views\Companies\Edit.cshtml" />
+      <AdditionalFiles Include="Views\Companies\Index.cshtml" />
+      <AdditionalFiles Include="Views\Prizes\Create.cshtml" />
+      <AdditionalFiles Include="Views\Prizes\Delete.cshtml" />
+      <AdditionalFiles Include="Views\Prizes\Details.cshtml" />
+      <AdditionalFiles Include="Views\Prizes\Edit.cshtml" />
+      <AdditionalFiles Include="Views\Prizes\Index.cshtml" />
+      <AdditionalFiles Include="Views\RaffleResults\Create.cshtml" />
+      <AdditionalFiles Include="Views\RaffleResults\Delete.cshtml" />
+      <AdditionalFiles Include="Views\RaffleResults\Details.cshtml" />
+      <AdditionalFiles Include="Views\RaffleResults\Edit.cshtml" />
+      <AdditionalFiles Include="Views\RaffleResults\Index.cshtml" />
+      <AdditionalFiles Include="Views\Raffles\Create.cshtml" />
+      <AdditionalFiles Include="Views\Raffles\Delete.cshtml" />
+      <AdditionalFiles Include="Views\Raffles\Details.cshtml" />
+      <AdditionalFiles Include="Views\Raffles\Edit.cshtml" />
+      <AdditionalFiles Include="Views\Raffles\Index.cshtml" />
+      <AdditionalFiles Include="Views\Tickets\Create.cshtml" />
+      <AdditionalFiles Include="Views\Tickets\Delete.cshtml" />
+      <AdditionalFiles Include="Views\Tickets\Details.cshtml" />
+      <AdditionalFiles Include="Views\Tickets\Edit.cshtml" />
+      <AdditionalFiles Include="Views\Tickets\Index.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Views\ActivityTypes\Create.cshtml" />
+      <UpToDateCheckInput Remove="Views\ActivityTypes\Delete.cshtml" />
+      <UpToDateCheckInput Remove="Views\ActivityTypes\Details.cshtml" />
+      <UpToDateCheckInput Remove="Views\ActivityTypes\Edit.cshtml" />
+      <UpToDateCheckInput Remove="Views\ActivityTypes\Index.cshtml" />
     </ItemGroup>
 
     <PropertyGroup>

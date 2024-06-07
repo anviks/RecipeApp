@@ -1,0 +1,22 @@
+﻿@model WebApp.ViewModels.PrizeDetailsDeleteViewModel
+
+<dl class="row">
+    <dt class = "col-sm-2">
+        @Html.DisplayNameFor(model => model.Prize.PrizeName)
+    </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.Prize.PrizeName)
+    </dd>
+    <dt class = "col-sm-2">
+        @Html.DisplayNameFor(model => model.RaffleResult)
+    </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.RaffleResult)
+    </dd>
+    <dt class = "col-sm-2">
+        @Html.DisplayNameFor(model => model.Raffle)
+    </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.Raffle)
+    </dd>
+</dl>

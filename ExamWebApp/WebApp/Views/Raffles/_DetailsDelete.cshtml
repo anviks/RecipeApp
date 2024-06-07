@@ -1,0 +1,40 @@
+﻿@model WebApp.ViewModels.RaffleDetailsDeleteViewModel
+
+<dl class="row">
+    <dt class = "col-sm-2">
+        @Html.DisplayNameFor(model => model.Raffle.RaffleName)
+    </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.Raffle.RaffleName)
+    </dd>
+    <dt class = "col-sm-2">
+        @Html.DisplayNameFor(model => model.Raffle.VisibleToPublic)
+    </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.Raffle.VisibleToPublic)
+    </dd>
+    <dt class = "col-sm-2">
+        @Html.DisplayNameFor(model => model.Raffle.AllowAnonymousUsers)
+    </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.Raffle.AllowAnonymousUsers)
+    </dd>
+    <dt class = "col-sm-2">
+        @Html.DisplayNameFor(model => model.Raffle.StartDate)
+    </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.Raffle.StartDate)
+    </dd>
+    <dt class = "col-sm-2">
+        @Html.DisplayNameFor(model => model.Raffle.EndDate)
+    </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.Raffle.EndDate)
+    </dd>
+    <dt class = "col-sm-2">
+        @Html.DisplayNameFor(model => model.Company)
+    </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.Company)
+    </dd>
+</dl>

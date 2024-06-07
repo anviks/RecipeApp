@@ -1,6 +1,7 @@
 ﻿using App.DAL.Contracts;
 using App.DAL.Contracts.Repositories;
 using App.DAL.EF.Repositories;
+using App.Domain;
 using App.Domain.Identity;
 using AutoMapper;
 using Base.DAL.Contracts;
@@ -20,4 +21,25 @@ public class AppUnitOfWork(AppDbContext dbContext, IMapper mapper)
     
     private ISampleRepository? _samples;
     public ISampleRepository Samples => _samples ??= new SampleRepository(UowDbContext, mapper);
+    
+    private IActivityRepository? _activities;
+    public IActivityRepository Activities => _activities ??= new ActivityRepository(UowDbContext, mapper);
+    
+    private IActivityTypeRepository? _activityTypes;
+    public IActivityTypeRepository ActivityTypes => _activityTypes ??= new ActivityTypeRepository(UowDbContext, mapper);
+    
+    private ICompanyRepository? _companies;
+    public ICompanyRepository Companies => _companies ??= new CompanyRepository(UowDbContext, mapper);
+    
+    private IPrizeRepository? _prizes;
+    public IPrizeRepository Prizes => _prizes ??= new PrizeRepository(UowDbContext, mapper);
+    
+    private IRaffleRepository? _raffles;
+    public IRaffleRepository Raffles => _raffles ??= new RaffleRepository(UowDbContext, mapper);
+    
+    private IRaffleResultRepository? _raffleResults;
+    public IRaffleResultRepository RaffleResults => _raffleResults ??= new RaffleResultRepository(UowDbContext, mapper);
+    
+    private ITicketRepository? _tickets;
+    public ITicketRepository Tickets => _tickets ??= new TicketRepository(UowDbContext, mapper);
 }
