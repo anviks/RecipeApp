@@ -11,8 +11,10 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using App.DAL.Contracts;
+using App.Domain.Identity;
 using AutoMapper;
 using Helpers;
+using Microsoft.AspNetCore.Identity;
 
 namespace WebApp.ApiControllers;
 
@@ -21,7 +23,7 @@ namespace WebApp.ApiControllers;
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 [Authorize(Policy = "RafflePolicy")]
 [ApiController]
-public class RafflesController(IAppUnitOfWork unitOfWork, IMapper mapper) : ControllerBase
+public class RafflesController(IAppUnitOfWork unitOfWork, IMapper mapper, UserManager<AppUser> userManager) : ControllerBase
 {
     private readonly EntityMapper<App.DAL.DTO.Raffle, Raffle> _mapper = new(mapper);
     
@@ -30,7 +32,9 @@ public class RafflesController(IAppUnitOfWork unitOfWork, IMapper mapper) : Cont
     [AllowAnonymous]
     public async Task<ActionResult<IEnumerable<Raffle>>> GetRaffles()
     {
-        var raffles = await unitOfWork.Raffles.FindAllAsync();
+        var isAdmin = User.IsInRole("Admin");
+        var user = await userManager.GetUserAsync(User);
+        var raffles = await unitOfWork.Raffles.FindAllWithAccessAsync(isAdmin, user?.CompanyId);
         return raffles.Select(_mapper.Map).ToList()!;
     }
 

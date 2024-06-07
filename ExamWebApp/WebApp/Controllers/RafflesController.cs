@@ -20,7 +20,7 @@ public class RafflesController(IAppUnitOfWork unitOfWork, UserManager<AppUser> u
         var isAdmin = User.IsInRole("Admin");
         AppUser? user = await userManager.GetUserAsync(User);
         var raffles = await unitOfWork.Raffles.FindAllWithAccessAsync(
-            isAdmin, user?.CompanyId ?? Guid.Empty);
+            isAdmin, user?.CompanyId);
         var viewModel = raffles.Select(r => new RaffleDetailsDeleteViewModel
         {
             Raffle = r,

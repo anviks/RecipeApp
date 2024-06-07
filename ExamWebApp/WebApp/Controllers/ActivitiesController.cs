@@ -79,63 +79,21 @@ public class ActivitiesController(IAppUnitOfWork unitOfWork) : Controller
         return View(viewModel);
     }
 
-    // GET: Activities/Edit/5
-    public async Task<IActionResult> Edit(Guid? id)
-    {
-        if (id == null)
-        {
-            return NotFound();
-        }
-
-        var activity = await unitOfWork.Activities.FindAsync(id.Value);
-        if (activity == null)
-        {
-            return NotFound();
-        }
-        var viewModel = new ActivityCreateEditViewModel
-        {
-            Activity = activity,
-            ActivityTypes = new SelectList(await unitOfWork.ActivityTypes.FindAllAsync(), "Id", "ActivityTypeName", activity.ActivityTypeId),
-            Users = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "UserName", activity.UserId)
-        };
-        return View(viewModel);
-    }
-
     // POST: Activities/Edit/5
     // To protect from overposting attacks, enable the specific properties you want to bind to.
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(Guid id, ActivityCreateEditViewModel viewModel)
+    public async Task<IActionResult> Edit(Guid id)
     {
-        if (id != viewModel.Activity.Id)
+        var activity = await unitOfWork.Activities.FindAsync(id);
+        if (activity == null)
         {
             return NotFound();
         }
-
-        if (ModelState.IsValid)
-        {
-            try
-            {
-                unitOfWork.Activities.Update(viewModel.Activity);
-                await unitOfWork.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await unitOfWork.Activities.ExistsAsync(viewModel.Activity.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-            return RedirectToAction(nameof(Index));
-        }
-        viewModel.ActivityTypes = new SelectList(await unitOfWork.ActivityTypes.FindAllAsync(), "Id", "ActivityTypeName", viewModel.Activity.ActivityTypeId);
-        viewModel.Users = new SelectList(await unitOfWork.Users.FindAllAsync(), "Id", "UserName", viewModel.Activity.UserId);
-        return View(viewModel);
+        unitOfWork.Activities.Update(activity);
+        await unitOfWork.SaveChangesAsync();
+        return RedirectToAction(nameof(Index));
     }
 
     // GET: Activities/Delete/5
