@@ -271,7 +271,7 @@ brickHeight = containerHeight / 3 / GRID_ROWS;
 window.addEventListener('resize', setContainerDimensions);
 window.addEventListener('resize', updateItemSizes);
 
-function updateItemSizes(proportionalPixel) {
+function updateItemSizes() {
     gameContainer.style.width = containerWidth + 'px';
     gameContainer.style.height = containerHeight + 'px';
 
@@ -331,12 +331,32 @@ document.addEventListener('keydown', function (event) {
     }
 });
 
-document.addEventListener('keyup', function (event) {
+document.addEventListener('keyup', event => {
     if (event.key === 'ArrowLeft') {
         leftPressed = false;
     } else if (event.key === 'ArrowRight') {
         rightPressed = false;
     }
+});
+
+document.addEventListener('touchstart', event => {
+    console.log(event);
+    
+    // If left half of the container is touched, move paddle left
+    if (event.touches[0].clientX < window.innerWidth / 2) {
+        leftPressed = true;
+    } else {
+        rightPressed = true;
+    }
+
+    if (softPaused && !paused && startMenuElement.style.display === 'none') {
+        softPaused = false;
+        startTimer();
+    }
+});
+
+document.addEventListener('touchend', event => {
+    leftPressed = rightPressed = false;
 });
 
 async function restartGame() {
@@ -420,7 +440,7 @@ async function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
-startButtonElement.addEventListener('click', async function () {
+startButtonElement.addEventListener('click', async () => {
     startMenuElement.style.display = 'none';
     await gameLoop();
 });
