@@ -2,7 +2,8 @@
 import { onMounted, ref } from 'vue';
 import type { Recipe } from '@/types';
 import useServices from '@/helpers/useServices';
-import { backendDomain } from '@/config';
+
+const env = import.meta.env;
 
 const { recipesService } = useServices();
 const recipes = ref<Recipe[]>([]);
@@ -76,7 +77,7 @@ function getDietaryLabels(recipe: Recipe): string {
         <tbody>
         <tr v-for="recipe in recipes" :key="recipe.id">
             <td>
-                <img :src="recipe.imageFileUrl.replace('~', backendDomain)" alt="Recipe image" style="width: 60px; height: 60px;">
+                <img :src="recipe.imageFileUrl.replace('~', env.VITE_BACKEND_URL)" alt="Recipe image" style="width: 60px; height: 60px;">
             </td>
             <td>
                 {{ recipe.title }}

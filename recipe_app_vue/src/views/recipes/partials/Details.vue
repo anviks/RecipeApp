@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { Recipe } from '@/types';
 import type { PropType } from 'vue';
-import { backendDomain } from '@/config';
+
+const env = import.meta.env;
 
 const props = defineProps({
     recipe: {
@@ -31,7 +32,7 @@ function getDietaryRestrictions(): string {
             Image
         </dt>
         <dd class="col-sm-10">
-            <img :src="recipe.imageFileUrl.replace('~', backendDomain)" alt="Recipe image" style="width: 60px; height: 60px;">
+            <img :src="recipe.imageFileUrl.replace('~', env.VITE_BACKEND_URL)" alt="Recipe image" style="width: 60px; height: 60px;">
         </dd>
         <dt class="col-sm-2">
             Title

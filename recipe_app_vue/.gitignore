@@ -32,7 +32,9 @@ node_modules/
 
 # Ignore compiled files and directories
 /dist/
-/.env
+
+# local env files
+.env*
 
 # Ignore development server configurations
 /webpack.config.js

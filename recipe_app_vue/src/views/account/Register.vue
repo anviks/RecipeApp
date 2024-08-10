@@ -24,7 +24,6 @@ const submitRegister = async () => {
     registerIsOngoing.value = true;
 
     const result = await accountService.register(registerData.value);
-    console.log(result);
 
     if (result.data) {
         authStore.jsonWebToken = result.data.jsonWebToken;

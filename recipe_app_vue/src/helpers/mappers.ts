@@ -13,7 +13,8 @@ function mapObject<TSource, TDestination, TCommon extends keyof TSource & keyof 
 type RecipeIntersection = keyof Recipe & keyof RecipeRequest;
 
 const recipeKeysToMap: (RecipeIntersection)[] =
-    ['title', 'description', 'instructions', 'preparationTime', 'cookingTime', 'servings', 'isVegetarian', 'isVegan', 'isGlutenFree', 'recipeIngredients'];
+    ['title', 'description', 'instructions', 'preparationTime', 'cookingTime',
+        'servings', 'isVegetarian', 'isVegan', 'isGlutenFree', 'recipeIngredients'];
 
 export function recipeResponseToRequest(recipeResponse: Recipe): RecipeRequest {
     const recipeRequest = mapObject<Recipe, RecipeRequest, RecipeIntersection>(recipeResponse, recipeKeysToMap);

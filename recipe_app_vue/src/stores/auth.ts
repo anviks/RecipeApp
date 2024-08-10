@@ -35,6 +35,8 @@ export const useAuthStore = defineStore('auth', () => {
     
     if (jsonWebToken.value) {
         const parsedJwt = parseJwt(jsonWebToken.value);
+        console.log(parsedJwt);
+        // console.log(decode(jsonWebToken.value));
         username.value = parsedJwt.username;
         email.value = parsedJwt.email;
         expiresAt.value = parsedJwt.expiresAt;
@@ -47,6 +49,10 @@ export const useAuthStore = defineStore('auth', () => {
         username.value = null;
         email.value = null;
         expiresAt.value = null;
+    }
+    
+    if (expiresAt.value && expiresAt.value < Date.now() / 1000) {
+        clearUserDetails();
     }
 
     return { jsonWebToken, refreshToken, username, email, expiresAt, isAuthenticated, clearUserDetails };
