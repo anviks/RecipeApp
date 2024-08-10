@@ -1,0 +1,11 @@
+<script setup lang="ts"></script>
+
+<template>
+    <div class="text-center">
+        <h1 class="display-4">
+            Welcome
+        </h1>
+    </div>
+</template>
+
+<style scoped></style>

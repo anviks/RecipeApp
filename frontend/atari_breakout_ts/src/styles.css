@@ -1,0 +1,145 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: black;
+}
+
+#game-container {
+    border-style: solid;
+    border-color: #f0f0f0;
+    max-width: 100%;
+    max-height: 100%;
+    background-color: #272626;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+}
+
+#brick-container {
+    height: max-content!important;
+    width: max-content!important;
+}
+
+svg {
+    position: absolute;
+}
+
+#paddle {
+    position: absolute;
+    background-color: darkgreen;
+}
+
+.brick {
+    background-color: #00f;
+    border-style: solid;
+    border-color: white;
+    position: absolute;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.ball {
+    position: absolute;
+    background-color: #f00;
+    border-radius: 50%;
+    border-style: solid;
+    border-color: wheat;
+}
+
+#pause-icon {
+    width: 15%;
+    height: 25%;
+    display: flex;
+    justify-content: space-between;
+    z-index: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#pause-icon .bar {
+    width: 30%;
+    height: 100%;
+    background-color: #fff;
+}
+
+.menu-overlay {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    text-align: center;
+    color: white;
+    z-index: 2;
+}
+
+
+.menu-overlay button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.menu-overlay button:hover {
+    background-color: #45a049;
+}
+
+.menu-overlay .top-results h2 {
+    margin-block: 0;
+}
+
+.menu-overlay .top-results ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    padding-inline-start: 0;
+    margin-block: 0;
+}
+
+
+
+
+.keybindings {
+    text-align: center;
+}
+
+.keybindings p {
+    color: #ffffff;
+}
+
+.code-block {
+    display: inline-block;
+    border-style: solid;
+    border-color: #ccc;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+
+
+#counters {
+    display: flex;
+    justify-content: space-between;
+    color: white;
+    font-weight: bold;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+#counters * {
+    text-align: right;
+    color: white;
+    margin: 0;
+}
