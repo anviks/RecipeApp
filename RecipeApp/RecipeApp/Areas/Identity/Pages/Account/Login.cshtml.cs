@@ -2,19 +2,13 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using App.Domain.Identity;
+using Base.Resources;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace RecipeApp.Areas.Identity.Pages.Account
@@ -61,24 +55,24 @@ namespace RecipeApp.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required(ErrorMessageResourceType = typeof(Base.Resources.ValidationErrors), ErrorMessageResourceName = "Required")]
-            [Display(ResourceType = typeof(Base.Resources.Attributes), Name = nameof(UsernameOrEmail))]
+            [Required(ErrorMessageResourceType = typeof(ValidationErrors), ErrorMessageResourceName = "Required")]
+            [Display(ResourceType = typeof(Attributes), Name = nameof(UsernameOrEmail))]
             public string UsernameOrEmail { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required(ErrorMessageResourceType = typeof(Base.Resources.ValidationErrors), ErrorMessageResourceName = "Required")]
+            [Required(ErrorMessageResourceType = typeof(ValidationErrors), ErrorMessageResourceName = "Required")]
             [DataType(DataType.Password)]
-            [Display(ResourceType = typeof(Base.Resources.Attributes), Name = nameof(Password))]
+            [Display(ResourceType = typeof(Attributes), Name = nameof(Password))]
             public string Password { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Display(ResourceType = typeof(Base.Resources.Attributes), Name = nameof(RememberMe))]
+            [Display(ResourceType = typeof(Attributes), Name = nameof(RememberMe))]
             public bool RememberMe { get; set; }
         }
 

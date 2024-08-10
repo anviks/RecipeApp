@@ -1,4 +1,4 @@
-@model App.BLL.DTO.RecipeRequest
+@model RecipeApp.ViewModels.RecipeCreateEditViewModel
 @using RecipeResource = App.Resources.App.BLL.DTO.Recipe
 @using CommonResource = Base.Resources.Common
 
@@ -14,7 +14,7 @@
     <div class="col-md-4">
         <form asp-action="Edit" enctype="multipart/form-data">
             <partial name="_CreateEdit" model="Model"/>
-            <input type="hidden" asp-for="Id"/>
+            <input type="hidden" asp-for="RecipeRequest.Id"/>
             <div class="form-group">
                 <button type="submit" value="Save" class="btn btn-primary">
                     @CommonResource.SaveButton

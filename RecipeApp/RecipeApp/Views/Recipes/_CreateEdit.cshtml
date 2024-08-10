@@ -1,72 +1,61 @@
+@using System.Text.Json
 @using App.Resources.App.BLL.DTO
-@model App.BLL.DTO.RecipeRequest
+@using RecipeApp.ViewModels
+@model RecipeApp.ViewModels.RecipeCreateEditViewModel
 
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <div class="form-group">
-    <label asp-for="Title" class="control-label"></label>
-    <input asp-for="Title" class="form-control"/>
-    <span asp-validation-for="Title" class="text-danger"></span>
+    <label asp-for="RecipeRequest.Title" class="control-label"></label>
+    <input asp-for="RecipeRequest.Title" class="form-control"/>
+    <span asp-validation-for="RecipeRequest.Title" class="text-danger"></span>
 </div>
 <div class="form-group">
-    <label asp-for="Description" class="control-label"></label>
-    <input asp-for="Description" class="form-control"/>
-    <span asp-validation-for="Description" class="text-danger"></span>
+    <label asp-for="RecipeRequest.Description" class="control-label"></label>
+    <input asp-for="RecipeRequest.Description" class="form-control"/>
+    <span asp-validation-for="RecipeRequest.Description" class="text-danger"></span>
 </div>
 <div class="form-group">
-    <label asp-for="ImageFile" class="control-label"></label>
+    <label asp-for="RecipeRequest.ImageFile" class="control-label"></label>
     <div class="form-group">
-        <label id="fileInputLabel" asp-for="ImageFile" class="btn btn-primary d-block">
+        <label id="fileInputLabel" asp-for="RecipeRequest.ImageFile" class="btn btn-primary d-block">
             <i class="fa fa-image"></i> @Recipe.ChooseImageButton
-            <input asp-for="ImageFile" class="form-control" style="display: none;" onchange="displayImage(this)" accept="image/*"/>
+            <input asp-for="RecipeRequest.ImageFile" class="form-control" style="display: none;" onchange="displayImage(this)" accept="image/*"/>
         </label>
         <img id="previewImage" src="#" alt="Preview Image" style="display: none; max-width: 150px; max-height: 150px;"/>
-        <span asp-validation-for="ImageFile" class="text-danger"></span>
+        <span asp-validation-for="RecipeRequest.ImageFile" class="text-danger"></span>
     </div>
 </div>
 <div class="form-group">
-    <label asp-for="PreparationTime" class="control-label"></label>
-    <input asp-for="PreparationTime" class="form-control"/>
-    <span asp-validation-for="PreparationTime" class="text-danger"></span>
+    <label asp-for="RecipeRequest.PreparationTime" class="control-label"></label>
+    <input asp-for="RecipeRequest.PreparationTime" class="form-control"/>
+    <span asp-validation-for="RecipeRequest.PreparationTime" class="text-danger"></span>
 </div>
 <div class="form-group">
-    <label asp-for="CookingTime" class="control-label"></label>
-    <input asp-for="CookingTime" class="form-control"/>
-    <span asp-validation-for="CookingTime" class="text-danger"></span>
+    <label asp-for="RecipeRequest.CookingTime" class="control-label"></label>
+    <input asp-for="RecipeRequest.CookingTime" class="form-control"/>
+    <span asp-validation-for="RecipeRequest.CookingTime" class="text-danger"></span>
 </div>
 <div class="form-group">
-    <label asp-for="Servings" class="control-label"></label>
-    <input asp-for="Servings" class="form-control"/>
-    <span asp-validation-for="Servings" class="text-danger"></span>
+    <label asp-for="RecipeRequest.Servings" class="control-label"></label>
+    <input asp-for="RecipeRequest.Servings" class="form-control"/>
+    <span asp-validation-for="RecipeRequest.Servings" class="text-danger"></span>
 </div>
 <div class="form-group form-check">
     <label class="form-check-label">
-        <input class="form-check-input" asp-for="IsVegetarian"/> @Html.DisplayNameFor(model => model.IsVegetarian)
+        <input class="form-check-input" asp-for="RecipeRequest.IsVegetarian"/> @Html.DisplayNameFor(model => model.RecipeRequest.IsVegetarian)
     </label>
 </div>
 <div class="form-group form-check">
     <label class="form-check-label">
-        <input class="form-check-input" asp-for="IsVegan"/> @Html.DisplayNameFor(model => model.IsVegan)
+        <input class="form-check-input" asp-for="RecipeRequest.IsVegan"/> @Html.DisplayNameFor(model => model.RecipeRequest.IsVegan)
     </label>
 </div>
 <div class="form-group form-check">
     <label class="form-check-label">
-        <input class="form-check-input" asp-for="IsGlutenFree"/> @Html.DisplayNameFor(model => model.IsGlutenFree)
+        <input class="form-check-input" asp-for="RecipeRequest.IsGlutenFree"/> @Html.DisplayNameFor(model => model.RecipeRequest.IsGlutenFree)
     </label>
 </div>
 <div class="form-group">
-    <span asp-validation-for="Instructions" class="text-danger"></span>
-    <div id="steps">
-        @for (var i = 0; i < (Model?.Instructions.Count ?? 1); i++)
-        {
-            var i1 = i;
-            <label asp-for="@Model!.Instructions[i]" class="control-label"><span id="localizedStepLabel">@Recipe.Step</span> @(i1 + 1)</label>
-            <textarea asp-for="@Model!.Instructions[i]" class="form-control"></textarea>
-        }
-    </div>
-    <button id="add-step" type="button" class="btn btn-success">
-        @Recipe.AddStepButton
-    </button>
-    <button id="remove-step" type="button" class="btn btn-danger" disabled="@((Model?.Instructions.Count ?? 1) == 1)">
-        @Recipe.RemoveStepButton
-    </button>
+    <span asp-validation-for="RecipeRequest.Instructions" class="text-danger"></span>
+    <partial name="_InstructionField" model="@Model"/>
 </div>

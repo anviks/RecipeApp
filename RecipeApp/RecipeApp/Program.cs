@@ -87,6 +87,7 @@ builder.Services.AddControllersWithViews(
     options.JsonSerializerOptions.AllowTrailingCommas = true;
 });
 
+builder.Services.AddServerSideBlazor();
 
 var supportedCultures = builder.Configuration
     .GetSection("SupportedCultures")
@@ -209,6 +210,8 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
+
+app.MapBlazorHub();
 
 app.Run();
 

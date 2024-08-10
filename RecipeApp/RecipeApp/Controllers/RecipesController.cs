@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using RecipeApp.ViewModels;
 using DAL_DTO = App.DAL.DTO;
 using BLL_DTO = App.BLL.DTO;
 
@@ -58,7 +59,7 @@ public class RecipesController(
     // GET: Recipe/Create
     public IActionResult Create()
     {
-        return View();
+        return View(CreateViewModel());
     }
 
     // POST: Recipe/Create
@@ -66,9 +67,11 @@ public class RecipesController(
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(BLL_DTO.RecipeRequest request)
+    public async Task<IActionResult> Create(RecipeCreateEditViewModel viewModel)
     {
-        if (!ModelState.IsValid) return View(request);
+        if (!ModelState.IsValid) return View(viewModel);
+        
+        var request = viewModel.RecipeRequest;
 
         try
         {
@@ -80,7 +83,7 @@ public class RecipesController(
         catch (MissingImageException e)
         {
             ModelState.AddModelError(nameof(request.ImageFile), e.Message);
-            return View(request);
+            return View(viewModel);
         }
 
         await businessLogic.SaveChangesAsync();
@@ -101,8 +104,14 @@ public class RecipesController(
         {
             return NotFound();
         }
+        
+        var viewModel = new RecipeCreateEditViewModel
+        {
+            RecipeRequest = _requestResponseMapper.Map(recipe)!,
+            // InstructionCount = recipe.Instructions.Count
+        };
 
-        return View(_requestResponseMapper.Map(recipe));
+        return View(viewModel);
     }
 
     // POST: Recipe/Edit/5
@@ -110,8 +119,10 @@ public class RecipesController(
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(Guid id, BLL_DTO.RecipeRequest request)
+    public async Task<IActionResult> Edit(Guid id, RecipeCreateEditViewModel viewModel)
     {
+        var request = viewModel.RecipeRequest;
+        
         if (id != request.Id)
         {
             return NotFound();
@@ -138,7 +149,7 @@ public class RecipesController(
             return RedirectToAction(nameof(Index));
         }
 
-        return View(request);
+        return View(viewModel);
     }
 
     // GET: Recipe/Delete/5
@@ -166,5 +177,31 @@ public class RecipesController(
         await businessLogic.Recipes.RemoveAsync(id, environment.WebRootPath);
         await businessLogic.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    public IActionResult AddField(RecipeCreateEditViewModel viewModel)
+    {
+        viewModel.RecipeRequest.Instructions.Add("");
+        return PartialView("_InstructionField", viewModel);
+    }
+    
+    [HttpPost]
+    public IActionResult RemoveField(RecipeCreateEditViewModel viewModel)
+    {
+        viewModel.RecipeRequest.Instructions.RemoveAt(viewModel.RecipeRequest.Instructions.Count - 1);
+        return PartialView("_InstructionField", viewModel);
+    }
+    
+    private static RecipeCreateEditViewModel CreateViewModel()
+    {
+        return new RecipeCreateEditViewModel
+        {
+            RecipeRequest = new BLL_DTO.RecipeRequest
+            {
+                Instructions = [""]
+            },
+            // InstructionCount = 1
+        };
     }
 }

@@ -1,4 +1,4 @@
-@model App.BLL.DTO.RecipeRequest
+@model RecipeApp.ViewModels.RecipeCreateEditViewModel
 @using CommonResource = Base.Resources.Common
 @using RecipeResource = App.Resources.App.BLL.DTO.Recipe
 
@@ -29,6 +29,6 @@
 
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
-    <script src="~/js/recipeInstructionSteps.js"></script>
+    @* <script src="~/js/recipeInstructionSteps.js"></script> *@
     <script src="~/js/imageFileDisplay.js"></script>
 }
