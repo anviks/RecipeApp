@@ -1,0 +1,45 @@
+@model IEnumerable<RecipeApp.Web.ViewModels.IngredientTypeAssociationDetailsViewModel>
+@using RecipeApp.Web.ViewModels
+@using CommonResource = RecipeApp.Resources.Common
+@using AssociationResource = RecipeApp.Resources.Entities.IngredientTypeAssociation
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>@AssociationResource.IngredientTypeAssociations</h1>
+
+<p>
+    <a asp-action="Create">@CommonResource.CreateNewLink</a>
+</p>
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.IngredientName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IngredientTypeName)
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (IngredientTypeAssociationDetailsViewModel item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IngredientName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IngredientTypeName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IngredientTypeAssociation.Id">@CommonResource.EditLink</a> |
+                <a asp-action="Details" asp-route-id="@item.IngredientTypeAssociation.Id">@CommonResource.DetailsLink</a> |
+                <a asp-action="Delete" asp-route-id="@item.IngredientTypeAssociation.Id">@CommonResource.DeleteLink</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

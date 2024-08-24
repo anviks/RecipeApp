@@ -1,0 +1,19 @@
+@model RecipeApp.Web.ViewModels.RecipeCategoryDetailsViewModel
+@using CommonResource = RecipeApp.Resources.Common
+@using RecipeCategoryResource = RecipeApp.Resources.Entities.RecipeCategory;
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>@CommonResource.DetailsTitle</h1>
+
+<div>
+    <h4>@RecipeCategoryResource.RecipeCategorySingular</h4>
+    <hr />
+    <partial name="_DetailsDelete" model="Model"/>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.RecipeCategory.Id">@CommonResource.EditLink</a> |
+    <a asp-action="Index">@CommonResource.BackToListLink</a>
+</div>

@@ -1,0 +1,33 @@
+@model RecipeApp.Application.DTO.IngredientType
+@using CommonResource = RecipeApp.Resources.Common
+@using IngredientTypeResource = RecipeApp.Resources.Entities.IngredientType;
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>@CommonResource.EditTitle</h1>
+
+<h4>@IngredientTypeResource.IngredientTypeSingular</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <partial name="_CreateEdit" model="Model"/>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <button type="submit" value="Save" class="btn btn-primary">
+                    @CommonResource.SaveButton
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">@CommonResource.BackToListLink</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

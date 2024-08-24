@@ -1,0 +1,19 @@
+@model RecipeApp.Application.DTO.RecipeResponse
+@using RecipeResource = RecipeApp.Resources.Entities.Recipe
+@using CommonResource = RecipeApp.Resources.Common
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>@CommonResource.DetailsTitle</h1>
+
+<div>
+    <h4>@RecipeResource.RecipeSingular</h4>
+    <hr />
+    <partial name="_DetailsDelete" model="Model"/>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">@CommonResource.EditLink</a> |
+    <a asp-action="Index">@CommonResource.BackToListLink</a>
+</div>

@@ -1,0 +1,25 @@
+@using System.Text.Json
+@model RecipeApp.Web.ViewModels.RecipeCreateEditViewModel
+@using RecipeResource = RecipeApp.Resources.Entities.Recipe
+
+<div id="steps">
+    @for (var i = 0; i < Model.RecipeRequest.Instructions.Count; i++)
+    {
+        <label asp-for="@Model.RecipeRequest.Instructions[i]" class="control-label">
+            <span id="localizedStepLabel">@RecipeResource.Step</span> @(i + 1)
+        </label>
+        <textarea asp-for="@Model!.RecipeRequest.Instructions[i]" class="form-control"></textarea>
+    }
+    <button id="add-step" type="button" class="btn btn-success" 
+            hx-post="@Url.Action("AddField")" 
+            hx-target="#steps" 
+            hx-vals="@JsonSerializer.Serialize(Model)">
+        @RecipeResource.AddStepButton
+    </button>
+    <button id="remove-step" type="button" class="btn btn-danger" disabled="@(Model.RecipeRequest.Instructions.Count == 1)" 
+            hx-post="@Url.Action("RemoveField")" 
+            hx-target="#steps" 
+            hx-vals="@JsonSerializer.Serialize(Model)">
+        @RecipeResource.RemoveStepButton
+    </button>
+</div>

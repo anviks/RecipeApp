@@ -1,0 +1,113 @@
+@model IEnumerable<RecipeApp.Infrastructure.Data.EntityFramework.Entities.Recipe>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ImageFileUrl)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Instructions)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PreparationTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CookingTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Servings)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsVegetarian)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsVegan)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsGlutenFree)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AuthorUser)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UpdatedAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UpdatingUser)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ImageFileUrl)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Instructions)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PreparationTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CookingTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Servings)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsVegetarian)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsVegan)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsGlutenFree)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AuthorUser!.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdatedAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdatingUser!.Id)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

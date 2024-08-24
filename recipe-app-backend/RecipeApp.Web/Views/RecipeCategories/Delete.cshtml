@@ -1,0 +1,23 @@
+@model RecipeApp.Web.ViewModels.RecipeCategoryDetailsViewModel
+@using CommonResource = RecipeApp.Resources.Common
+@using RecipeCategoryResource = RecipeApp.Resources.Entities.RecipeCategory;
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>@CommonResource.DeleteTitle</h1>
+
+<h3>@CommonResource.DeleteConfirmQuestion</h3>
+<div>
+    <h4>@RecipeCategoryResource.RecipeCategorySingular</h4>
+    <hr/>
+    <partial name="_DetailsDelete" model="Model"/>
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="RecipeCategory.Id"/>
+        <button type="submit" value="Delete" class="btn btn-danger">
+            @CommonResource.DeleteButton
+        </button> |
+        <a asp-action="Index">@CommonResource.BackToListLink</a>
+    </form>
+</div>

@@ -3,8 +3,8 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
-RecipeApp/wwwroot/uploads
-RecipeApp/wwwroot/lib
+RecipeApp.Web/wwwroot/uploads
+RecipeApp.Web/wwwroot/lib
 
 # dotenv files
 .env

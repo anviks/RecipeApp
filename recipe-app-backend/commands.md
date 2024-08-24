@@ -7,30 +7,30 @@ dotnet tool update -g dotnet-aspnet-codegenerator
 ```
 
 ```bash
-dotnet ef migrations --project App.DAL.EF --startup-project RecipeApp add Initial
+dotnet ef migrations --project RecipeApp.Infrastructure --startup-project RecipeApp.Web add Initial
 ```
 
 ```bash
-dotnet ef migrations --project App.DAL.EF --startup-project RecipeApp remove
+dotnet ef migrations --project RecipeApp.Infrastructure --startup-project RecipeApp.Web remove
 ```
 
 ```bash
-dotnet ef database --project App.DAL.EF --startup-project RecipeApp update
+dotnet ef database --project RecipeApp.Infrastructure --startup-project RecipeApp.Web update
 ```
 
 ```bash
-dotnet ef database --project App.DAL.EF --startup-project RecipeApp drop
+dotnet ef database --project RecipeApp.Infrastructure --startup-project RecipeApp.Web drop
 ```
 
 ```bash
-cd RecipeApp
-dotnet aspnet-codegenerator identity -dc App.DAL.EF.AppDbContext -f
+cd RecipeApp.Web
+dotnet aspnet-codegenerator identity -dc RecipeApp.Infrastructure.Data.EntityFramework.AppDbContext -f
 cd ..
 ```
 
 ```bash
-$WebApp = "RecipeApp"
-$Domain = "App.Domain"
+$WebApp = "RecipeApp.Web"
+$Domain = "RecipeApp.Infrastructure/Data/EntityFramework/Entities"
 $DbContext = "AppDbContext"
 $MvcOutput = "Areas/Admin/Controllers"
 $ApiOutput = "ApiControllers"

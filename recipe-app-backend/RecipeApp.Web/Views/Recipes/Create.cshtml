@@ -1,0 +1,34 @@
+@model RecipeApp.Web.ViewModels.RecipeCreateEditViewModel
+@using CommonResource = RecipeApp.Resources.Common
+@using RecipeResource = RecipeApp.Resources.Entities.Recipe
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>@CommonResource.CreateTitle</h1>
+
+<h4>@RecipeResource.RecipeSingular</h4>
+<hr/>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" id="recipeForm" enctype="multipart/form-data">
+            <partial name="_CreateEdit" model="Model"/>
+            <div class="form-group">
+                <button type="submit" value="Create" class="btn btn-primary">
+                    @CommonResource.CreateButton
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">@CommonResource.BackToListLink</a>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    @* <script src="~/js/recipeInstructionSteps.js"></script> *@
+    <script src="~/js/imageFileDisplay.js"></script>
+}

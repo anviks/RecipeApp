@@ -18,7 +18,7 @@ services:
     build:
       context: .
       target: build
-    command: dotnet test /app/App.Test -l "console;verbosity=normal"
+    command: dotnet test /app/RecipeApp.Test -l "console;verbosity=normal"
     container_name: testapp
     environment:
       ConnectionStrings__TestDbConnection: "Host=recipeapp-db-test;Port=5432;Database=recipeapp_test;Username=testuser;Password=testpass"

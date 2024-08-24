@@ -1,0 +1,45 @@
+@model IEnumerable<RecipeApp.Web.ViewModels.RecipeCategoryDetailsViewModel>
+@using RecipeApp.Web.ViewModels
+@using CommonResource = RecipeApp.Resources.Common
+@using RecipeCategoryResource = RecipeApp.Resources.Entities.RecipeCategory;
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>@RecipeCategoryResource.RecipeCategories</h1>
+
+<p>
+    <a asp-action="Create">@CommonResource.CreateNewLink</a>
+</p>
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.RecipeName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CategoryName)
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (RecipeCategoryDetailsViewModel item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RecipeName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CategoryName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.RecipeCategory.Id">@CommonResource.EditLink</a> |
+                <a asp-action="Details" asp-route-id="@item.RecipeCategory.Id">@CommonResource.DetailsLink</a> |
+                <a asp-action="Delete" asp-route-id="@item.RecipeCategory.Id">@CommonResource.DeleteLink</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
