@@ -30,20 +30,21 @@ cd ..
 
 ```bash
 $WebApp = "RecipeApp.Web"
-$Domain = "RecipeApp.Infrastructure/Data/EntityFramework/Entities"
+$DomainPath = "RecipeApp.Infrastructure/Data/EntityFramework/Entities"
+$DomainNamespace = "RecipeApp.Infrastructure.Data.EntityFramework.Entities"
 $DbContext = "AppDbContext"
 $MvcOutput = "Areas/Admin/Controllers"
-$ApiOutput = "ApiControllers"
+$ApiOutput = "ApiControllers/T"
 $GenerateMvcControllers = $False
 $GenerateApiControllers = $False
 
-$Entities = Get-ChildItem -Path $Domain -Filter '*.cs' | ForEach-Object { $_.BaseName }
+$Entities = Get-ChildItem -Path $DomainPath -Filter '*.cs' | ForEach-Object { $_.BaseName }
 
 cd $WebApp
 
 foreach ($Entity in $Entities) {
     $Controller = $Entity + "sController"
-    $Model = "$Domain.$Entity"
+    $Model = "$DomainNamespace.$Entity"
   
     if ($GenerateMvcControllers) { 
         dotnet aspnet-codegenerator controller `
@@ -71,6 +72,7 @@ foreach ($Entity in $Entities) {
 }
 
 cd ..
+
 ```
 
 * `--controllerName` or `-name` - Name of the controller.

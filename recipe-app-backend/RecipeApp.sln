@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0_SolutionItems", "0_Soluti
 		Dockerfile = Dockerfile
 		docker-compose-tests.yml = docker-compose-tests.yml
 		wait-for-it.sh = wait-for-it.sh
+		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecipeApp.Infrastructure", "RecipeApp.Infrastructure\RecipeApp.Infrastructure.csproj", "{BACC225E-A9CC-4B60-B1E9-9C8B80A1CB2D}"
