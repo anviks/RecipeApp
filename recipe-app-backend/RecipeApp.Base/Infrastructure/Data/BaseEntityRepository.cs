@@ -1,4 +1,5 @@
-﻿using Base.Contracts.Domain;
+﻿using System.Linq.Expressions;
+using Base.Contracts.Domain;
 using Microsoft.EntityFrameworkCore;
 using RecipeApp.Base.Contracts.Infrastructure.Data;
 using RecipeApp.Base.Helpers;
@@ -33,8 +34,27 @@ public class BaseEntityRepository<TKey, TDomainEntity, TDalEntity, TDbContext> :
 
     protected virtual IQueryable<TDomainEntity> GetQuery(bool tracking = false)
     {
-        var queryable = DbSet.AsQueryable();
-        return tracking ? queryable : queryable.AsNoTracking();
+        return tracking ? DbSet : DbSet.AsNoTracking();
+    }
+
+    public virtual TDalEntity? Find(TKey id, bool tracking = false)
+    {
+        return Mapper.Map(GetQuery(tracking).FirstOrDefault(e => e.Id.Equals(id)));
+    }
+
+    public virtual async Task<TDalEntity?> FindAsync(TKey id, bool tracking = false)
+    {
+        return Mapper.Map(await GetQuery(tracking).FirstOrDefaultAsync(e => e.Id.Equals(id)));
+    }
+
+    public virtual IEnumerable<TDalEntity> FindAll(bool tracking = false)
+    {
+        return GetQuery(tracking).AsEnumerable().Select(Mapper.Map)!;
+    }
+
+    public virtual async Task<IEnumerable<TDalEntity>> FindAllAsync(bool tracking = false)
+    {
+        return (await GetQuery(tracking).ToListAsync()).Select(Mapper.Map)!;
     }
 
     public virtual TDalEntity Add(TDalEntity entity)
@@ -95,26 +115,6 @@ public class BaseEntityRepository<TKey, TDomainEntity, TDalEntity, TDbContext> :
         var entities = DbSet.Where(e => ids.Contains(e.Id));
         DbSet.RemoveRange(entities);
         return entities.Count();
-    }
-
-    public virtual TDalEntity? Find(TKey id, bool tracking = false)
-    {
-        return Mapper.Map(GetQuery(tracking).FirstOrDefault(e => e.Id.Equals(id)));
-    }
-
-    public virtual async Task<TDalEntity?> FindAsync(TKey id, bool tracking = false)
-    {
-        return Mapper.Map(await GetQuery(tracking).FirstOrDefaultAsync(e => e.Id.Equals(id)));
-    }
-
-    public virtual IEnumerable<TDalEntity> FindAll(bool tracking = false)
-    {
-        return GetQuery(tracking).AsEnumerable().Select(Mapper.Map)!;
-    }
-
-    public virtual async Task<IEnumerable<TDalEntity>> FindAllAsync(bool tracking = false)
-    {
-        return (await GetQuery(tracking).ToListAsync()).Select(Mapper.Map)!;
     }
 
     public virtual bool Exists(TKey id, bool tracking = false)

@@ -35,7 +35,7 @@ public class AppBusinessLogic(IAppUnitOfWork unitOfWork, IMapper mapper)
         new RecipeIngredientService(unitOfWork.RecipeIngredients, mapper);
 
     private IRecipeService? _recipes;
-    public IRecipeService Recipes => _recipes ??= new RecipeService(unitOfWork.Recipes, mapper);
+    public IRecipeService Recipes => _recipes ??= new RecipeService(unitOfWork, mapper);
     
     private IReviewService? _reviews;
     public IReviewService Reviews => _reviews ??= new ReviewService(unitOfWork.Reviews, mapper);

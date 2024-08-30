@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using RecipeApp.Infrastructure.Data.EntityFramework.Entities.Identity;
+using ErrorResource = RecipeApp.Resources.Errors;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace RecipeApp.Web.Areas.Identity.Pages.Account
@@ -132,7 +133,7 @@ namespace RecipeApp.Web.Areas.Identity.Pages.Account
                 return RedirectToPage("./Lockout");
             }
 
-            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+            ModelState.AddModelError(string.Empty, ErrorResource.IdentityErrors.InvalidLogin);
             return Page();
 
             // If we got this far, something failed, redisplay form

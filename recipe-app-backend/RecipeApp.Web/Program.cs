@@ -50,7 +50,6 @@ builder.Services
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
-    // TODO: Remove these options when deploying to production
     options.Password.RequireDigit = false;
     options.Password.RequireLowercase = false;
     options.Password.RequireUppercase = false;

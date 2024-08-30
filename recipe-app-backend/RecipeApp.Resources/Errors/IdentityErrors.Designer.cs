@@ -67,5 +67,14 @@ namespace RecipeApp.Resources.Errors {
                 return ResourceManager.GetString("DefaultError", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid login attempt.
+        /// </summary>
+        public static string InvalidLogin {
+            get {
+                return ResourceManager.GetString("InvalidLogin", resourceCulture);
+            }
+        }
     }
 }

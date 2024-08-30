@@ -50,7 +50,7 @@ public class RecipeResponse : BaseEntityId
     [Display(ResourceType = typeof(Resource.Recipe), Name = "UpdatingUser")]
     public AppUser? UpdatingUser { get; set; }
     
-    public ICollection<RecipeIngredient>? RecipeIngredients { get; set; }
+    public ICollection<Ingredient>? Ingredients { get; set; }
     
-    public ICollection<RecipeCategory>? RecipeCategories { get; set; }
+    public ICollection<Category>? Categories { get; set; }
 }

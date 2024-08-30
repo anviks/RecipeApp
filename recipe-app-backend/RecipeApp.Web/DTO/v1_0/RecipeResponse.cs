@@ -19,6 +19,6 @@ public class RecipeResponse : BaseEntityId
     public AppUser AuthorUser { get; set; } = default!;
     public DateTime? UpdatedAt { get; set; }
     public AppUser? UpdatingUser { get; set; }
-    public ICollection<RecipeIngredient>? RecipeIngredients { get; set; }
-    public ICollection<RecipeCategory>? RecipeCategories { get; set; }
+    public ICollection<Ingredient>? Ingredients { get; set; }
+    public ICollection<Category>? Categories { get; set; }
 }

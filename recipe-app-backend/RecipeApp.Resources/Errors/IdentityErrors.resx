@@ -21,4 +21,7 @@
     <data name="DefaultError" xml:space="preserve">
         <value>Default identity error</value>
     </data>
+    <data name="InvalidLogin" xml:space="preserve">
+        <value>Invalid login attempt</value>
+    </data>
 </root>

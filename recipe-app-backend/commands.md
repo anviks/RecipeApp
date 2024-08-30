@@ -91,7 +91,7 @@ cd ..
 docker build -t recipeapp:latest .
 
 docker compose -f docker-compose-tests.yml up --abort-on-container-exit --exit-code-from testapp
-docker compose -f docker-compose-tests.yml up --abort-on-container-exit --exit-code-from testapp --build
+#docker compose -f docker-compose-tests.yml up --abort-on-container-exit --exit-code-from testapp --build
 
 # multiplatform build
 docker buildx build --progress=plain --force-rm --push -t anviks/recipeapp:latest . 

@@ -5,6 +5,7 @@ using NSubstitute;
 using RecipeApp.Application.DTO;
 using RecipeApp.Application.Exceptions;
 using RecipeApp.Application.Services;
+using RecipeApp.Infrastructure.Data;
 using RecipeApp.Infrastructure.Data.EntityFramework;
 using RecipeApp.Infrastructure.Data.EntityFramework.Entities;
 using RecipeApp.Infrastructure.Data.EntityFramework.Repositories;
@@ -192,8 +193,8 @@ public class RecipeServiceTest : IClassFixture<TestDatabaseFixture>, IDisposable
     private (AppDbContext, RecipeService) SetupDependencies()
     {
         AppDbContext context = _fixture.CreateContext();
-        var repository = new RecipeRepository(context, _fixture.Mapper);
-        var service = new RecipeService(repository, _fixture.Mapper);
+        var uow = new AppUnitOfWork(context, _fixture.Mapper);
+        var service = new RecipeService(uow, _fixture.Mapper);
         context.Database.BeginTransaction();
 
         return (context, service);

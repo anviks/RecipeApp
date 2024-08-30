@@ -9,7 +9,7 @@ public class AutoMapperProfile: Profile
 {
     public AutoMapperProfile()
     {
-        CreateMap<AppUser, AppUser>();
+        CreateMap<AppUser, v1_0.Identity.AppUser>();
         
         CreateMap<Category, v1_0.Category>().ReverseMap();
         
