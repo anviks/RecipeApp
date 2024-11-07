@@ -1,31 +1,18 @@
-﻿using Base.Contracts.Domain;
-using RecipeApp.Base.Contracts.Application;
+﻿using RecipeApp.Base.Contracts.Application;
+using RecipeApp.Base.Contracts.Domain;
 using RecipeApp.Base.Contracts.Infrastructure.Data;
 using RecipeApp.Base.Helpers;
 
 namespace RecipeApp.Base.Application;
 
 public class BaseEntityService<TDalEntity, TBllEntity, TRepository>(
-    // IUnitOfWork unitOfWork,
     TRepository repository,
     EntityMapper<TDalEntity, TBllEntity> mapper)
-    : BaseEntityService<TDalEntity, TBllEntity, TRepository, Guid>(/*unitOfWork, */repository, mapper),
-        IEntityService<TBllEntity>
+    : IEntityService<TBllEntity>
+    where TRepository : IEntityRepository<TDalEntity>
     where TBllEntity : class, IDomainEntityId
-    where TRepository : IEntityRepository<TDalEntity, Guid>
-    where TDalEntity : class, IDomainEntityId<Guid>;
-
-public class BaseEntityService<TDalEntity, TBllEntity, TRepository, TKey>(
-    // IUnitOfWork unitOfWork,
-    TRepository repository,
-    EntityMapper<TDalEntity, TBllEntity> mapper)
-    : IEntityService<TBllEntity, TKey>
-    where TRepository : IEntityRepository<TDalEntity, TKey>
-    where TKey : IEquatable<TKey>
-    where TBllEntity : class, IDomainEntityId<TKey>
-    where TDalEntity : class, IDomainEntityId<TKey>
+    where TDalEntity : class, IDomainEntityId
 {
-    // private readonly IUnitOfWork _unitOfWork = unitOfWork;
     protected readonly TRepository Repository = repository;
     protected readonly EntityMapper<TDalEntity, TBllEntity> Mapper = mapper;
 
@@ -49,7 +36,7 @@ public class BaseEntityService<TDalEntity, TBllEntity, TRepository, TKey>(
         await Repository.DeleteAsync(dalEntity!);
     }
 
-    public virtual async Task<TBllEntity?> GetByIdAsync(TKey id, bool tracking = false)
+    public virtual async Task<TBllEntity?> GetByIdAsync(Guid id, bool tracking = false)
     {
         TDalEntity? dalEntity = await Repository.GetByIdAsync(id, tracking);
         return Mapper.Map(dalEntity!);
@@ -61,7 +48,7 @@ public class BaseEntityService<TDalEntity, TBllEntity, TRepository, TKey>(
         return dalEntities.Select(Mapper.Map).Select(e => e!);
     }
 
-    public virtual async Task<bool> ExistsAsync(TKey id)
+    public virtual async Task<bool> ExistsAsync(Guid id)
     {
         return await Repository.ExistsAsync(id);
     }

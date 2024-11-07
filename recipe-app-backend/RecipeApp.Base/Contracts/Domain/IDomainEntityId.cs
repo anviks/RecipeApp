@@ -1,11 +1,6 @@
-﻿namespace Base.Contracts.Domain;
+﻿namespace RecipeApp.Base.Contracts.Domain;
 
-public interface IDomainEntityId : IDomainEntityId<Guid>
+public interface IDomainEntityId
 {
-}
-
-public interface IDomainEntityId<TKey>
-    where TKey : IEquatable<TKey>
-{
-    public TKey Id { get; set; }
+    public Guid Id { get; set; }
 }

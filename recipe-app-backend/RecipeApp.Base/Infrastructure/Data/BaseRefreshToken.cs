@@ -2,12 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RecipeApp.Base.Infrastructure.Data;
 
-public class BaseRefreshToken : BaseRefreshToken<Guid>
-{
-}
-
-public class BaseRefreshToken<TKey> : BaseEntityId<TKey>
-    where TKey : IEquatable<TKey>
+public class BaseRefreshToken : BaseEntityId
 {
     [MaxLength(64)] 
     public string RefreshToken { get; set; } = Guid.NewGuid().ToString();

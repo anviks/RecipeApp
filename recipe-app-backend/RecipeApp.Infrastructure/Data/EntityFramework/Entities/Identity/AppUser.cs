@@ -1,5 +1,5 @@
-using Base.Contracts.Domain;
 using Microsoft.AspNetCore.Identity;
+using RecipeApp.Base.Contracts.Domain;
 
 namespace RecipeApp.Infrastructure.Data.EntityFramework.Entities.Identity;
 
