@@ -16,11 +16,11 @@ public class UnitsController(IAppBusinessLogic businessLogic) : Controller
     [AllowAnonymous]
     public async Task<IActionResult> Index()
     {
-        var units = await businessLogic.Units.FindAllAsync();
+        var units = await businessLogic.Units.GetAllAsync();
         var viewModels = new List<UnitDetailsViewModel>();
         foreach (Unit unit in units)
         {
-            IngredientType? ingredientType = await businessLogic.IngredientTypes.FindAsync(unit.IngredientTypeId);
+            IngredientType? ingredientType = await businessLogic.IngredientTypes.GetByIdAsync(unit.IngredientTypeId);
             viewModels.Add(new UnitDetailsViewModel
             {
                 Unit = unit,
@@ -41,13 +41,13 @@ public class UnitsController(IAppBusinessLogic businessLogic) : Controller
             return NotFound();
         }
 
-        Unit? unit = await businessLogic.Units.FindAsync(id.Value);
+        Unit? unit = await businessLogic.Units.GetByIdAsync(id.Value);
         if (unit == null)
         {
             return NotFound();
         }
 
-        IngredientType? ingredientType = await businessLogic.IngredientTypes.FindAsync(unit.IngredientTypeId);
+        IngredientType? ingredientType = await businessLogic.IngredientTypes.GetByIdAsync(unit.IngredientTypeId);
         var viewModel = new UnitDetailsViewModel
         {
             Unit = unit,
@@ -62,7 +62,7 @@ public class UnitsController(IAppBusinessLogic businessLogic) : Controller
     {
         var viewModel = new UnitCreateEditViewModel
         {
-            IngredientTypeSelectList = new SelectList(await businessLogic.IngredientTypes.FindAllAsync(),
+            IngredientTypeSelectList = new SelectList(await businessLogic.IngredientTypes.GetAllAsync(),
                 nameof(IngredientType.Id), nameof(IngredientType.Name))
         };
         return View(viewModel);
@@ -79,12 +79,12 @@ public class UnitsController(IAppBusinessLogic businessLogic) : Controller
         {
             Unit unit = viewModel.Unit;
             unit.Id = Guid.NewGuid();
-            businessLogic.Units.Add(unit);
+            businessLogic.Units.AddAsync(unit);
             await businessLogic.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        viewModel.IngredientTypeSelectList = new SelectList(await businessLogic.IngredientTypes.FindAllAsync(),
+        viewModel.IngredientTypeSelectList = new SelectList(await businessLogic.IngredientTypes.GetAllAsync(),
             nameof(IngredientType.Id), nameof(IngredientType.Name));
         return View(viewModel);
     }
@@ -97,7 +97,7 @@ public class UnitsController(IAppBusinessLogic businessLogic) : Controller
             return NotFound();
         }
 
-        Unit? unit = await businessLogic.Units.FindAsync(id.Value);
+        Unit? unit = await businessLogic.Units.GetByIdAsync(id.Value);
         if (unit == null)
         {
             return NotFound();
@@ -106,7 +106,7 @@ public class UnitsController(IAppBusinessLogic businessLogic) : Controller
         var viewModel = new UnitCreateEditViewModel
         {
             Unit = unit,
-            IngredientTypeSelectList = new SelectList(await businessLogic.IngredientTypes.FindAllAsync(),
+            IngredientTypeSelectList = new SelectList(await businessLogic.IngredientTypes.GetAllAsync(),
                 nameof(IngredientType.Id), nameof(IngredientType.Name))
         };
         
@@ -130,7 +130,7 @@ public class UnitsController(IAppBusinessLogic businessLogic) : Controller
         {
             try
             {
-                businessLogic.Units.Update(unit);
+                businessLogic.Units.UpdateAsync(unit);
                 await businessLogic.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -146,7 +146,7 @@ public class UnitsController(IAppBusinessLogic businessLogic) : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        viewModel.IngredientTypeSelectList = new SelectList(await businessLogic.IngredientTypes.FindAllAsync(),
+        viewModel.IngredientTypeSelectList = new SelectList(await businessLogic.IngredientTypes.GetAllAsync(),
             nameof(IngredientType.Id), nameof(IngredientType.Name));
         return View(viewModel);
     }
@@ -159,7 +159,7 @@ public class UnitsController(IAppBusinessLogic businessLogic) : Controller
             return NotFound();
         }
 
-        Unit? unit = await businessLogic.Units.FindAsync(id.Value);
+        Unit? unit = await businessLogic.Units.GetByIdAsync(id.Value);
         if (unit == null)
         {
             return NotFound();
@@ -168,7 +168,7 @@ public class UnitsController(IAppBusinessLogic businessLogic) : Controller
         var viewModel = new UnitDetailsViewModel
         {
             Unit = unit,
-            IngredientTypeName = (await businessLogic.IngredientTypes.FindAsync(unit.IngredientTypeId))!.Name
+            IngredientTypeName = (await businessLogic.IngredientTypes.GetByIdAsync(unit.IngredientTypeId))!.Name
         };
 
         return View(viewModel);
@@ -179,10 +179,10 @@ public class UnitsController(IAppBusinessLogic businessLogic) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        Unit? unit = await businessLogic.Units.FindAsync(id);
+        Unit? unit = await businessLogic.Units.GetByIdAsync(id);
         if (unit != null)
         {
-            await businessLogic.Units.RemoveAsync(unit);
+            await businessLogic.Units.DeleteAsync(unit);
         }
 
         await businessLogic.SaveChangesAsync();

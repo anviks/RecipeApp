@@ -1,29 +1,17 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using RecipeApp.Base;
-using RecipeApp.Base.Helpers;
 using RecipeApp.Base.Infrastructure.Data;
 using RecipeApp.Infrastructure.Contracts.Data.Repositories;
+using RecipeApp.Infrastructure.Data.DTO;
 
 namespace RecipeApp.Infrastructure.Data.EntityFramework.Repositories;
 
 public class RecipeRepository(AppDbContext dbContext, IMapper mapper)
-    : BaseEntityRepository<Entities.Recipe, DTO.Recipe, AppDbContext>(
-            dbContext,
-            new EntityMapper<Entities.Recipe, DTO.Recipe>(mapper)),
+    : BaseEntityRepository<Entities.Recipe, DTO.Recipe, AppDbContext>(dbContext, mapper),
         IRecipeRepository
 {
-    protected override IQueryable<Entities.Recipe> GetQuery(bool tracking = false)
-    {
-        var query = base.GetQuery(tracking);
-        return query
-            .Include(recipe => recipe.AuthorUser)
-            .Include(recipe => recipe.UpdatingUser)
-            .Include(recipe => recipe.RecipeCategories)
-            .Include(recipe => recipe.RecipeIngredients);
-    }
-    
-    public override DTO.Recipe Update(DTO.Recipe entity)
+    public override Task<DTO.Recipe> UpdateAsync(DTO.Recipe entity)
     {
         Entities.Recipe recipe = Mapper.Map(entity)!;
         Entities.Recipe existingRecipe = DbSet.AsNoTracking().First(r => r.Id == recipe.Id);
@@ -33,22 +21,32 @@ public class RecipeRepository(AppDbContext dbContext, IMapper mapper)
         recipe.Title.SetTranslation(title);
         
         var entry = DbContext.Update(recipe);
-        return Mapper.Map(entry.Entity)!;
+        return Task.FromResult(Mapper.Map(entry.Entity)!);
     }
-    
-    public override void UpdateRange(IEnumerable<DTO.Recipe> entities)
+
+    public async Task<Recipe?> GetByIdDetailedAsync(Guid id)
     {
-        List<Entities.Recipe> recipes = entities.Select(Mapper.Map).ToList()!;
-        
-        foreach (Entities.Recipe recipe in recipes)
-        {
-            Entities.Recipe existingRecipe = DbSet.AsNoTracking().First(r => r.Id == recipe.Id);
-            
-            LangStr title = recipe.Title;
-            recipe.Title = existingRecipe.Title;
-            recipe.Title.SetTranslation(title);
-        }
-        
-        DbContext.UpdateRange(recipes);
+        Entities.Recipe? recipe = await GetQuery()
+            .Include(r => r.AuthorUser)
+            .Include(r => r.UpdatingUser)
+            .Include(r => r.RecipeIngredients)!
+            .ThenInclude(ri => ri.Ingredient)
+            .Include(r => r.RecipeCategories)!
+            .ThenInclude(rc => rc.Category)
+            .FirstOrDefaultAsync();
+        return Mapper.Map(recipe);
+    }
+
+    public async Task<IEnumerable<Recipe>> GetAllDetailedAsync()
+    {
+        IEnumerable<Entities.Recipe> recipes = await GetQuery()
+            .Include(r => r.AuthorUser)
+            .Include(r => r.UpdatingUser)
+            .Include(r => r.RecipeIngredients)!
+            .ThenInclude(ri => ri.Ingredient)
+            .Include(r => r.RecipeCategories)!
+            .ThenInclude(rc => rc.Category)
+            .ToListAsync();
+        return recipes.Select(Mapper.Map)!;
     }
 }

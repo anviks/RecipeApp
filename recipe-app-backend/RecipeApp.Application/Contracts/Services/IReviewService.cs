@@ -5,6 +5,6 @@ namespace RecipeApp.Application.Contracts.Services;
 
 public interface IReviewService : IEntityRepository<ReviewResponse>
 {
-    ReviewResponse Add(ReviewRequest reviewRequest, Guid userId);
+    Task<ReviewResponse> Add(ReviewRequest reviewRequest, Guid userId);
     Task<ReviewResponse> UpdateAsync(ReviewRequest reviewRequest);
 }

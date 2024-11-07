@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+﻿using AutoMapper;
 using Base.Contracts.Domain;
 using Microsoft.EntityFrameworkCore;
 using RecipeApp.Base.Contracts.Infrastructure.Data;
@@ -6,9 +6,7 @@ using RecipeApp.Base.Helpers;
 
 namespace RecipeApp.Base.Infrastructure.Data;
 
-public class BaseEntityRepository<TDomainEntity, TDalEntity, TDbContext>(
-    TDbContext dbContext,
-    EntityMapper<TDomainEntity, TDalEntity> mapper)
+public class BaseEntityRepository<TDomainEntity, TDalEntity, TDbContext>(TDbContext dbContext, IMapper mapper)
     : BaseEntityRepository<Guid, TDomainEntity, TDalEntity, TDbContext>(dbContext, mapper),
         IEntityRepository<TDalEntity>
     where TDomainEntity : class, IDomainEntityId
@@ -25,105 +23,48 @@ public class BaseEntityRepository<TKey, TDomainEntity, TDalEntity, TDbContext> :
     protected readonly DbSet<TDomainEntity> DbSet;
     protected readonly EntityMapper<TDomainEntity, TDalEntity> Mapper;
 
-    protected BaseEntityRepository(TDbContext dbContext, EntityMapper<TDomainEntity, TDalEntity> mapper)
+    protected BaseEntityRepository(TDbContext dbContext, IMapper mapper)
     {
         DbContext = dbContext;
         DbSet = DbContext.Set<TDomainEntity>();
-        Mapper = mapper;
+        Mapper = new EntityMapper<TDomainEntity, TDalEntity>(mapper);
     }
 
     protected virtual IQueryable<TDomainEntity> GetQuery(bool tracking = false)
     {
-        return tracking ? DbSet : DbSet.AsNoTracking();
+        return tracking ? DbSet.AsTracking() : DbSet.AsNoTracking();
     }
 
-    public virtual TDalEntity? Find(TKey id, bool tracking = false)
-    {
-        return Mapper.Map(GetQuery(tracking).FirstOrDefault(e => e.Id.Equals(id)));
-    }
-
-    public virtual async Task<TDalEntity?> FindAsync(TKey id, bool tracking = false)
+    public virtual async Task<TDalEntity?> GetByIdAsync(TKey id, bool tracking = false)
     {
         return Mapper.Map(await GetQuery(tracking).FirstOrDefaultAsync(e => e.Id.Equals(id)));
     }
 
-    public virtual IEnumerable<TDalEntity> FindAll(bool tracking = false)
-    {
-        return GetQuery(tracking).AsEnumerable().Select(Mapper.Map)!;
-    }
-
-    public virtual async Task<IEnumerable<TDalEntity>> FindAllAsync(bool tracking = false)
+    public virtual async Task<IEnumerable<TDalEntity>> GetAllAsync(bool tracking = false)
     {
         return (await GetQuery(tracking).ToListAsync()).Select(Mapper.Map)!;
     }
 
-    public virtual TDalEntity Add(TDalEntity entity)
+    public virtual async Task<TDalEntity> AddAsync(TDalEntity entity)
     {
-        var entry = DbContext.Add(Mapper.Map(entity)!);
+        var entry = await DbContext.AddAsync(Mapper.Map(entity)!);
         return Mapper.Map(entry.Entity)!;
     }
 
-    public virtual void AddRange(IEnumerable<TDalEntity> entities)
-    {
-        DbContext.AddRange(entities.Select(Mapper.Map)!);
-    }
-
-    public virtual TDalEntity Update(TDalEntity entity)
+    public virtual Task<TDalEntity> UpdateAsync(TDalEntity entity)
     {
         var entry = DbContext.Update(Mapper.Map(entity)!);
-        return Mapper.Map(entry.Entity)!;
+        return Task.FromResult(Mapper.Map(entry.Entity)!);
     }
 
-    public virtual void UpdateRange(IEnumerable<TDalEntity> entities)
+    public virtual Task DeleteAsync(TDalEntity entity)
     {
-        DbContext.UpdateRange(entities.Select(Mapper.Map)!);
+        DbContext.Remove(Mapper.Map(entity)!);
+        return Task.CompletedTask;
     }
 
-    public virtual int Remove(TDalEntity entity)
+    public virtual async Task<bool> ExistsAsync(TKey id)
     {
-        return Remove(entity.Id);
-    }
-
-    public virtual int Remove(TKey id)
-    {
-        TDomainEntity? entity = DbSet.Find(id);
-        if (entity == null) return 0;
-        DbContext.Remove(entity);
-        return 1;
-    }
-
-    public virtual async Task<int> RemoveAsync(TDalEntity entity)
-    {
-        return await RemoveAsync(entity.Id);
-    }
-
-    public virtual async Task<int> RemoveAsync(TKey id)
-    {
-        TDomainEntity? entity = await DbSet.FindAsync(id);
-        if (entity == null) return 0;
-        DbSet.Remove(entity);
-        return 1;
-    }
-
-    public virtual int RemoveRange(IEnumerable<TDalEntity> entities)
-    {
-        return RemoveRange(entities.Select(e => e.Id));
-    }
-
-    public virtual int RemoveRange(IEnumerable<TKey> ids)
-    {
-        var entities = DbSet.Where(e => ids.Contains(e.Id));
-        DbSet.RemoveRange(entities);
-        return entities.Count();
-    }
-
-    public virtual bool Exists(TKey id, bool tracking = false)
-    {
-        return DbSet.Any(e => e.Id.Equals(id));
-    }
-
-    public virtual async Task<bool> ExistsAsync(TKey id, bool tracking = false)
-    {
-        return await DbSet.AnyAsync(e => e.Id.Equals(id));
+        return await DbSet.AsNoTracking().AnyAsync(e => e.Id.Equals(id));
     }
 }

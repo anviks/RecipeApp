@@ -1,11 +1,15 @@
 using RecipeApp.Application.DTO;
-using RecipeApp.Base.Contracts.Infrastructure.Data;
 
 namespace RecipeApp.Application.Contracts.Services;
 
-public interface IRecipeService : IEntityRepository<RecipeResponse>
+public interface IRecipeService
 {
-    public Task<RecipeResponse> AddAsync(RecipeRequest recipeRequest, Guid userId, string localWebRootPath);
-    public Task<RecipeResponse> UpdateAsync(RecipeRequest recipeRequest, Guid userId, string localWebRootPath);
-    public Task<int> RemoveAsync(Guid id, string localWebRootPath);
+    Task<RecipeResponse?> GetByIdAsync(Guid id, bool tracking = false);
+    Task<RecipeResponse?> GetByIdDetailedAsync(Guid id);
+    Task<IEnumerable<RecipeResponse>> GetAllAsync(bool tracking = false);
+    Task<IEnumerable<RecipeResponse>> GetAllDetailedAsync();
+    Task<RecipeResponse> AddAsync(RecipeRequest entity, Guid userId, string localWebRootPath);
+    Task<RecipeResponse> UpdateAsync(RecipeRequest entity, Guid userId, string localWebRootPath);
+    Task DeleteAsync(RecipeResponse entity, string localWebRootPath);
+    Task<bool> ExistsAsync(Guid id);
 }

@@ -35,7 +35,7 @@ public class IngredientTypesController(
     [ProducesResponseType(typeof(IEnumerable<v1_0.IngredientType>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<v1_0.IngredientType>>> GetIngredientTypes()
     {
-        var ingredientTypes = await businessLogic.IngredientTypes.FindAllAsync();
+        var ingredientTypes = await businessLogic.IngredientTypes.GetAllAsync();
         return Ok(ingredientTypes);
     }
 
@@ -51,7 +51,7 @@ public class IngredientTypesController(
     [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<v1_0.IngredientType>> GetIngredientType(Guid id)
     {
-        IngredientType? ingredientType = await businessLogic.IngredientTypes.FindAsync(id);
+        IngredientType? ingredientType = await businessLogic.IngredientTypes.GetByIdAsync(id);
 
         if (ingredientType == null)
         {
@@ -91,7 +91,7 @@ public class IngredientTypesController(
         
         try
         {
-            businessLogic.IngredientTypes.Update(_mapper.Map(ingredientType)!);
+            await businessLogic.IngredientTypes.UpdateAsync(_mapper.Map(ingredientType)!);
             await businessLogic.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
@@ -126,7 +126,7 @@ public class IngredientTypesController(
     public async Task<ActionResult<v1_0.IngredientType>> PostIngredientType(v1_0.IngredientType ingredientType)
     {
         IngredientType type = _mapper.Map(ingredientType)!;
-        businessLogic.IngredientTypes.Add(type);
+        await businessLogic.IngredientTypes.AddAsync(type);
         await businessLogic.SaveChangesAsync();
 
         return CreatedAtAction("GetIngredientType", new
@@ -146,7 +146,7 @@ public class IngredientTypesController(
     [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteIngredientType(Guid id)
     {
-        IngredientType? ingredientType = await businessLogic.IngredientTypes.FindAsync(id);
+        IngredientType? ingredientType = await businessLogic.IngredientTypes.GetByIdAsync(id);
         if (ingredientType == null)
         {
             return NotFound(
@@ -157,7 +157,7 @@ public class IngredientTypesController(
                 });
         }
 
-        await businessLogic.IngredientTypes.RemoveAsync(ingredientType);
+        await businessLogic.IngredientTypes.DeleteAsync(ingredientType);
         await businessLogic.SaveChangesAsync();
 
         return NoContent();

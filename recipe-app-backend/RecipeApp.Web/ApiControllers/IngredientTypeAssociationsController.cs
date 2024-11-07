@@ -36,7 +36,7 @@ public class IngredientTypeAssociationsController(
     [ProducesResponseType(typeof(IEnumerable<v1_0.IngredientTypeAssociation>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<v1_0.IngredientTypeAssociation>>> GetIngredientTypeAssociations()
     {
-        var ingredientTypeAssociations = await businessLogic.IngredientTypeAssociations.FindAllAsync();
+        var ingredientTypeAssociations = await businessLogic.IngredientTypeAssociations.GetAllAsync();
         return Ok(ingredientTypeAssociations);
     }
 
@@ -53,7 +53,7 @@ public class IngredientTypeAssociationsController(
     public async Task<ActionResult<v1_0.IngredientTypeAssociation>> GetIngredientTypeAssociation(Guid id)
     {
         IngredientTypeAssociation? ingredientTypeAssociation =
-            await businessLogic.IngredientTypeAssociations.FindAsync(id);
+            await businessLogic.IngredientTypeAssociations.GetByIdAsync(id);
 
         if (ingredientTypeAssociation == null)
         {
@@ -94,7 +94,7 @@ public class IngredientTypeAssociationsController(
 
         try
         {
-            businessLogic.IngredientTypeAssociations.Update(_mapper.Map(ingredientTypeAssociation)!);
+            await businessLogic.IngredientTypeAssociations.UpdateAsync(_mapper.Map(ingredientTypeAssociation)!);
             await businessLogic.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
@@ -129,7 +129,7 @@ public class IngredientTypeAssociationsController(
     public async Task<ActionResult<v1_0.IngredientTypeAssociation>> PostIngredientTypeAssociation(
         v1_0.IngredientTypeAssociation ingredientTypeAssociation)
     {
-        businessLogic.IngredientTypeAssociations.Add(_mapper.Map(ingredientTypeAssociation)!);
+        await businessLogic.IngredientTypeAssociations.AddAsync(_mapper.Map(ingredientTypeAssociation)!);
         await businessLogic.SaveChangesAsync();
 
         return CreatedAtAction("GetIngredientTypeAssociation", new
@@ -150,7 +150,7 @@ public class IngredientTypeAssociationsController(
     public async Task<IActionResult> DeleteIngredientTypeAssociation(Guid id)
     {
         IngredientTypeAssociation? ingredientTypeAssociation =
-            await businessLogic.IngredientTypeAssociations.FindAsync(id);
+            await businessLogic.IngredientTypeAssociations.GetByIdAsync(id);
         if (ingredientTypeAssociation == null)
         {
             return NotFound(
@@ -161,7 +161,7 @@ public class IngredientTypeAssociationsController(
                 });
         }
 
-        await businessLogic.IngredientTypeAssociations.RemoveAsync(ingredientTypeAssociation);
+        await businessLogic.IngredientTypeAssociations.DeleteAsync(ingredientTypeAssociation);
         await businessLogic.SaveChangesAsync();
 
         return NoContent();

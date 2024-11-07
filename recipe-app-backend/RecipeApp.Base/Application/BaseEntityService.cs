@@ -29,96 +29,40 @@ public class BaseEntityService<TDalEntity, TBllEntity, TRepository, TKey>(
     protected readonly TRepository Repository = repository;
     protected readonly EntityMapper<TDalEntity, TBllEntity> Mapper = mapper;
 
-    public virtual TBllEntity Add(TBllEntity entity)
+    public virtual async Task<TBllEntity> AddAsync(TBllEntity entity)
     {
         TDalEntity? dalEntity = Mapper.Map(entity);
-        TDalEntity addedEntity = Repository.Add(dalEntity!);
+        TDalEntity addedEntity = await Repository.AddAsync(dalEntity!);
         return Mapper.Map(addedEntity)!;
     }
 
-    public virtual void AddRange(IEnumerable<TBllEntity> entities)
-    {
-        var dalEntities = entities.Select(Mapper.Map).Select(e => e!);
-        Repository.AddRange(dalEntities);
-    }
-
-    public virtual TBllEntity Update(TBllEntity entity)
+    public virtual async Task<TBllEntity> UpdateAsync(TBllEntity entity)
     {
         TDalEntity? dalEntity = Mapper.Map(entity);
-        TDalEntity updatedEntity = Repository.Update(dalEntity!);
+        TDalEntity updatedEntity = await Repository.UpdateAsync(dalEntity!);
         return Mapper.Map(updatedEntity)!;
     }
 
-    public virtual void UpdateRange(IEnumerable<TBllEntity> entities)
-    {
-        var dalEntities = entities.Select(Mapper.Map).Select(e => e!);
-        Repository.UpdateRange(dalEntities);
-    }
-
-    public virtual int Remove(TBllEntity entity)
+    public virtual async Task DeleteAsync(TBllEntity entity)
     {
         TDalEntity? dalEntity = Mapper.Map(entity);
-        return Repository.Remove(dalEntity!);
+        await Repository.DeleteAsync(dalEntity!);
     }
 
-    public virtual int Remove(TKey id)
+    public virtual async Task<TBllEntity?> GetByIdAsync(TKey id, bool tracking = false)
     {
-        return Repository.Remove(id);
-    }
-
-    public virtual async Task<int> RemoveAsync(TBllEntity entity)
-    {
-        TDalEntity? dalEntity = Mapper.Map(entity);
-        return await Repository.RemoveAsync(dalEntity!);
-    }
-
-    public virtual async Task<int> RemoveAsync(TKey id)
-    {
-        return await Repository.RemoveAsync(id);
-    }
-
-    public virtual int RemoveRange(IEnumerable<TBllEntity> entities)
-    {
-        var dalEntities = entities.Select(Mapper.Map).Select(e => e!);
-        return Repository.RemoveRange(dalEntities);
-    }
-
-    public virtual int RemoveRange(IEnumerable<TKey> ids)
-    {
-        return Repository.RemoveRange(ids);
-    }
-
-    public virtual TBllEntity? Find(TKey id, bool tracking = false)
-    {
-        TDalEntity? dalEntity = Repository.Find(id, tracking);
+        TDalEntity? dalEntity = await Repository.GetByIdAsync(id, tracking);
         return Mapper.Map(dalEntity!);
     }
 
-    public virtual async Task<TBllEntity?> FindAsync(TKey id, bool tracking = false)
+    public virtual async Task<IEnumerable<TBllEntity>> GetAllAsync(bool tracking = false)
     {
-        TDalEntity? dalEntity = await Repository.FindAsync(id, tracking);
-        return Mapper.Map(dalEntity!);
-    }
-
-    public virtual IEnumerable<TBllEntity> FindAll(bool tracking = false)
-    {
-        var dalEntities = Repository.FindAll(tracking);
+        var dalEntities = await Repository.GetAllAsync(tracking);
         return dalEntities.Select(Mapper.Map).Select(e => e!);
     }
 
-    public virtual async Task<IEnumerable<TBllEntity>> FindAllAsync(bool tracking = false)
+    public virtual async Task<bool> ExistsAsync(TKey id)
     {
-        var dalEntities = await Repository.FindAllAsync(tracking);
-        return dalEntities.Select(Mapper.Map).Select(e => e!);
-    }
-
-    public virtual bool Exists(TKey id, bool tracking = false)
-    {
-        return Repository.Exists(id, tracking);
-    }
-
-    public virtual async Task<bool> ExistsAsync(TKey id, bool tracking = false)
-    {
-        return await Repository.ExistsAsync(id, tracking);
+        return await Repository.ExistsAsync(id);
     }
 }

@@ -24,11 +24,11 @@ public class ReviewsController(
     [AllowAnonymous]
     public async Task<IActionResult> Index()
     {
-        var reviews = await businessLogic.Reviews.FindAllAsync();
+        var reviews = await businessLogic.Reviews.GetAllAsync();
         var reviewViewModels = new List<ReviewDetailsViewModel>();
         foreach (ReviewResponse review in reviews)
         {
-            RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(review.RecipeId);
+            RecipeResponse? recipe = await businessLogic.Recipes.GetByIdAsync(review.RecipeId);
             reviewViewModels.Add(new ReviewDetailsViewModel
             {
                 ReviewResponse = review,
@@ -48,13 +48,13 @@ public class ReviewsController(
             return NotFound();
         }
 
-        ReviewResponse? review = await businessLogic.Reviews.FindAsync(id.Value);
+        ReviewResponse? review = await businessLogic.Reviews.GetByIdAsync(id.Value);
         if (review == null)
         {
             return NotFound();
         }
 
-        RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(review.RecipeId);
+        RecipeResponse? recipe = await businessLogic.Recipes.GetByIdAsync(review.RecipeId);
         var reviewViewModel = new ReviewDetailsViewModel
         {
             ReviewResponse = review,
@@ -69,7 +69,7 @@ public class ReviewsController(
     {
         var viewModel = new ReviewCreateEditViewModel
         {
-            RecipeSelectList = new SelectList(await businessLogic.Recipes.FindAllAsync(), "Id", "Title")
+            RecipeSelectList = new SelectList(await businessLogic.Recipes.GetAllAsync(), "Id", "Title")
         };
         return View(viewModel);
     }
@@ -91,7 +91,7 @@ public class ReviewsController(
             return RedirectToAction(nameof(Index));
         }
 
-        viewModel.RecipeSelectList = new SelectList(await businessLogic.Recipes.FindAllAsync(),
+        viewModel.RecipeSelectList = new SelectList(await businessLogic.Recipes.GetAllAsync(),
             nameof(RecipeResponse.Id),
             nameof(RecipeResponse.Title));
         
@@ -106,7 +106,7 @@ public class ReviewsController(
             return NotFound();
         }
 
-        ReviewResponse? review = await businessLogic.Reviews.FindAsync(id.Value);
+        ReviewResponse? review = await businessLogic.Reviews.GetByIdAsync(id.Value);
         if (review == null)
         {
             return NotFound();
@@ -115,7 +115,7 @@ public class ReviewsController(
         var viewModel = new ReviewCreateEditViewModel
         {
             ReviewRequest = _mapper.Map(review)!,
-            RecipeSelectList = new SelectList(await businessLogic.Recipes.FindAllAsync(), nameof(RecipeResponse.Id),
+            RecipeSelectList = new SelectList(await businessLogic.Recipes.GetAllAsync(), nameof(RecipeResponse.Id),
                 nameof(RecipeResponse.Title))
         };
         
@@ -156,7 +156,7 @@ public class ReviewsController(
             return RedirectToAction(nameof(Index));
         }
 
-        viewModel.RecipeSelectList = new SelectList(await businessLogic.Recipes.FindAllAsync(), nameof(RecipeResponse.Id),
+        viewModel.RecipeSelectList = new SelectList(await businessLogic.Recipes.GetAllAsync(), nameof(RecipeResponse.Id),
             nameof(RecipeResponse.Title));
         
         return View(viewModel);
@@ -170,13 +170,13 @@ public class ReviewsController(
             return NotFound();
         }
 
-        ReviewResponse? review = await businessLogic.Reviews.FindAsync(id.Value);
+        ReviewResponse? review = await businessLogic.Reviews.GetByIdAsync(id.Value);
         if (review == null)
         {
             return NotFound();
         }
         
-        RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(review.RecipeId);
+        RecipeResponse? recipe = await businessLogic.Recipes.GetByIdAsync(review.RecipeId);
         var reviewViewModel = new ReviewDetailsViewModel
         {
             ReviewResponse = review,
@@ -191,10 +191,10 @@ public class ReviewsController(
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        ReviewResponse? review = await businessLogic.Reviews.FindAsync(id);
+        ReviewResponse? review = await businessLogic.Reviews.GetByIdAsync(id);
         if (review != null)
         {
-            await businessLogic.Reviews.RemoveAsync(review);
+            await businessLogic.Reviews.DeleteAsync(review);
         }
 
         await businessLogic.SaveChangesAsync();

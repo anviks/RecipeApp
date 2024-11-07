@@ -8,7 +8,6 @@ using RecipeApp.Application.Services;
 using RecipeApp.Infrastructure.Data;
 using RecipeApp.Infrastructure.Data.EntityFramework;
 using RecipeApp.Infrastructure.Data.EntityFramework.Entities;
-using RecipeApp.Infrastructure.Data.EntityFramework.Repositories;
 
 // using Telerik.JustMock;
 
@@ -137,27 +136,16 @@ public class RecipeServiceTest : IClassFixture<TestDatabaseFixture>, IDisposable
     }
 
     [Fact]
-    public async Task RemoveAsync_ShouldReturnZero_WhenRecipeDoesNotExist()
-    {
-        // Act
-        var removedCount = await _service.RemoveAsync(Guid.NewGuid(), TestDatabaseFixture.WebRootPath);
-
-        // Assert
-        removedCount.Should().Be(0);
-    }
-
-    [Fact]
     public async Task RemoveAsync_ShouldRemoveRecipe_WhenRecipeExists()
     {
         // Arrange
         Recipe addedRecipe = await AddRecipe(_context, "existing-image.jpg", createActualFile: true);
 
         // Act
-        var removedCount = await _service.RemoveAsync(addedRecipe.Id, TestDatabaseFixture.WebRootPath);
+        await _service.DeleteAsync(_fixture.Mapper.Map<RecipeResponse>(addedRecipe), TestDatabaseFixture.WebRootPath);
         await _context.SaveChangesAsync();
 
         // Assert
-        removedCount.Should().Be(1);
         Recipe? removedRecipe = await _context.Recipes.FindAsync(addedRecipe.Id);
         removedRecipe.Should().BeNull();
     }

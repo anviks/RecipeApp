@@ -42,7 +42,7 @@ public class RecipesController(
     [ProducesResponseType(typeof(IEnumerable<v1_0.RecipeResponse>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<v1_0.RecipeResponse>>> GetRecipes()
     {
-        var allRecipes = await businessLogic.Recipes.FindAllAsync();
+        var allRecipes = await businessLogic.Recipes.GetAllDetailedAsync();
         return Ok(allRecipes.Select(_responseMapper.Map).ToList());
     }
 
@@ -58,7 +58,7 @@ public class RecipesController(
     [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<v1_0.RecipeResponse>> GetRecipe(Guid id)
     {
-        RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(id);
+        RecipeResponse? recipe = await businessLogic.Recipes.GetByIdDetailedAsync(id);
 
         if (recipe == null)
         {
@@ -96,7 +96,7 @@ public class RecipesController(
                 });
         }
 
-        RecipeResponse? existingRecipe = await businessLogic.Recipes.FindAsync(id);
+        RecipeResponse? existingRecipe = await businessLogic.Recipes.GetByIdAsync(id);
         if (existingRecipe == null)
         {
             return NotFound(
@@ -181,7 +181,7 @@ public class RecipesController(
     [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteRecipe(Guid id)
     {
-        RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(id);
+        RecipeResponse? recipe = await businessLogic.Recipes.GetByIdAsync(id, true);
 
         if (recipe == null)
         {
@@ -193,7 +193,7 @@ public class RecipesController(
                 });
         }
 
-        await businessLogic.Recipes.RemoveAsync(recipe);
+        await businessLogic.Recipes.DeleteAsync(recipe, environment.WebRootPath);
         await businessLogic.SaveChangesAsync();
 
         return NoContent();

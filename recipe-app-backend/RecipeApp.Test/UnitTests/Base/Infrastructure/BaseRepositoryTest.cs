@@ -36,9 +36,9 @@ public class BaseRepositoryTest
         TestEntity entity = CreateRandomEntity();
 
         // Act
-        TestEntity addedEntity = _testEntityRepository.Add(entity);
+        TestEntity addedEntity = await _testEntityRepository.AddAsync(entity);
         await _ctx.SaveChangesAsync();
-        TestEntity? entityInDb = await _testEntityRepository.FindAsync(addedEntity.Id);
+        TestEntity? entityInDb = await _testEntityRepository.GetByIdAsync(addedEntity.Id);
 
         // Assert
         addedEntity.Should().NotBeNull();
@@ -50,26 +50,6 @@ public class BaseRepositoryTest
         entityInDb.Value.Should().Be(entity.Value);
     }
 
-    [Theory]
-    [InlineData(1)]
-    [InlineData(2)]
-    [InlineData(3)]
-    [InlineData(5)]
-    public async Task AddRange_ShouldAddEntities(int count)
-    {
-        // Arrange
-        var entities = Enumerable.Range(0, count).Select(_ => CreateRandomEntity()).ToList();
-
-        // Act
-        _testEntityRepository.AddRange(entities);
-        await _ctx.SaveChangesAsync();
-        var entitiesInDb = _ctx.TestEntities.ToList();
-
-        // Assert
-        entitiesInDb.Should().HaveCount(count);
-        entitiesInDb.Should().OnlyContain(e => entities.Any(e2 => e2.Value == e.Value));
-    }
-
     [Fact]
     public async Task Update_ShouldUpdateEntity()
     {
@@ -79,9 +59,9 @@ public class BaseRepositoryTest
 
         // Act
         entity.Value = "Quuz";
-        TestEntity updatedEntity = _testEntityRepository.Update(entity);
+        TestEntity updatedEntity = await _testEntityRepository.UpdateAsync(entity);
         await _ctx.SaveChangesAsync();
-        TestEntity? entityInDb = await _testEntityRepository.FindAsync(updatedEntity.Id);
+        TestEntity? entityInDb = await _testEntityRepository.GetByIdAsync(updatedEntity.Id);
 
         // Assert
         updatedEntity.Should().NotBeNull();
@@ -93,30 +73,6 @@ public class BaseRepositoryTest
         entityInDb.Value.Should().Be("Quuz");
     }
 
-    [Theory]
-    [InlineData(1)]
-    [InlineData(2)]
-    [InlineData(3)]
-    [InlineData(5)]
-    public async Task UpdateRange_ShouldUpdateEntities(int count)
-    {
-        // Arrange
-        var entities = Enumerable.Range(0, count).Select(_ => CreateRandomEntity()).ToList();
-        _ctx.TestEntities.AddRange(entities);
-        await _ctx.SaveChangesAsync();
-        _ctx.ChangeTracker.Clear();
-
-        // Act
-        entities.ForEach(e => e.Value = "Quuz" + e.Id);
-        _testEntityRepository.UpdateRange(entities);
-        await _ctx.SaveChangesAsync();
-        var entitiesInDb = _ctx.TestEntities.ToList();
-
-        // Assert
-        entitiesInDb.Should().HaveCount(count);
-        entitiesInDb.Should().OnlyContain(e => e.Value == "Quuz" + e.Id);
-    }
-
     [Fact]
     public async Task Remove_ShouldRemoveEntity()
     {
@@ -125,91 +81,12 @@ public class BaseRepositoryTest
         TestEntity entity2 = await AddRandomEntity();
 
         // Act
-        var removedCount = _testEntityRepository.Remove(entity);
-        var removedCount2 = _testEntityRepository.Remove(entity2.Id);
+        _testEntityRepository.DeleteAsync(entity);
+        _testEntityRepository.DeleteAsync(entity2);
         await _ctx.SaveChangesAsync();
 
         // Assert
-        removedCount.Should().Be(1);
-        removedCount2.Should().Be(1);
         _ctx.TestEntities.Should().HaveCount(0);
-    }
-
-    [Fact]
-    public async Task Remove_ShouldReturnZero_WhenEntityNotFound()
-    {
-        // Arrange
-        await AddRandomEntity();
-        await AddRandomEntity();
-
-        // Act
-        var removedCount = _testEntityRepository.Remove(new TestEntity { Id = Guid.NewGuid(), Value = "Foo" });
-        var removedCount2 = _testEntityRepository.Remove(Guid.NewGuid());
-        await _ctx.SaveChangesAsync();
-
-        // Assert
-        removedCount.Should().Be(0);
-        removedCount2.Should().Be(0);
-        _ctx.TestEntities.Should().HaveCount(2);
-    }
-
-    [Fact]
-    public async Task RemoveAsync_ShouldRemoveEntity()
-    {
-        // Arrange
-        TestEntity entity = await AddRandomEntity();
-        TestEntity entity2 = await AddRandomEntity();
-
-        // Act
-        var removedCount = await _testEntityRepository.RemoveAsync(entity);
-        var removedCount2 = await _testEntityRepository.RemoveAsync(entity2.Id);
-        await _ctx.SaveChangesAsync();
-
-        // Assert
-        removedCount.Should().Be(1);
-        removedCount2.Should().Be(1);
-        _ctx.TestEntities.Should().HaveCount(0);
-    }
-    
-    [Fact]
-    public async Task RemoveAsync_ShouldReturnZero_WhenEntityNotFound()
-    {
-        // Arrange
-        await AddRandomEntity();
-        await AddRandomEntity();
-
-        // Act
-        var removedCount = await _testEntityRepository.RemoveAsync(new TestEntity { Id = Guid.NewGuid(), Value = "Foo" });
-        var removedCount2 = await _testEntityRepository.RemoveAsync(Guid.NewGuid());
-        await _ctx.SaveChangesAsync();
-
-        // Assert
-        removedCount.Should().Be(0);
-        removedCount2.Should().Be(0);
-        _ctx.TestEntities.Should().HaveCount(2);
-    }
-
-    [Fact]
-    public async Task RemoveRange_ShouldRemoveEntities()
-    {
-        // Arrange
-        TestEntity entity1 = await AddRandomEntity();
-        TestEntity entity2 = await AddRandomEntity();
-        TestEntity entity3 = await AddRandomEntity();
-        TestEntity entity4 = await AddRandomEntity();
-        TestEntity entity5 = await AddRandomEntity();
-
-        // Act
-        var removedCount = _testEntityRepository.RemoveRange(new[] { entity1, entity2 });
-        var removedCount2 = _testEntityRepository.RemoveRange(new[] { entity4.Id, entity5.Id });
-        await _ctx.SaveChangesAsync();
-        var entitiesInDb = _ctx.TestEntities.ToList();
-
-        // Assert
-        removedCount.Should().Be(2);
-        removedCount2.Should().Be(2);
-        entitiesInDb.Should().HaveCount(1);
-        entitiesInDb.Should().ContainSingle(e => e.Value == entity3.Value);
     }
 
     [Fact]
@@ -219,41 +96,11 @@ public class BaseRepositoryTest
         TestEntity entity = await AddRandomEntity();
 
         // Act
-        TestEntity? data = _testEntityRepository.Find(entity.Id);
+        TestEntity? data = await _testEntityRepository.GetByIdAsync(entity.Id);
 
         // Assert
         data.Should().NotBeNull();
         data!.Value.Should().Be(entity.Value);
-    }
-
-    [Fact]
-    public async Task FindAsync_ShouldReturnEntity()
-    {
-        // Arrange
-        TestEntity entity = await AddRandomEntity();
-
-        // Act
-        TestEntity? data = await _testEntityRepository.FindAsync(entity.Id);
-
-        // Assert
-        data.Should().NotBeNull();
-        data!.Value.Should().Be(entity.Value);
-    }
-
-    [Fact]
-    public async Task FindAll_ShouldReturnAllEntities()
-    {
-        // Arrange
-        TestEntity entity1 = await AddRandomEntity();
-        TestEntity entity2 = await AddRandomEntity();
-
-        // Act
-        var data = _testEntityRepository.FindAll().ToList();
-
-        // Assert
-        data.Should().HaveCount(2);
-        data.Should().ContainSingle(e => e.Value == entity1.Value);
-        data.Should().ContainSingle(e => e.Value == entity2.Value);
     }
 
     [Fact]
@@ -264,25 +111,12 @@ public class BaseRepositoryTest
         TestEntity entity2 = await AddRandomEntity();
 
         // Act
-        var data = (await _testEntityRepository.FindAllAsync()).ToList();
+        var data = (await _testEntityRepository.GetAllAsync()).ToList();
 
         // Assert
         data.Should().HaveCount(2);
         data.Should().ContainSingle(e => e.Value == entity1.Value);
         data.Should().ContainSingle(e => e.Value == entity2.Value);
-    }
-
-    [Fact]
-    public async Task Exists_ShouldReturnTrue()
-    {
-        // Arrange
-        TestEntity entity = await AddRandomEntity();
-
-        // Act
-        var exists = _testEntityRepository.Exists(entity.Id);
-
-        // Assert
-        exists.Should().BeTrue();
     }
 
     [Fact]

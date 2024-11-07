@@ -13,7 +13,7 @@ public class CategoriesController(IAppBusinessLogic businessLogic) : Controller
     [AllowAnonymous]
     public async Task<IActionResult> Index()
     {
-        return View(await businessLogic.Categories.FindAllAsync());
+        return View(await businessLogic.Categories.GetAllAsync());
     }
 
     // GET: Categories/Details/5
@@ -25,7 +25,7 @@ public class CategoriesController(IAppBusinessLogic businessLogic) : Controller
             return NotFound();
         }
 
-        Category? category = await businessLogic.Categories.FindAsync(id.Value);
+        Category? category = await businessLogic.Categories.GetByIdAsync(id.Value);
         if (category == null)
         {
             return NotFound();
@@ -50,7 +50,7 @@ public class CategoriesController(IAppBusinessLogic businessLogic) : Controller
         if (!ModelState.IsValid) return View(category);
         
         category.Id = Guid.NewGuid();
-        businessLogic.Categories.Add(category);
+        businessLogic.Categories.AddAsync(category);
         await businessLogic.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
@@ -63,7 +63,7 @@ public class CategoriesController(IAppBusinessLogic businessLogic) : Controller
             return NotFound();
         }
 
-        Category? category = await businessLogic.Categories.FindAsync(id.Value);
+        Category? category = await businessLogic.Categories.GetByIdAsync(id.Value);
         if (category == null)
         {
             return NotFound();
@@ -87,7 +87,7 @@ public class CategoriesController(IAppBusinessLogic businessLogic) : Controller
         
         try
         {
-            businessLogic.Categories.Update(category);
+            businessLogic.Categories.UpdateAsync(category);
             await businessLogic.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
@@ -110,7 +110,7 @@ public class CategoriesController(IAppBusinessLogic businessLogic) : Controller
             return NotFound();
         }
 
-        Category? category = await businessLogic.Categories.FindAsync(id.Value);
+        Category? category = await businessLogic.Categories.GetByIdAsync(id.Value);
         if (category == null)
         {
             return NotFound();
@@ -124,10 +124,10 @@ public class CategoriesController(IAppBusinessLogic businessLogic) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        Category? category = await businessLogic.Categories.FindAsync(id);
+        Category? category = await businessLogic.Categories.GetByIdAsync(id);
         if (category != null)
         {
-            await businessLogic.Categories.RemoveAsync(category);
+            await businessLogic.Categories.DeleteAsync(category);
         }
 
         await businessLogic.SaveChangesAsync();

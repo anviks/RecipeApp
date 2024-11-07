@@ -17,33 +17,33 @@ public class ReviewService(
 {
     private readonly EntityMapper<ReviewRequest, DAL.Review> _mapper = new(mapper);
     
-    public ReviewResponse Add(ReviewRequest reviewRequest, Guid userId)
+    public async Task<ReviewResponse> Add(ReviewRequest reviewRequest, Guid userId)
     {
         DAL.Review dalReview = _mapper.Map(reviewRequest)!;
         dalReview.UserId = userId;
         dalReview.CreatedAt = DateTime.Now;
-        DAL.Review addedReview = Repository.Add(dalReview);
+        DAL.Review addedReview = await Repository.AddAsync(dalReview);
         return Mapper.Map(addedReview)!;
     }
     
     public async Task<ReviewResponse> UpdateAsync(ReviewRequest reviewRequest)
     {
-        DAL.Review existingReview = (await Repository.FindAsync(reviewRequest.Id))!;
+        DAL.Review existingReview = (await Repository.GetByIdAsync(reviewRequest.Id))!;
         DAL.Review dalReview = _mapper.Map(reviewRequest)!;
         dalReview.Edited = true;
         dalReview.CreatedAt = existingReview.CreatedAt;
         dalReview.UserId = existingReview.UserId;
         dalReview.RecipeId = existingReview.RecipeId;
-        DAL.Review updatedReview = Repository.Update(dalReview);
+        DAL.Review updatedReview = await Repository.UpdateAsync(dalReview);
         return Mapper.Map(updatedReview)!;
     }
 
-    public override ReviewResponse Add(ReviewResponse entity)
+    public override async Task<ReviewResponse> AddAsync(ReviewResponse entity)
     {
         throw new MethodAccessException();
     }
 
-    public override ReviewResponse Update(ReviewResponse entity)
+    public override Task<ReviewResponse> UpdateAsync(ReviewResponse entity)
     {
         throw new MethodAccessException();
     }

@@ -28,7 +28,7 @@ public class RecipesController(
     [AllowAnonymous]
     public async Task<IActionResult> Index()
     {
-        var allRecipes = await businessLogic.Recipes.FindAllAsync();
+        var allRecipes = await businessLogic.Recipes.GetAllAsync();
         return View(allRecipes);
     }
 
@@ -41,7 +41,7 @@ public class RecipesController(
             return NotFound();
         }
 
-        RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(id.Value);
+        RecipeResponse? recipe = await businessLogic.Recipes.GetByIdAsync(id.Value);
 
         if (recipe == null)
         {
@@ -94,7 +94,7 @@ public class RecipesController(
             return NotFound();
         }
 
-        RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(id.Value);
+        RecipeResponse? recipe = await businessLogic.Recipes.GetByIdAsync(id.Value);
         if (recipe == null)
         {
             return NotFound();
@@ -155,7 +155,7 @@ public class RecipesController(
             return NotFound();
         }
 
-        RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(id.Value);
+        RecipeResponse? recipe = await businessLogic.Recipes.GetByIdAsync(id.Value);
         if (recipe == null)
         {
             return NotFound();
@@ -169,7 +169,8 @@ public class RecipesController(
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        await businessLogic.Recipes.RemoveAsync(id, environment.WebRootPath);
+        RecipeResponse? recipe = await businessLogic.Recipes.GetByIdAsync(id, true);
+        await businessLogic.Recipes.DeleteAsync(recipe!, environment.WebRootPath);
         await businessLogic.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }

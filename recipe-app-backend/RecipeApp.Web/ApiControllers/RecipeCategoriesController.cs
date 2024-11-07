@@ -35,7 +35,7 @@ public class RecipeCategoriesController(
     [ProducesResponseType(typeof(IEnumerable<v1_0.RecipeCategory>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<v1_0.RecipeCategory>>> GetRecipeCategories()
     {
-        var recipeCategories = await businessLogic.RecipeCategories.FindAllAsync();
+        var recipeCategories = await businessLogic.RecipeCategories.GetAllAsync();
         return Ok(recipeCategories.Select(_mapper.Map));
     }
 
@@ -51,7 +51,7 @@ public class RecipeCategoriesController(
     [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<v1_0.RecipeCategory>> GetRecipeCategory(Guid id)
     {
-        RecipeCategory? recipeCategory = await businessLogic.RecipeCategories.FindAsync(id);
+        RecipeCategory? recipeCategory = await businessLogic.RecipeCategories.GetByIdAsync(id);
 
         if (recipeCategory == null)
         {
@@ -91,7 +91,7 @@ public class RecipeCategoriesController(
 
         try
         {
-            businessLogic.RecipeCategories.Update(_mapper.Map(recipeCategory)!);
+            await businessLogic.RecipeCategories.UpdateAsync(_mapper.Map(recipeCategory)!);
             await businessLogic.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
@@ -125,7 +125,7 @@ public class RecipeCategoriesController(
     [ProducesResponseType(typeof(v1_0.RecipeCategory), StatusCodes.Status201Created)]
     public async Task<ActionResult<v1_0.RecipeCategory>> PostRecipeCategory(v1_0.RecipeCategory recipeCategory)
     {
-        businessLogic.RecipeCategories.Add(_mapper.Map(recipeCategory)!);
+        await businessLogic.RecipeCategories.AddAsync(_mapper.Map(recipeCategory)!);
         await businessLogic.SaveChangesAsync();
 
         return CreatedAtAction("GetRecipeCategory", new
@@ -145,7 +145,7 @@ public class RecipeCategoriesController(
     [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteRecipeCategory(Guid id)
     {
-        RecipeCategory? recipeCategory = await businessLogic.RecipeCategories.FindAsync(id);
+        RecipeCategory? recipeCategory = await businessLogic.RecipeCategories.GetByIdAsync(id);
         if (recipeCategory == null)
         {
             return NotFound(
@@ -156,7 +156,7 @@ public class RecipeCategoriesController(
                 });
         }
 
-        await businessLogic.RecipeCategories.RemoveAsync(recipeCategory);
+        await businessLogic.RecipeCategories.DeleteAsync(recipeCategory);
         await businessLogic.SaveChangesAsync();
 
         return NoContent();

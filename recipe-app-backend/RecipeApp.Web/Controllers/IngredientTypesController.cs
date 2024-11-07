@@ -14,7 +14,7 @@ public class IngredientTypesController(IAppBusinessLogic businessLogic) : Contro
     [AllowAnonymous]
     public async Task<IActionResult> Index()
     {
-        var ingredientTypes = await businessLogic.IngredientTypes.FindAllAsync();
+        var ingredientTypes = await businessLogic.IngredientTypes.GetAllAsync();
         return View(ingredientTypes);
     }
 
@@ -28,7 +28,7 @@ public class IngredientTypesController(IAppBusinessLogic businessLogic) : Contro
             return NotFound();
         }
 
-        IngredientType? ingredientType = await businessLogic.IngredientTypes.FindAsync(id.Value);
+        IngredientType? ingredientType = await businessLogic.IngredientTypes.GetByIdAsync(id.Value);
         if (ingredientType == null)
         {
             return NotFound();
@@ -53,7 +53,7 @@ public class IngredientTypesController(IAppBusinessLogic businessLogic) : Contro
         if (!ModelState.IsValid) return View(ingredientType);
         
         ingredientType.Id = Guid.NewGuid();
-        businessLogic.IngredientTypes.Add(ingredientType);
+        businessLogic.IngredientTypes.AddAsync(ingredientType);
         await businessLogic.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
@@ -66,7 +66,7 @@ public class IngredientTypesController(IAppBusinessLogic businessLogic) : Contro
             return NotFound();
         }
 
-        IngredientType? ingredientType = await businessLogic.IngredientTypes.FindAsync(id.Value);
+        IngredientType? ingredientType = await businessLogic.IngredientTypes.GetByIdAsync(id.Value);
         if (ingredientType == null)
         {
             return NotFound();
@@ -89,7 +89,7 @@ public class IngredientTypesController(IAppBusinessLogic businessLogic) : Contro
         if (!ModelState.IsValid) return View(ingredientType);
         try
         {
-            businessLogic.IngredientTypes.Update(ingredientType);
+            businessLogic.IngredientTypes.UpdateAsync(ingredientType);
             await businessLogic.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
@@ -112,7 +112,7 @@ public class IngredientTypesController(IAppBusinessLogic businessLogic) : Contro
             return NotFound();
         }
 
-        IngredientType? ingredientType = await businessLogic.IngredientTypes.FindAsync(id.Value);
+        IngredientType? ingredientType = await businessLogic.IngredientTypes.GetByIdAsync(id.Value);
         if (ingredientType == null)
         {
             return NotFound();
@@ -126,10 +126,10 @@ public class IngredientTypesController(IAppBusinessLogic businessLogic) : Contro
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        IngredientType? ingredientType = await businessLogic.IngredientTypes.FindAsync(id);
+        IngredientType? ingredientType = await businessLogic.IngredientTypes.GetByIdAsync(id);
         if (ingredientType != null)
         {
-            await businessLogic.IngredientTypes.RemoveAsync(ingredientType);
+            await businessLogic.IngredientTypes.DeleteAsync(ingredientType);
         }
 
         await businessLogic.SaveChangesAsync();

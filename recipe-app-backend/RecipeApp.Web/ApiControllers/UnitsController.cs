@@ -35,7 +35,7 @@ public class UnitsController(
     [ProducesResponseType(typeof(IEnumerable<v1_0.Unit>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<v1_0.Unit>>> GetUnits()
     {
-        var units = await businessLogic.Units.FindAllAsync();
+        var units = await businessLogic.Units.GetAllAsync();
         return Ok(units.Select(_mapper.Map));
     }
 
@@ -51,7 +51,7 @@ public class UnitsController(
     [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<v1_0.Unit>> GetUnit(Guid id)
     {
-        Unit? unit = await businessLogic.Units.FindAsync(id);
+        Unit? unit = await businessLogic.Units.GetByIdAsync(id);
 
         if (unit == null)
         {
@@ -91,7 +91,7 @@ public class UnitsController(
 
         try
         {
-            businessLogic.Units.Update(_mapper.Map(unit)!);
+            await businessLogic.Units.UpdateAsync(_mapper.Map(unit)!);
             await businessLogic.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
@@ -125,7 +125,7 @@ public class UnitsController(
     [ProducesResponseType(typeof(v1_0.Unit), StatusCodes.Status201Created)]
     public async Task<ActionResult<v1_0.Unit>> PostUnit(v1_0.Unit unit)
     {
-        businessLogic.Units.Add(_mapper.Map(unit)!);
+        await businessLogic.Units.AddAsync(_mapper.Map(unit)!);
         await businessLogic.SaveChangesAsync();
 
         return CreatedAtAction("GetUnit", new
@@ -145,7 +145,7 @@ public class UnitsController(
     [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteUnit(Guid id)
     {
-        Unit? unit = await businessLogic.Units.FindAsync(id);
+        Unit? unit = await businessLogic.Units.GetByIdAsync(id);
         if (unit == null)
         {
             return NotFound(
@@ -156,7 +156,7 @@ public class UnitsController(
                 });
         }
 
-        await businessLogic.Units.RemoveAsync(unit);
+        await businessLogic.Units.DeleteAsync(unit);
         await businessLogic.SaveChangesAsync();
 
         return NoContent();

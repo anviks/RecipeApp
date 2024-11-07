@@ -1,20 +1,16 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using RecipeApp.Base;
-using RecipeApp.Base.Helpers;
 using RecipeApp.Base.Infrastructure.Data;
 using RecipeApp.Infrastructure.Contracts.Data.Repositories;
 
 namespace RecipeApp.Infrastructure.Data.EntityFramework.Repositories;
 
 public class CategoryRepository(AppDbContext dbContext, IMapper mapper)
-    : BaseEntityRepository<Entities.Category, DTO.Category, AppDbContext>(
-            dbContext,
-            new EntityMapper<Entities.Category, DTO.Category>(mapper)
-        ),
+    : BaseEntityRepository<Entities.Category, DTO.Category, AppDbContext>(dbContext, mapper),
         ICategoryRepository
 {
-    public override DTO.Category Update(DTO.Category entity)
+    public override Task<DTO.Category> UpdateAsync(DTO.Category entity)
     {
         Entities.Category category = Mapper.Map(entity)!;
         Entities.Category existingCategory = DbSet.AsNoTracking().First(c => c.Id == category.Id);
@@ -28,11 +24,6 @@ public class CategoryRepository(AppDbContext dbContext, IMapper mapper)
         category.Description?.SetTranslation(description);
         
         var entry = DbContext.Update(category);
-        return Mapper.Map(entry.Entity)!;
-    }
-
-    public override void UpdateRange(IEnumerable<DTO.Category> entities)
-    {
-        throw new NotImplementedException();
+        return Task.FromResult(Mapper.Map(entry.Entity)!);
     }
 }

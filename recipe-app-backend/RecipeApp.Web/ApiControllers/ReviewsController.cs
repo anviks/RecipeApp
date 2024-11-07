@@ -39,7 +39,7 @@ public class ReviewsController(
     [ProducesResponseType(typeof(IEnumerable<v1_0.ReviewResponse>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<v1_0.ReviewResponse>>> GetReviews()
     {
-        var reviews = await businessLogic.Reviews.FindAllAsync();
+        var reviews = await businessLogic.Reviews.GetAllAsync();
         return Ok(reviews.Select(_responseLayerMapper.Map));
     }
 
@@ -55,7 +55,7 @@ public class ReviewsController(
     [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<v1_0.ReviewResponse>> GetReview(Guid id)
     {
-        ReviewResponse? review = await businessLogic.Reviews.FindAsync(id);
+        ReviewResponse? review = await businessLogic.Reviews.GetByIdAsync(id);
 
         if (review == null)
         {
@@ -129,7 +129,7 @@ public class ReviewsController(
     [ProducesResponseType(typeof(v1_0.ReviewResponse), StatusCodes.Status201Created)]
     public async Task<ActionResult<v1_0.ReviewResponse>> PostReview(v1_0.ReviewRequest reviewRequest)
     {
-        businessLogic.Reviews.Add(_requestLayerMapper.Map(reviewRequest)!, Guid.Parse(userManager.GetUserId(User)!));
+        await businessLogic.Reviews.Add(_requestLayerMapper.Map(reviewRequest)!, Guid.Parse(userManager.GetUserId(User)!));
         await businessLogic.SaveChangesAsync();
 
         return CreatedAtAction("GetReview", new
@@ -149,7 +149,7 @@ public class ReviewsController(
     [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteReview(Guid id)
     {
-        ReviewResponse? review = await businessLogic.Reviews.FindAsync(id);
+        ReviewResponse? review = await businessLogic.Reviews.GetByIdAsync(id);
         if (review == null)
         {
             return NotFound(
@@ -160,7 +160,7 @@ public class ReviewsController(
                 });
         }
 
-        await businessLogic.Reviews.RemoveAsync(review);
+        await businessLogic.Reviews.DeleteAsync(review);
         await businessLogic.SaveChangesAsync();
 
         return NoContent();

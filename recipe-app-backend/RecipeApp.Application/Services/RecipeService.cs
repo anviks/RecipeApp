@@ -1,72 +1,83 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using RecipeApp.Application.Contracts.Services;
-using RecipeApp.Application.DTO;
 using RecipeApp.Application.Exceptions;
-using RecipeApp.Base.Application;
-using RecipeApp.Base.Helpers;
 using RecipeApp.Infrastructure.Contracts.Data;
-using RecipeApp.Infrastructure.Contracts.Data.Repositories;
 using DAL = RecipeApp.Infrastructure.Data.DTO;
+using BLL = RecipeApp.Application.DTO;
 
 namespace RecipeApp.Application.Services;
 
 public class RecipeService(
     IAppUnitOfWork unitOfWork,
     IMapper mapper)
-    : BaseEntityService<DAL.Recipe, RecipeResponse, IRecipeRepository>(
-            unitOfWork.Recipes,
-            new EntityMapper<DAL.Recipe, RecipeResponse>(mapper)),
-        IRecipeService
+    : IRecipeService
 {
-    private readonly EntityMapper<RecipeRequest, DAL.Recipe> _recipeMapper = new(mapper);
-    private readonly EntityMapper<Category, DAL.Category> _categoryMapper = new(mapper);
-    private readonly EntityMapper<Ingredient, DAL.Ingredient> _ingredientMapper = new(mapper);
     private static readonly string[] UploadPathFromWebroot = ["uploads", "images"];
 
-    public override async Task<RecipeResponse?> FindAsync(Guid id, bool tracking = false)
+    public async Task<BLL.RecipeResponse?> GetByIdAsync(Guid id, bool tracking = false)
     {
-        DAL.Recipe? recipe = await Repository.FindAsync(id, tracking);
-        RecipeResponse? recipeResponse = Mapper.Map(recipe!);
+        DAL.Recipe? recipe = await unitOfWork.Recipes.GetByIdAsync(id, tracking);
+        return mapper.Map<BLL.RecipeResponse>(recipe!);
+    }
 
-        recipeResponse!.Categories = new List<Category>();
-        recipeResponse.Ingredients = new List<Ingredient>();
-
-        foreach (DAL.RecipeCategory recipeCategory in recipe!.RecipeCategories!)
-        {
-            DAL.Category? category = await unitOfWork.Categories.FindAsync(recipeCategory.CategoryId);
-            recipeResponse.Categories.Add(_categoryMapper.Map(category)!);
-        }
+    public async Task<BLL.RecipeResponse?> GetByIdDetailedAsync(Guid id)
+    {
+        DAL.Recipe? recipe = await unitOfWork.Recipes.GetByIdDetailedAsync(id);
+        var recipeResponse = mapper.Map<BLL.RecipeResponse>(recipe!);
         
-        foreach (DAL.RecipeIngredient recipeIngredient in recipe.RecipeIngredients!)
-        {
-            DAL.Ingredient? ingredient = await unitOfWork.Ingredients.FindAsync(recipeIngredient.IngredientId);
-            recipeResponse.Ingredients.Add(_ingredientMapper.Map(ingredient)!);
-        }
+        recipeResponse.Categories = mapper.Map<List<BLL.Category>>(recipe!.RecipeCategories!.Select(rc => rc.Category));
+        recipeResponse.Ingredients = mapper.Map<List<BLL.Ingredient>>(recipe!.RecipeIngredients!.Select(ri => ri.Ingredient));
         
         return recipeResponse;
     }
 
-    public async Task<RecipeResponse> AddAsync(RecipeRequest recipeRequest, Guid userId,
+    public async Task<IEnumerable<BLL.RecipeResponse>> GetAllAsync(bool tracking = false)
+    {
+        var recipes = await unitOfWork.Recipes.GetAllAsync(tracking);
+        return recipes.Select(mapper.Map<BLL.RecipeResponse>);
+    }
+
+    public async Task<IEnumerable<BLL.RecipeResponse>> GetAllDetailedAsync()
+    {
+        var recipes = await unitOfWork.Recipes.GetAllDetailedAsync();
+        var enumerable = recipes.ToList();
+
+        return enumerable.Select(recipe =>
+        {
+            var recipeResponse = mapper.Map<BLL.RecipeResponse>(recipe);
+            
+            recipeResponse.Categories = mapper.Map<List<BLL.Category>>(recipe.RecipeCategories!.Select(rc => rc.Category));
+            recipeResponse.Ingredients = mapper.Map<List<BLL.Ingredient>>(recipe.RecipeIngredients!.Select(ri => ri.Ingredient));
+
+            return recipeResponse;
+        });
+    }
+
+    public async Task<BLL.RecipeResponse> AddAsync(
+        BLL.RecipeRequest recipeRequest, 
+        Guid userId, 
         string localWebRootPath)
     {
         if (recipeRequest.ImageFile == null) throw new MissingImageException();
 
-        DAL.Recipe dalRecipe = _recipeMapper.Map(recipeRequest)!;
+        var dalRecipe = mapper.Map<DAL.Recipe>(recipeRequest)!;
         dalRecipe.CreatedAt = DateTime.Now.ToUniversalTime();
         dalRecipe.AuthorUserId = userId;
 
         var uploadUrl = await SaveImage(recipeRequest.ImageFile, localWebRootPath);
         dalRecipe.ImageFileUrl = uploadUrl;
-        DAL.Recipe addedRecipe = Repository.Add(dalRecipe);
-        return Mapper.Map(addedRecipe)!;
+        DAL.Recipe addedRecipe = await unitOfWork.Recipes.AddAsync(dalRecipe);
+        return mapper.Map<BLL.RecipeResponse>(addedRecipe);
     }
 
-    public async Task<RecipeResponse> UpdateAsync(RecipeRequest recipeRequest, Guid userId,
+    public async Task<BLL.RecipeResponse> UpdateAsync(
+        BLL.RecipeRequest recipeRequest, 
+        Guid userId, 
         string localWebRootPath)
     {
-        DAL.Recipe existingRecipe = (await Repository.FindAsync(recipeRequest.Id))!;
-        DAL.Recipe dalRecipe = _recipeMapper.Map(recipeRequest)!;
+        DAL.Recipe existingRecipe = (await unitOfWork.Recipes.GetByIdAsync(recipeRequest.Id))!;
+        var dalRecipe = mapper.Map<DAL.Recipe>(recipeRequest)!;
         dalRecipe.CreatedAt = existingRecipe.CreatedAt;
         dalRecipe.AuthorUserId = existingRecipe.AuthorUserId;
         dalRecipe.UpdatedAt = DateTime.Now.ToUniversalTime();
@@ -83,16 +94,20 @@ public class RecipeService(
             dalRecipe.ImageFileUrl = existingRecipe.ImageFileUrl;
         }
 
-        DAL.Recipe updatedRecipe = Repository.Update(dalRecipe);
-        return Mapper.Map(updatedRecipe)!;
+        DAL.Recipe updatedRecipe = await unitOfWork.Recipes.UpdateAsync(dalRecipe);
+        return mapper.Map<BLL.RecipeResponse>(updatedRecipe);
     }
-    
-    public async Task<int> RemoveAsync(Guid id, string localWebRootPath)
+
+    public async Task DeleteAsync(BLL.RecipeResponse entity, string localWebRootPath)
     {
-        DAL.Recipe? existingRecipe = await Repository.FindAsync(id);
-        if (existingRecipe == null) return 0;
-        DeleteImage(localWebRootPath, existingRecipe.ImageFileUrl);
-        return await Repository.RemoveAsync(id);
+        var dalRecipe = mapper.Map<DAL.Recipe>(entity);
+        await unitOfWork.Recipes.DeleteAsync(dalRecipe);
+        DeleteImage(localWebRootPath, dalRecipe.ImageFileUrl);
+    }
+
+    public async Task<bool> ExistsAsync(Guid id)
+    {
+        return await unitOfWork.Recipes.ExistsAsync(id);
     }
 
     private static async Task<string> SaveImage(IFormFile file, string webRootPath)

@@ -17,8 +17,7 @@ public class AppUnitOfWork(AppDbContext dbContext, IMapper mapper)
 {
     private IEntityRepository<AppUser>? _users;
     public IEntityRepository<AppUser> Users => _users ??=
-                                               new BaseEntityRepository<AppUser, AppUser, AppDbContext>(UowDbContext,
-                                                   new EntityMapper<AppUser, AppUser>(mapper));
+                                               new BaseEntityRepository<AppUser, AppUser, AppDbContext>(UowDbContext, mapper);
     
     private ICategoryRepository? _categories;
     public ICategoryRepository Categories => _categories ??= new CategoryRepository(UowDbContext, mapper);

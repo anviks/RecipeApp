@@ -14,7 +14,7 @@ public class IngredientsController(IAppBusinessLogic businessLogic) : Controller
     [AllowAnonymous]
     public async Task<IActionResult> Index()
     {
-        var ingredients = await businessLogic.Ingredients.FindAllAsync();
+        var ingredients = await businessLogic.Ingredients.GetAllAsync();
         return View(ingredients);
     }
 
@@ -28,7 +28,7 @@ public class IngredientsController(IAppBusinessLogic businessLogic) : Controller
             return NotFound();
         }
 
-        Ingredient? ingredient = await businessLogic.Ingredients.FindAsync(id.Value);
+        Ingredient? ingredient = await businessLogic.Ingredients.GetByIdAsync(id.Value);
         if (ingredient == null)
         {
             return NotFound();
@@ -51,7 +51,7 @@ public class IngredientsController(IAppBusinessLogic businessLogic) : Controller
     public async Task<IActionResult> Create([Bind("Name,Id")] Ingredient ingredient)
     {
         if (!ModelState.IsValid) return View(ingredient);
-        businessLogic.Ingredients.Add(ingredient);
+        businessLogic.Ingredients.AddAsync(ingredient);
         await businessLogic.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
@@ -64,7 +64,7 @@ public class IngredientsController(IAppBusinessLogic businessLogic) : Controller
             return NotFound();
         }
 
-        Ingredient? ingredient = await businessLogic.Ingredients.FindAsync(id.Value);
+        Ingredient? ingredient = await businessLogic.Ingredients.GetByIdAsync(id.Value);
         if (ingredient == null)
         {
             return NotFound();
@@ -87,7 +87,7 @@ public class IngredientsController(IAppBusinessLogic businessLogic) : Controller
         if (!ModelState.IsValid) return View(ingredient);
         try
         {
-            businessLogic.Ingredients.Update(ingredient);
+            businessLogic.Ingredients.UpdateAsync(ingredient);
             await businessLogic.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
@@ -110,7 +110,7 @@ public class IngredientsController(IAppBusinessLogic businessLogic) : Controller
             return NotFound();
         }
 
-        Ingredient? ingredient = await businessLogic.Ingredients.FindAsync(id.Value);
+        Ingredient? ingredient = await businessLogic.Ingredients.GetByIdAsync(id.Value);
         if (ingredient == null)
         {
             return NotFound();
@@ -124,10 +124,10 @@ public class IngredientsController(IAppBusinessLogic businessLogic) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        Ingredient? ingredient = await businessLogic.Ingredients.FindAsync(id);
+        Ingredient? ingredient = await businessLogic.Ingredients.GetByIdAsync(id);
         if (ingredient != null)
         {
-            await businessLogic.Ingredients.RemoveAsync(ingredient);
+            await businessLogic.Ingredients.DeleteAsync(ingredient);
         }
 
         await businessLogic.SaveChangesAsync();

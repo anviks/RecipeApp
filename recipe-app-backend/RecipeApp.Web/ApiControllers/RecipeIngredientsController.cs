@@ -35,7 +35,7 @@ public class RecipeIngredientsController(
     [ProducesResponseType(typeof(IEnumerable<v1_0.RecipeIngredient>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<v1_0.RecipeIngredient>>> GetRecipeIngredients()
     {
-        var recipeIngredients = await businessLogic.RecipeIngredients.FindAllAsync();
+        var recipeIngredients = await businessLogic.RecipeIngredients.GetAllAsync();
         return Ok(recipeIngredients.Select(_mapper.Map));
     }
 
@@ -51,7 +51,7 @@ public class RecipeIngredientsController(
     [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<v1_0.RecipeIngredient>> GetRecipeIngredient(Guid id)
     {
-        RecipeIngredient? recipeIngredient = await businessLogic.RecipeIngredients.FindAsync(id);
+        RecipeIngredient? recipeIngredient = await businessLogic.RecipeIngredients.GetByIdAsync(id);
 
         if (recipeIngredient == null)
         {
@@ -91,7 +91,7 @@ public class RecipeIngredientsController(
 
         try
         {
-            businessLogic.RecipeIngredients.Update(_mapper.Map(recipeIngredient)!);
+            await businessLogic.RecipeIngredients.UpdateAsync(_mapper.Map(recipeIngredient)!);
             await businessLogic.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
@@ -125,7 +125,7 @@ public class RecipeIngredientsController(
     [ProducesResponseType(typeof(v1_0.RecipeIngredient), StatusCodes.Status201Created)]
     public async Task<ActionResult<v1_0.RecipeIngredient>> PostRecipeIngredient(v1_0.RecipeIngredient recipeIngredient)
     {
-        businessLogic.RecipeIngredients.Add(_mapper.Map(recipeIngredient)!);
+        await businessLogic.RecipeIngredients.AddAsync(_mapper.Map(recipeIngredient)!);
         await businessLogic.SaveChangesAsync();
 
         return CreatedAtAction("GetRecipeIngredient", new
@@ -145,7 +145,7 @@ public class RecipeIngredientsController(
     [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteRecipeIngredient(Guid id)
     {
-        RecipeIngredient? recipeIngredient = await businessLogic.RecipeIngredients.FindAsync(id);
+        RecipeIngredient? recipeIngredient = await businessLogic.RecipeIngredients.GetByIdAsync(id);
         if (recipeIngredient == null)
         {
             return NotFound(
@@ -156,7 +156,7 @@ public class RecipeIngredientsController(
                 });
         }
 
-        await businessLogic.RecipeIngredients.RemoveAsync(recipeIngredient);
+        await businessLogic.RecipeIngredients.DeleteAsync(recipeIngredient);
         await businessLogic.SaveChangesAsync();
 
         return NoContent();

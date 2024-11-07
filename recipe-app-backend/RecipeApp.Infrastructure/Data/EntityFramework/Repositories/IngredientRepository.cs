@@ -1,16 +1,13 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using RecipeApp.Base;
-using RecipeApp.Base.Helpers;
 using RecipeApp.Base.Infrastructure.Data;
 using RecipeApp.Infrastructure.Contracts.Data.Repositories;
 
 namespace RecipeApp.Infrastructure.Data.EntityFramework.Repositories;
 
 public class IngredientRepository(AppDbContext dbContext, IMapper mapper)
-    : BaseEntityRepository<Entities.Ingredient, DTO.Ingredient, AppDbContext>(
-            dbContext,
-            new EntityMapper<Entities.Ingredient, DTO.Ingredient>(mapper)),
+    : BaseEntityRepository<Entities.Ingredient, DTO.Ingredient, AppDbContext>(dbContext, mapper),
         IIngredientRepository
 {
     protected override IQueryable<Entities.Ingredient> GetQuery(bool tracking = false)
@@ -20,7 +17,7 @@ public class IngredientRepository(AppDbContext dbContext, IMapper mapper)
         return queryable;
     }
     
-    public override DTO.Ingredient Update(DTO.Ingredient entity)
+    public override Task<DTO.Ingredient> UpdateAsync(DTO.Ingredient entity)
     {
         Entities.Ingredient ingredient = Mapper.Map(entity)!;
         Entities.Ingredient existingIngredient = DbSet.AsNoTracking().First(i => i.Id == ingredient.Id);
@@ -30,11 +27,6 @@ public class IngredientRepository(AppDbContext dbContext, IMapper mapper)
         ingredient.Name.SetTranslation(name);
         
         var entry = DbContext.Update(ingredient);
-        return Mapper.Map(entry.Entity)!;
-    }
-    
-    public override void UpdateRange(IEnumerable<DTO.Ingredient> entities)
-    {
-        throw new NotImplementedException();
+        return Task.FromResult(Mapper.Map(entry.Entity)!);
     }
 }

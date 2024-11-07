@@ -14,7 +14,6 @@ namespace RecipeApp.Test.UnitTests.RecipeApp.Repositories;
 [Collection("NonParallel")]
 public class RecipeRepositoryTest : IClassFixture<TestDatabaseFixture>
 {
-    private readonly IMapper _mapper;
     private readonly EntityMapper<Recipe, global::RecipeApp.Infrastructure.Data.DTO.Recipe> _entityMapper;
     private readonly TestDatabaseFixture _fixture;
     private readonly AppDbContext _context;
@@ -28,8 +27,8 @@ public class RecipeRepositoryTest : IClassFixture<TestDatabaseFixture>
         {
             cfg.AddProfile<AutoMapperProfile>();
         });
-        _mapper = config.CreateMapper();
-        _entityMapper = new EntityMapper<Recipe, global::RecipeApp.Infrastructure.Data.DTO.Recipe>(_mapper);
+        IMapper? mapper = config.CreateMapper();
+        _entityMapper = new EntityMapper<Recipe, global::RecipeApp.Infrastructure.Data.DTO.Recipe>(mapper);
         (_context, _repository) = SetupDependencies();
     }
 
@@ -46,7 +45,7 @@ public class RecipeRepositoryTest : IClassFixture<TestDatabaseFixture>
         // Act
         global::RecipeApp.Infrastructure.Data.DTO.Recipe dalRecipe = _entityMapper.Map(recipe)!;
         dalRecipe.Title = "Test Retsept 1";
-        _repository.Update(dalRecipe);
+        _repository.UpdateAsync(dalRecipe);
         await _context.SaveChangesAsync();
 
         // Assert
@@ -55,39 +54,6 @@ public class RecipeRepositoryTest : IClassFixture<TestDatabaseFixture>
         updatedRecipe.Title.Translate("en").Should().Be("Test Recipe 1");
         updatedRecipe.Title.Translate("et-EE").Should().Be("Test Retsept 1");
         updatedRecipe.Title.Translate("et").Should().Be("Test Retsept 1");
-    }
-    
-    [Fact]
-    public async Task UpdateRange_ShouldUpdateTranslations()
-    {
-        // Arrange
-        Recipe recipe1 = CreateRecipe();
-        Recipe recipe2 = CreateRecipe();
-        _context.Recipes.AddRange(recipe1, recipe2);
-        await _context.SaveChangesAsync();
-        _context.ChangeTracker.Clear();
-        Thread.CurrentThread.CurrentUICulture = new CultureInfo("et-EE");
-
-        // Act
-        global::RecipeApp.Infrastructure.Data.DTO.Recipe dalRecipe1 = _entityMapper.Map(recipe1)!;
-        dalRecipe1.Title = "Test Retsept 1";
-        global::RecipeApp.Infrastructure.Data.DTO.Recipe dalRecipe2 = _entityMapper.Map(recipe2)!;
-        dalRecipe2.Title = "Test Retsept 2";
-        _repository.UpdateRange(new List<global::RecipeApp.Infrastructure.Data.DTO.Recipe> { dalRecipe1, dalRecipe2 });
-        await _context.SaveChangesAsync();
-
-        // Assert
-        Recipe updatedRecipe1 = await _context.Recipes.FirstAsync(r => r.Id == recipe1.Id);
-        updatedRecipe1.Title.Translate("en-GB").Should().Be("Test Recipe 1");
-        updatedRecipe1.Title.Translate("en").Should().Be("Test Recipe 1");
-        updatedRecipe1.Title.Translate("et-EE").Should().Be("Test Retsept 1");
-        updatedRecipe1.Title.Translate("et").Should().Be("Test Retsept 1");
-        
-        Recipe updatedRecipe2 = await _context.Recipes.FirstAsync(r => r.Id == recipe2.Id);
-        updatedRecipe2.Title.Translate("en-GB").Should().Be("Test Recipe 2");
-        updatedRecipe2.Title.Translate("en").Should().Be("Test Recipe 2");
-        updatedRecipe2.Title.Translate("et-EE").Should().Be("Test Retsept 2");
-        updatedRecipe2.Title.Translate("et").Should().Be("Test Retsept 2");
     }
 
     [Fact]
@@ -100,7 +66,7 @@ public class RecipeRepositoryTest : IClassFixture<TestDatabaseFixture>
         _context.ChangeTracker.Clear();
 
         // Act
-        global::RecipeApp.Infrastructure.Data.DTO.Recipe? dalRecipe = await _repository.FindAsync(recipe.Id);
+        global::RecipeApp.Infrastructure.Data.DTO.Recipe? dalRecipe = await _repository.GetByIdAsync(recipe.Id);
 
         // Assert
         dalRecipe.Should().NotBeNull();

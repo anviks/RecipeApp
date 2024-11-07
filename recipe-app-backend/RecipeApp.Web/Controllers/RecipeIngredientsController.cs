@@ -15,13 +15,13 @@ public class RecipeIngredientsController(IAppBusinessLogic businessLogic) : Cont
     [AllowAnonymous]
     public async Task<IActionResult> Index()
     {
-        var recipeIngredients = await businessLogic.RecipeIngredients.FindAllAsync();
+        var recipeIngredients = await businessLogic.RecipeIngredients.GetAllAsync();
         var recipeIngredientsViewModels = new List<RecipeIngredientDetailsViewModel>();
         foreach (RecipeIngredient recipeIngredient in recipeIngredients)
         {
-            Ingredient? ingredient = await businessLogic.Ingredients.FindAsync(recipeIngredient.IngredientId);
-            RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(recipeIngredient.RecipeId);
-            Unit? unit = await businessLogic.Units.FindAsync(recipeIngredient.UnitId ?? Guid.Empty);
+            Ingredient? ingredient = await businessLogic.Ingredients.GetByIdAsync(recipeIngredient.IngredientId);
+            RecipeResponse? recipe = await businessLogic.Recipes.GetByIdAsync(recipeIngredient.RecipeId);
+            Unit? unit = await businessLogic.Units.GetByIdAsync(recipeIngredient.UnitId ?? Guid.Empty);
 
             recipeIngredientsViewModels.Add(new RecipeIngredientDetailsViewModel
             {
@@ -44,15 +44,15 @@ public class RecipeIngredientsController(IAppBusinessLogic businessLogic) : Cont
             return NotFound();
         }
 
-        RecipeIngredient? recipeIngredient = await businessLogic.RecipeIngredients.FindAsync(id.Value);
+        RecipeIngredient? recipeIngredient = await businessLogic.RecipeIngredients.GetByIdAsync(id.Value);
         if (recipeIngredient == null)
         {
             return NotFound();
         }
 
-        Ingredient? ingredient = await businessLogic.Ingredients.FindAsync(recipeIngredient.IngredientId);
-        RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(recipeIngredient.RecipeId);
-        Unit? unit = await businessLogic.Units.FindAsync(recipeIngredient.UnitId ?? Guid.Empty);
+        Ingredient? ingredient = await businessLogic.Ingredients.GetByIdAsync(recipeIngredient.IngredientId);
+        RecipeResponse? recipe = await businessLogic.Recipes.GetByIdAsync(recipeIngredient.RecipeId);
+        Unit? unit = await businessLogic.Units.GetByIdAsync(recipeIngredient.UnitId ?? Guid.Empty);
 
         var recipeIngredientViewModel = new RecipeIngredientDetailsViewModel
         {
@@ -70,11 +70,11 @@ public class RecipeIngredientsController(IAppBusinessLogic businessLogic) : Cont
     {
         var viewModel = new RecipeIngredientCreateEditViewModel
         {
-            IngredientSelectList = new SelectList(await businessLogic.Ingredients.FindAllAsync(), nameof(Ingredient.Id),
+            IngredientSelectList = new SelectList(await businessLogic.Ingredients.GetAllAsync(), nameof(Ingredient.Id),
                 nameof(Ingredient.Name)),
-            RecipeSelectList = new SelectList(await businessLogic.Recipes.FindAllAsync(), nameof(RecipeResponse.Id),
+            RecipeSelectList = new SelectList(await businessLogic.Recipes.GetAllAsync(), nameof(RecipeResponse.Id),
                 nameof(RecipeResponse.Title)),
-            UnitSelectList = new SelectList(await businessLogic.Units.FindAllAsync(), nameof(Unit.Id),
+            UnitSelectList = new SelectList(await businessLogic.Units.GetAllAsync(), nameof(Unit.Id),
                 nameof(Unit.Name))
         };
         
@@ -92,18 +92,18 @@ public class RecipeIngredientsController(IAppBusinessLogic businessLogic) : Cont
         {
             RecipeIngredient recipeIngredient = viewModel.RecipeIngredient;
             recipeIngredient.Id = Guid.NewGuid();
-            businessLogic.RecipeIngredients.Add(recipeIngredient);
+            businessLogic.RecipeIngredients.AddAsync(recipeIngredient);
             await businessLogic.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        viewModel.IngredientSelectList = new SelectList(await businessLogic.Ingredients.FindAllAsync(),
+        viewModel.IngredientSelectList = new SelectList(await businessLogic.Ingredients.GetAllAsync(),
             nameof(Ingredient.Id),
             nameof(Ingredient.Name));
-        viewModel.RecipeSelectList = new SelectList(await businessLogic.Recipes.FindAllAsync(),
+        viewModel.RecipeSelectList = new SelectList(await businessLogic.Recipes.GetAllAsync(),
             nameof(RecipeResponse.Id),
             nameof(RecipeResponse.Title));
-        viewModel.UnitSelectList = new SelectList(await businessLogic.Units.FindAllAsync(), 
+        viewModel.UnitSelectList = new SelectList(await businessLogic.Units.GetAllAsync(), 
             nameof(Unit.Id),
             nameof(Unit.Name));
 
@@ -118,7 +118,7 @@ public class RecipeIngredientsController(IAppBusinessLogic businessLogic) : Cont
             return NotFound();
         }
 
-        RecipeIngredient? recipeIngredient = await businessLogic.RecipeIngredients.FindAsync(id.Value);
+        RecipeIngredient? recipeIngredient = await businessLogic.RecipeIngredients.GetByIdAsync(id.Value);
         if (recipeIngredient == null)
         {
             return NotFound();
@@ -127,11 +127,11 @@ public class RecipeIngredientsController(IAppBusinessLogic businessLogic) : Cont
         var viewModel = new RecipeIngredientCreateEditViewModel
         {
             RecipeIngredient = recipeIngredient,
-            IngredientSelectList = new SelectList(await businessLogic.Ingredients.FindAllAsync(), nameof(Ingredient.Id),
+            IngredientSelectList = new SelectList(await businessLogic.Ingredients.GetAllAsync(), nameof(Ingredient.Id),
                 nameof(Ingredient.Name), recipeIngredient.IngredientId),
-            RecipeSelectList = new SelectList(await businessLogic.Recipes.FindAllAsync(), nameof(RecipeResponse.Id),
+            RecipeSelectList = new SelectList(await businessLogic.Recipes.GetAllAsync(), nameof(RecipeResponse.Id),
                 nameof(RecipeResponse.Title), recipeIngredient.RecipeId),
-            UnitSelectList = new SelectList(await businessLogic.Units.FindAllAsync(), nameof(Unit.Id),
+            UnitSelectList = new SelectList(await businessLogic.Units.GetAllAsync(), nameof(Unit.Id),
                 nameof(Unit.Name), recipeIngredient.UnitId)
         };
         return View(viewModel);
@@ -154,7 +154,7 @@ public class RecipeIngredientsController(IAppBusinessLogic businessLogic) : Cont
         {
             try
             {
-                businessLogic.RecipeIngredients.Update(recipeIngredient);
+                businessLogic.RecipeIngredients.UpdateAsync(recipeIngredient);
                 await businessLogic.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -170,13 +170,13 @@ public class RecipeIngredientsController(IAppBusinessLogic businessLogic) : Cont
             return RedirectToAction(nameof(Index));
         }
 
-        viewModel.IngredientSelectList = new SelectList(await businessLogic.Ingredients.FindAllAsync(),
+        viewModel.IngredientSelectList = new SelectList(await businessLogic.Ingredients.GetAllAsync(),
             nameof(Ingredient.Id),
             nameof(Ingredient.Name), recipeIngredient.IngredientId);
-        viewModel.RecipeSelectList = new SelectList(await businessLogic.Recipes.FindAllAsync(),
+        viewModel.RecipeSelectList = new SelectList(await businessLogic.Recipes.GetAllAsync(),
             nameof(RecipeResponse.Id),
             nameof(RecipeResponse.Title), recipeIngredient.RecipeId);
-        viewModel.UnitSelectList = new SelectList(await businessLogic.Units.FindAllAsync(), nameof(Unit.Id),
+        viewModel.UnitSelectList = new SelectList(await businessLogic.Units.GetAllAsync(), nameof(Unit.Id),
             nameof(Unit.Name), recipeIngredient.UnitId);
 
         return View(viewModel);
@@ -190,15 +190,15 @@ public class RecipeIngredientsController(IAppBusinessLogic businessLogic) : Cont
             return NotFound();
         }
 
-        RecipeIngredient? recipeIngredient = await businessLogic.RecipeIngredients.FindAsync(id.Value);
+        RecipeIngredient? recipeIngredient = await businessLogic.RecipeIngredients.GetByIdAsync(id.Value);
         if (recipeIngredient == null)
         {
             return NotFound();
         }
 
-        Ingredient? ingredient = await businessLogic.Ingredients.FindAsync(recipeIngredient.IngredientId);
-        RecipeResponse? recipe = await businessLogic.Recipes.FindAsync(recipeIngredient.RecipeId);
-        Unit? unit = await businessLogic.Units.FindAsync(recipeIngredient.UnitId ?? Guid.Empty);
+        Ingredient? ingredient = await businessLogic.Ingredients.GetByIdAsync(recipeIngredient.IngredientId);
+        RecipeResponse? recipe = await businessLogic.Recipes.GetByIdAsync(recipeIngredient.RecipeId);
+        Unit? unit = await businessLogic.Units.GetByIdAsync(recipeIngredient.UnitId ?? Guid.Empty);
 
         var viewModel = new RecipeIngredientDetailsViewModel
         {
@@ -216,10 +216,10 @@ public class RecipeIngredientsController(IAppBusinessLogic businessLogic) : Cont
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(Guid id)
     {
-        RecipeIngredient? recipeIngredient = await businessLogic.RecipeIngredients.FindAsync(id);
+        RecipeIngredient? recipeIngredient = await businessLogic.RecipeIngredients.GetByIdAsync(id);
         if (recipeIngredient != null)
         {
-            await businessLogic.RecipeIngredients.RemoveAsync(recipeIngredient);
+            await businessLogic.RecipeIngredients.DeleteAsync(recipeIngredient);
         }
 
         await businessLogic.SaveChangesAsync();

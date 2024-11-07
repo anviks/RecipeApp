@@ -35,7 +35,7 @@ public class CategoriesController(
     [ProducesResponseType(typeof(IEnumerable<v1_0.Category>), StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<v1_0.Category>>> GetCategories()
     {
-        var categories = await businessLogic.Categories.FindAllAsync();
+        var categories = await businessLogic.Categories.GetAllAsync();
         return Ok(categories.Select(_mapper.Map).ToList());
     }
 
@@ -51,7 +51,7 @@ public class CategoriesController(
     [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<v1_0.Category>> GetCategory(Guid id)
     {
-        Category? category = await businessLogic.Categories.FindAsync(id);
+        Category? category = await businessLogic.Categories.GetByIdAsync(id);
 
         if (category == null)
         {
@@ -91,7 +91,7 @@ public class CategoriesController(
 
         try
         {
-            businessLogic.Categories.Update(_mapper.Map(category)!);
+            await businessLogic.Categories.UpdateAsync(_mapper.Map(category)!);
             await businessLogic.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
@@ -126,7 +126,7 @@ public class CategoriesController(
     public async Task<ActionResult<v1_0.Category>> PostCategory(v1_0.Category category)
     {
         category.Id = Guid.NewGuid();
-        businessLogic.Categories.Add(_mapper.Map(category)!);
+        await businessLogic.Categories.AddAsync(_mapper.Map(category)!);
         await businessLogic.SaveChangesAsync();
 
         return CreatedAtAction("GetCategory", new
@@ -146,7 +146,7 @@ public class CategoriesController(
     [ProducesResponseType(typeof(v1_0.RestApiErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteCategory(Guid id)
     {
-        Category? category = await businessLogic.Categories.FindAsync(id);
+        Category? category = await businessLogic.Categories.GetByIdAsync(id);
         if (category == null)
         {
             return NotFound(
@@ -157,7 +157,7 @@ public class CategoriesController(
                 });
         }
 
-        await businessLogic.Categories.RemoveAsync(category);
+        await businessLogic.Categories.DeleteAsync(category);
         await businessLogic.SaveChangesAsync();
 
         return NoContent();
