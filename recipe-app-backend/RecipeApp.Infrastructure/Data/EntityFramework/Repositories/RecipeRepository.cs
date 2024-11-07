@@ -33,7 +33,7 @@ public class RecipeRepository(AppDbContext dbContext, IMapper mapper)
             .ThenInclude(ri => ri.Ingredient)
             .Include(r => r.RecipeCategories)!
             .ThenInclude(rc => rc.Category)
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(e => e.Id == id);
         return Mapper.Map(recipe);
     }
 
